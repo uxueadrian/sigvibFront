@@ -4,6 +4,7 @@ function NavBar() {
     (
         <header>
 
+
         </header>
         
     )
