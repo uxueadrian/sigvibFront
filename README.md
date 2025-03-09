@@ -23,3 +23,15 @@ git pull
 
 > [!NOTE]
 > Todas las ramas las tienen el github, favor de cuando hagan este paso nombren sus ramas igual a la del repo remoto(github)
+
+
+Obtener cambios de una rama a otra
+
+```bash
+##Primero asegurarnos de que estamos en la rama donde queremos tener los cambios:
+git checkout main {Rama}
+##Para obtener cambios de una rama a otra es asi:
+git pull origin {Rama con las modificaciones}
+
+
+```
