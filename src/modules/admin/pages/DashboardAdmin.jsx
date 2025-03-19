@@ -1,7 +1,7 @@
 import React from 'react';
-import CantidadBienesAdmin from './admin/components/CantidadBienesAdmin'; 
-import ConsultarAreasComunesAdmin from './admin/components/ConsultarAreasComunesAdmin';  
-import ConsultarLugarAdmin from './admin/components/ConsultarLugarAdmin';  
+import CantidadBienesAdmin from './../components/CantidadBienesAdmin'; 
+import ConsultarAreasComunesAdmin from './../components/ConsultarAreasComunesAdmin';  
+import ConsultarLugarAdmin from './../components/ConsultarLugarAdmin';  
 
 const DashboardAdmin = () => {
   return (

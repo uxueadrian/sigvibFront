@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import DashboardAdmin from "./modules/admin/pages/DashboardAdmin";
 import DashboardBecario from "./modules/becario/pages/DashboardBecario";
 import DashboardResponsable from "./modules/responsable/pages/DashboardResponsable";
-import NotFound from "./modules/shared/components/NotFound"; 
+import NotFound from "./modules/shared/components/NotFound";
 
 function App() {
   return (
