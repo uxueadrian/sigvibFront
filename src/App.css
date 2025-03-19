@@ -40,3 +40,33 @@
 .read-the-docs {
   color: #888;
 }
+
+
+
+/*NotFound*/
+.not-found-container {
+  text-align: center;
+  margin-top: 10%;
+}
+
+.not-found-title {
+  font-size: 5rem;
+  color: #ff0000;
+}
+
+.not-found-text {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.not-found-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.not-found-link:hover {
+  text-decoration: underline;
+}

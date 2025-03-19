@@ -1,1 +1,0 @@
-//Aqui solo traemos el componente CantidadBienes

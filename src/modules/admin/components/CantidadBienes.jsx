@@ -1,1 +1,0 @@
-//Aqui creamos el componentes cantidad bienes

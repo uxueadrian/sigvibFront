@@ -1,1 +1,0 @@
-//Componente para areas comuness
