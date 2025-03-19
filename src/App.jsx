@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import Sidebar from "./components/Sidebar";
+import {adminLinks, becarioLinks, responsableLinks} from "../src/routers/links";
+import {routersAdmin} from "../src/routers/routerAdmin/routersAdmin";
+import {routersBecario} from "../src/routers/routerBecario/routersBecario";
+import {routersResponsable} from "../src/routers/routerResponsable/routersResponsable";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const userRole = 'becario';
+
+  const roleConfig = {
+    admin: { links: adminLinks, routers: routersAdmin() },
+    becario: { links: becarioLinks, routers: routersBecario() },
+    responsable: { links: responsableLinks, routers: routersResponsable() }
+  }
+
+  const { links, routers } = roleConfig[userRole] || { links: [], routers: null };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Sidebar linksArray={links} />
+      {routers}
+
+  </div>
+  );
 }
 
-export default App
+export default App;
+
+
