@@ -110,17 +110,22 @@ export default function Sidebar({linksArray}) {
 
         <Divider />
 
-        {linksArray.map(({icon, label, to}) => (
-            <NavLink to={to} key={label} style={{textDecoration: 'none', color: 'inherent'}} >
-                
-                <Box sx={{display: "flex", alignItems: "center", p:2 }}>
-                    {icon}
-                    <Typography variant='body1' sx={{ml: 2}}>
-                        {label}
-                    </Typography>
-                </Box>
+        <Box sx={{ width: 240, bgcolor: "background.paper", p: 2 }}>
+          {linksArray.map(({ icon, label, to }) => (
+            <NavLink
+              to={to}
+              key={label}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
+                {icon}
+                <Typography variant="body1" sx={{ ml: 2 }}>
+                  {label}
+                </Typography>
+              </Box>
             </NavLink>
-        ))};
+          ))}
+        </Box>
 
         <Divider/>
 

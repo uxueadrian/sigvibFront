@@ -32,3 +32,4 @@ const ConsultarAreasComunes = () => {
 }
 
 export default ConsultarAreasComunes;
+

@@ -1,39 +1,30 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import Sidebar from "./components/Sidebar";
 import { AuthContext } from "./context/AuthContext";
-import Login from "./pages/Login";
-import {adminLinks, becarioLinks, responsableLinks} from "../src/routers/links";
-import {routersAdmin} from "../src/routers/routerAdmin/routersAdmin";
-import {routersBecario} from "../src/routers/routerBecario/routersBecario";
-import {routersResponsable} from "../src/routers/routerResponsable/routersResponsable";
+import { becarioLinks } from "../src/routers/links";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import SolicitarBienBecario from "../src/pages/becario/SolicitarBienBecario";
+import BienesBecario from "../src/pages/becario/BienesBecario";
 
 function App() {
   const { user } = useContext(AuthContext);
-
-  const userRole = user ? user.role : null;
-
-  const roleConfig = {
-    admin: { links: adminLinks, routers: routersAdmin() },
-    becario: { links: becarioLinks, routers: routersBecario() },
-    responsable: { links: responsableLinks, routers: routersResponsable() }
-  }
-
-  const { links, routers } = roleConfig[userRole] || { links: [], routers: null };
+  const userRole = user ? user.role : "becario"; // Por ahora, forzamos el rol de becario
 
   return (
-    <div>
-      {user ? ( 
-        <>
-          <Sidebar linksArray={links} />
-          {routers}
-        </>
-      ) : ( // Si no está autenticado, muestra el Login
-        <Login />
-      )}
+    <div style={{ display: "flex" }}>
+      {/* Sidebar */}
+      <Sidebar linksArray={becarioLinks} />
+
+      {/* Contenido principal */}
+      <div style={{ flexGrow: 1, padding: "20px" }}>
+        <Routes>
+          <Route path="/bienesBecario" element={<BienesBecario />} />
+          <Route path="/solicitarBienBecario" element={<SolicitarBienBecario />} />
+          {/* Otras rutas del becario */}
+        </Routes>
+      </div>
     </div>
   );
 }
 
 export default App;
-
-

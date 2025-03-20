@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import '../styles/index.css'
-import '../styles/stilo.css'
+import '../styles/index.css';
+import '../styles/stilo.css';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 

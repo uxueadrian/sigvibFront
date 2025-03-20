@@ -6,7 +6,7 @@ import Modals from "../../components/Modals";
 import Sidebar from "../../components/Sidebar";
 
 const ConsultarBien = () => {
-    const { data, loading, error } = useFetch("");
+    const { data, loading, error } = useFetch();
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
