@@ -1,0 +1,1 @@
+//Componente para consultar lugares
