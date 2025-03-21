@@ -9,6 +9,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+import ComponentSwitch from './Switch';
+
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -29,7 +31,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
       }),
     }),
 );
-  
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -55,6 +56,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
 }));
+
+const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export default function Sidebar({linksArray}) {
   const theme = useTheme();
@@ -130,7 +133,11 @@ export default function Sidebar({linksArray}) {
         <Divider/>
 
         <Button variant="contained" endIcon={<LogoutIcon/>}>Cerrar sesion</Button>
-        
+
+        <Typography>Cambio de modo:
+          <ComponentSwitch/>
+        </Typography>
+                
       </Drawer>
 
       <Main open={open}>

@@ -11,7 +11,6 @@ import DownloadPDFButton from "../../components/pdf/DownloadPDFButton";
 const BienesBecario = () => {
     const items = [
         { image: "url_to_image1", title: "Laptop HP Series 300", description: "Descripción del producto" },
-        // Se pueden agregar mas items por aqui
     ];
 
     return(

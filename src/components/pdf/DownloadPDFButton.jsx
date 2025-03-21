@@ -1,6 +1,7 @@
 import React from 'react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PDFGenerator from './PDFGenerator';
+import "../../styles/Vista.css"
 
 const DownloadPDFButton = ({ data }) => (
   <PDFDownloadLink document={<PDFGenerator data={data} />} fileName="historial_bienes.pdf">
