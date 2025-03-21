@@ -9,28 +9,29 @@ const Areas = () => {
   // Definir las columnas
   const columnas = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "nombreArea", headerName: "Lugar", width: 120 },
+    { field: "nombreArea", headerName: "Área", width: 120 },
+    { field: "lugar", headerName: "Lugar", width: 120 },
     { field: "status", headerName: "Estado", width: 120 },
-    
   ];
 
   // Función para obtener datos de la API
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/areas-comunes") // Reemplaza con la URL real de tu API
+      .get("http://localhost:8080/api/areas-comunes/con-lugar") // URL actualizada
       .then((response) => {
         console.log("Datos recibidos:", response.data);
 
-      // Extraemos el array de usuarios desde `result`
-      const areas= response.data.result.map((area) => ({
-        ...area,           // Copiamos todos los datos originales
-        id: area.idArea // Creamos la propiedad `id`
-      }));
+        // Accedemos a 'result' en lugar de 'data'
+        const areas = response.data.result.map((area) => ({
+          ...area,             // Copiamos todos los datos originales
+          id: area.idArea,     // Creamos la propiedad `id`
+          lugar: area.lugar.lugar,  // Extraemos el nombre del lugar
+        }));
 
-      setAreas(areas); // Guardamos los datos corregidos
-    })
+        setAreas(areas); // Guardamos los datos corregidos
+      })
       .catch((error) => {
-        console.error("Error al obtener las areas:", error);
+        console.error("Error al obtener las áreas:", error);
       })
       .finally(() => {
         setLoading(false);
@@ -39,7 +40,7 @@ const Areas = () => {
 
   return (
     <div>
-      <CustomTable columns={columnas} rows={areas} loading={loading}  pagina={"Areas"} />
+      <CustomTable columns={columnas} rows={areas} loading={loading} pagina={"Áreas comunes"} />
     </div>
   );
 };

@@ -1,8 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Importamos useNavigate
 import "./Sidebar.css"; // Agregar estilos básicos
 
 const Sidebar = () => {
+  const navigate = useNavigate(); // Inicializamos useNavigate
+
+  const handleLogout = () => {
+    // Eliminar el token del almacenamiento local
+    localStorage.removeItem("token");
+
+    // Redirigir al login
+    navigate("/login");
+  };
+
   return (
     <div className="sidebar">
       <h2>Menú</h2>
@@ -22,13 +32,9 @@ const Sidebar = () => {
         <li>
           <Link to="/categorias">Categorias</Link>
         </li>
-        <li>
-          <Link to="/tipobien">Tipo Bien</Link>
-        </li>
-        <li>
-          <Link to="/modelos">Modelos</Link>
-        </li>
       </ul>
+      {/* Agregar el botón de cerrar sesión */}
+      <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
     </div>
   );
 };
