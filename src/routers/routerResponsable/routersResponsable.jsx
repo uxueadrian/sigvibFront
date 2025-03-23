@@ -2,11 +2,25 @@ import {Routes, Route } from "react-router-dom";
 import BienesResponsable from "../../pages/responsable/BienesResponsable";
 import SolicitarBienResponsable from "../../pages/responsable/SolicitarBienResponsable";
 
+import ProtectedRoute from "../../context/ProtectedRoute";
+import Login from "../../pages/Login";
+
 export function routersResponsable () {
     return(
         <Routes>
-            <Route path="/bienResponsable" element={<BienesResponsable/>} /> 
-            <Route path="/solicitarBienResponsable" element={<SolicitarBienResponsable/>} />
+            <Route path="/login" element= { <Login/> } />
+
+            <Route path="/bienResponsable" element={
+                <ProtectedRoute requiredRole="responsable">
+                    <BienesResponsable/>
+                </ProtectedRoute>
+            } /> 
+
+            <Route path="/solicitarBienResponsable" element={
+                <ProtectedRoute requiredRole="responsable">
+                    <SolicitarBienResponsable/>
+                </ProtectedRoute>
+            } />
         </Routes>
     );
 

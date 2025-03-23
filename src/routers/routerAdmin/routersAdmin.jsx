@@ -7,15 +7,48 @@ import ConsultarBien from "../../pages/admin/ConsultarBien";
 import ConsultarAreasComunes from "../../pages/admin/ConsultarAreasComunes";
 import Categorias from "../../pages/admin/Categorias";
 
+import ProtectedRoute from "../../context/ProtectedRoute";
+import Login from "../../pages/Login";
+
 export function routersAdmin(){
     return(
         <Routes>
-                <Route path="/dashboardAdmin" element={ <DashboardAdmin/> } />
-                <Route path="/consultarUsuarios" element = { <ConsultarUsuarios/> } />
-                <Route path="/consultarLugares" element= { <ConsultarLugares/> } />
-                <Route path="/consultarBien" element={ <ConsultarBien/> } />
-                <Route path="/consultarAreasComunes" element={ <ConsultarAreasComunes/> } />
-                <Route path="/categorias" element = {<Categorias/> }/>
+                <Route path="/login" element={ <Login/> } />
+                <Route path="/dashboardAdmin" element={ 
+                    <ProtectedRoute requiredRole="admin">
+                        <DashboardAdmin/> 
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/consultarUsuarios" element = { 
+                    <ProtectedRoute requiredRole="admin">
+                        <ConsultarUsuarios/> 
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/consultarLugares" element= { 
+                    <ProtectedRoute requiredRole="admin">
+                        <ConsultarLugares/> 
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/consultarBien" element={ 
+                    <ProtectedRoute requiredRole="admin">
+                        <ConsultarBien/> 
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/consultarAreasComunes" element={ 
+                    <ProtectedRoute requiredRole="admin">       
+                        <ConsultarAreasComunes/> 
+                    </ProtectedRoute>           
+                } />
+
+                <Route path="/categorias" element = { 
+                    <ProtectedRoute>
+                        <Categorias/> 
+                    </ProtectedRoute>
+                }/>
         </Routes>
     );
 }

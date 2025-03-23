@@ -10,6 +10,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import ComponentSwitch from './Switch';
+import LogoutButton from '../context/LogoutButton';
 
 const drawerWidth = 240;
 
@@ -131,7 +132,7 @@ export default function Sidebar({linksArray}) {
         </Box>
 
         <Divider/>
-
+        
         <Button variant="contained" endIcon={<LogoutIcon/>}>Cerrar sesion</Button>
 
         <Typography>Cambio de modo:
