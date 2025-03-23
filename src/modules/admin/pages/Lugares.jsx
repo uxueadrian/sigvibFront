@@ -29,27 +29,16 @@ const Lugares = () => {
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalEditarOpen, setModalEditarOpen] = useState(false);
   const [nuevoLugar, setNuevoLugar] = useState("");
-
-  const columnas = [
-    
-    { field: "lugar", headerName: "Lugar", width: 120 },
-    {
-      field: "status", headerName: "Estado", width: 150,
-      renderCell: (params) => (
-        params.row.status ?
-          <Button variant="outlined" color="success">Activo</Button> :
-          <Button variant="outlined" color="error">Inactivo</Button>
-      )
-    },
-  ];
+  const [lugarEditar, setLugarEditar] = useState({ id: null, lugar: "", status: true });
 
   useEffect(() => {
     axios.get("http://localhost:8080/lugares")
       .then((response) => {
         const lugares = response.data.result.map((lugar) => ({
           ...lugar,
-          id: lugar.idlugar
+          id: lugar.idlugar,
         }));
         setLugares(lugares);
       })
@@ -61,22 +50,79 @@ const Lugares = () => {
       });
   }, []);
 
+  const handleCambiarStatus = (idLugar) => {
+    axios.patch(`http://localhost:8080/lugares/${idLugar}/status`)
+      .then(() => {
+        setLugares(lugares.map((lugar) =>
+          lugar.id === idLugar ? { ...lugar, status: !lugar.status } : lugar
+        ));
+      })
+      .catch((error) => {
+        console.error("Error al cambiar el estado del lugar:", error);
+      });
+  };
+
   const handleAgregarLugar = () => {
     if (!nuevoLugar.trim()) return;
 
     axios.post("http://localhost:8080/lugares", {
       lugar: nuevoLugar,
-      status: true
+      status: true,
     })
-    .then((response) => {
-      setLugares([...lugares, { id: response.data.result.idlugar, lugar: nuevoLugar, status: true }]);
-      setModalOpen(false);
-      setNuevoLugar("");
-    })
-    .catch((error) => {
-      console.error("Error al agregar el lugar:", error);
-    });
+      .then((response) => {
+        setLugares([...lugares, { id: response.data.result.idlugar, lugar: nuevoLugar, status: true }]);
+        setModalOpen(false);
+        setNuevoLugar("");
+      })
+      .catch((error) => {
+        console.error("Error al agregar el lugar:", error);
+      });
   };
+
+  const handleAbrirEditarLugar = (lugar) => {
+    setLugarEditar(lugar);
+    setModalEditarOpen(true);
+  };
+
+  const handleActualizarLugar = () => {
+    const { id, lugar, status } = lugarEditar;
+    axios.put(`http://localhost:8080/lugares/${id}`, { lugar, status })
+      .then(() => {
+        setLugares(lugares.map((l) => (l.id === id ? { id, lugar, status } : l)));
+        setModalEditarOpen(false);
+      })
+      .catch((error) => {
+        console.error("Error al actualizar el lugar:", error);
+      });
+  };
+
+  const columnas = [
+    { field: "lugar", headerName: "Lugar", width: 120 },
+    {
+      field: "status", headerName: "Estado", width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color={params.row.status ? "success" : "error"}
+          onClick={() => handleCambiarStatus(params.row.id)}
+        >
+          {params.row.status ? "Activo" : "Inactivo"}
+        </Button>
+      ),
+    },
+    {
+      field: "acciones", headerName: "Acciones", width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleAbrirEditarLugar(params.row)}
+        >
+          Editar
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -116,31 +162,46 @@ const Lugares = () => {
           )}
         </Box>
 
+        {/* Modal para agregar lugar */}
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-          <Box sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 300,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            borderRadius: 2
-          }}>
-            <h2>Nuevo Lugar</h2>
+          <Box sx={{ padding: 4, backgroundColor: "#FFF", margin: "10% auto", width: "300px", borderRadius: "8px" }}>
+            <h2>Agregar Lugar</h2>
             <TextField
-              label="Nombre del Lugar"
-              variant="outlined"
               fullWidth
+              label="Nombre del lugar"
               value={nuevoLugar}
               onChange={(e) => setNuevoLugar(e.target.value)}
             />
-            <Button variant="contained" color="primary" onClick={handleAgregarLugar}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: "10px" }}
+              onClick={handleAgregarLugar}
+            >
               Guardar
+            </Button>
+          </Box>
+        </Modal>
+
+        {/* Modal para editar lugar */}
+        <Modal open={modalEditarOpen} onClose={() => setModalEditarOpen(false)}>
+          <Box sx={{ padding: 4, backgroundColor: "#FFF", margin: "10% auto", width: "300px", borderRadius: "8px" }}>
+            <h2>Editar Lugar</h2>
+            <TextField
+              fullWidth
+              label="Nombre del lugar"
+              value={lugarEditar.lugar}
+              onChange={(e) => setLugarEditar({ ...lugarEditar, lugar: e.target.value })}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: "10px" }}
+              onClick={handleActualizarLugar}
+            >
+              Actualizar
             </Button>
           </Box>
         </Modal>

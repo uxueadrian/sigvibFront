@@ -29,6 +29,8 @@ const Areas = () => {
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Nueva variable para saber si estamos editando
+  const [selectedAreaId, setSelectedAreaId] = useState(null); // Para almacenar el ID del área seleccionada
   const [nombreArea, setNombreArea] = useState("");
   const [lugares, setLugares] = useState([]);
   const [lugarSeleccionado, setLugarSeleccionado] = useState("");
@@ -37,6 +39,16 @@ const Areas = () => {
     { field: "nombreArea", headerName: "Área", width: 150 },
     { field: "lugar", headerName: "Lugar", width: 150 },
     { field: "status", headerName: "Estado", width: 120 },
+    {
+      field: "edit",
+      headerName: "Editar",
+      width: 120,
+      renderCell: (params) => (
+        <Button variant="outlined" onClick={() => handleOpenModal(params.row)}>
+          Editar
+        </Button>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -68,7 +80,17 @@ const Areas = () => {
       .catch((error) => console.error("Error al obtener lugares:", error));
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (area = null) => {
+    if (area) {
+      setIsEditing(true);
+      setSelectedAreaId(area.id); // Almacenamos el ID del área que estamos editando
+      setNombreArea(area.nombreArea);
+      setLugarSeleccionado(area.lugarId); // Asumimos que tienes el ID del lugar
+    } else {
+      setIsEditing(false);
+      setNombreArea("");
+      setLugarSeleccionado("");
+    }
     setModalOpen(true);
     fetchLugares();
   };
@@ -77,9 +99,10 @@ const Areas = () => {
     setModalOpen(false);
     setNombreArea("");
     setLugarSeleccionado("");
+    setIsEditing(false);
   };
 
-  const handleCreateArea = () => {
+  const handleSaveArea = () => {
     if (!nombreArea || !lugarSeleccionado) {
       alert("Por favor, complete todos los campos");
       return;
@@ -91,13 +114,16 @@ const Areas = () => {
       lugar: { idlugar: lugarSeleccionado },
     };
 
-    axios
-      .post("http://localhost:8080/api/areas-comunes", nuevaArea)
+    const request = isEditing
+      ? axios.put(`http://localhost:8080/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
+      : axios.post("http://localhost:8080/api/areas-comunes", nuevaArea);
+
+    request
       .then(() => {
         fetchAreas();
         handleCloseModal();
       })
-      .catch((error) => console.error("Error al crear el área:", error));
+      .catch((error) => console.error("Error al guardar el área:", error));
   };
 
   return (
@@ -107,7 +133,9 @@ const Areas = () => {
         <h1 style={{ color: darkMode ? "#AED581" : "#7CB342" }}>Áreas Comunes</h1>
 
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-          <Button variant="contained" color="primary" onClick={handleOpenModal}>Agregar Área</Button>
+          <Button variant="contained" color="primary" onClick={() => handleOpenModal()}>
+            {isEditing ? "Editar Área" : "Agregar Área"}
+          </Button>
           <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
         </div>
 
@@ -115,33 +143,14 @@ const Areas = () => {
           {loading ? (
             <CircularProgress />
           ) : (
-            <DataGrid
-              rows={areas}
-              columns={columnas}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              autoHeight
-              sx={{
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: darkMode ? "#333" : "#6A1B9A",
-                  color: "#FFF",
-                },
-                "& .MuiDataGrid-row": {
-                  backgroundColor: darkMode ? "#1E1E1E" : "#FFF",
-                },
-                "& .MuiDataGrid-footerContainer": {
-                  backgroundColor: darkMode ? "#333" : "#6A1B9A",
-                  color: "#FFF",
-                },
-              }}
-            />
+            <DataGrid rows={areas} columns={columnas} pageSize={5} rowsPerPageOptions={[5]} autoHeight />
           )}
         </Box>
 
-        {/* Modal para agregar área común */}
+        {/* Modal para agregar o editar área común */}
         <Modal open={modalOpen} onClose={handleCloseModal}>
           <Box sx={{ width: 400, padding: 3, backgroundColor: "white", margin: "100px auto", borderRadius: 2 }}>
-            <h2>Agregar Área Común</h2>
+            <h2>{isEditing ? "Editar Área Común" : "Agregar Área Común"}</h2>
             <TextField
               fullWidth
               label="Nombre del Área"
@@ -158,11 +167,13 @@ const Areas = () => {
               margin="normal"
             >
               {lugares.map((lugar) => (
-                <MenuItem key={lugar.idlugar} value={lugar.idlugar}>{lugar.lugar}</MenuItem>
+                <MenuItem key={lugar.idlugar} value={lugar.idlugar}>
+                  {lugar.lugar}
+                </MenuItem>
               ))}
             </TextField>
-            <Button variant="contained" color="primary" onClick={handleCreateArea} fullWidth>
-              Guardar Área
+            <Button variant="contained" color="primary" onClick={handleSaveArea} fullWidth>
+              {isEditing ? "Actualizar Área" : "Guardar Área"}
             </Button>
           </Box>
         </Modal>

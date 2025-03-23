@@ -18,20 +18,21 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) 
       setError("El nombre es obligatorio.");
       return;
     }
-  
+
     setLoading(true);
     setError(null);
-  
+
     try {
       const headers = {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       };
-  
-      const data = entidad === "Modelo" 
-        ? { nombreModelo: nombre.trim(), foto: "URL_DEFAULT_O_CAMPO_DE_ENTRADA" }
-        : { nombre: nombre.trim(), status: true };
-  
+
+      const data =
+        entidad === "Modelo"
+          ? { nombreModelo: nombre.trim(), foto: "URL_DEFAULT_O_CAMPO_DE_ENTRADA" }
+          : { nombre: nombre.trim(), status: true };
+
       await axios.post(endpoint, data, { headers });
       setNombre("");
       handleClose();
@@ -43,7 +44,6 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) 
       setLoading(false);
     }
   };
-  
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -96,12 +96,36 @@ const Categorias = () => {
     if (token) fetchData();
   }, [token]);
 
+  const handleChangeStatus = async (id, endpoint) => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.patch(`http://localhost:8080/${endpoint}/cambiar-status/${id}`, {}, { headers });
+      fetchData(); // Refresca la lista después del cambio de estado
+    } catch (error) {
+      console.error(`Error al cambiar estado en ${endpoint}:`, error.response?.data || error.message);
+    }
+  };
+  
+
   return (
     <>
       <Stack direction="row" spacing={3}>
-        <TipoBien data={tiposBien} loading={loading} />
-        <Marcas data={marcas} loading={loading} />
-        <Modelos data={modelos} loading={loading} />
+        <TipoBien
+          data={tiposBien}
+          loading={loading}
+          onChangeStatus={(id) => handleChangeStatus(id, "tipo-bien")}
+        />
+        <Marcas
+          data={marcas}
+          loading={loading}
+          onChangeStatus={(id) => handleChangeStatus(id, "marca")}
+        />
+        <Modelos
+  data={modelos}
+  loading={loading}
+  onChangeStatus={(id) => handleChangeStatus(id, "modelo")}
+/>
+
       </Stack>
 
       <Button variant="contained" onClick={() => setModalOpen("tipo-bien")} sx={{ mt: 2 }}>
