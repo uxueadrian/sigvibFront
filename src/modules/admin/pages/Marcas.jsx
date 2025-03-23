@@ -10,7 +10,7 @@ const Marcas = () => {
 
   // Definir las columnas
   const columnas = [
-    { field: "id", headerName: "ID", width: 100 },
+    
     { field: "nombre", headerName: "Marca", width: 120 },
     { field: "status", headerName: "Estado", 
       width: 150,

@@ -6,95 +6,52 @@ import Modelos from "./Modelos";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { Button, Modal, TextField, Box, Typography, CircularProgress } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-const CrearModal = ({ open, handleClose, fetchData, endpoint, title, includeImage }) => {
+const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) => {
   const { token } = useContext(AuthContext);
   const [nombre, setNombre] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [imagen, setImagen] = useState(null);
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImagen(file);
-  };
 
   const handleCreate = async () => {
     if (nombre.trim() === "") {
       setError("El nombre es obligatorio.");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
       const headers = {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       };
-
-      const formData = new FormData();
-      formData.append("nombre", nombre.trim());
-      formData.append("status", true);
-      if (includeImage && imagen) {
-        formData.append("foto", imagen);
-      }
-
-      await axios.post(`http://localhost:8080/${endpoint}`, formData, { headers });
-
+  
+      const data = entidad === "Modelo" 
+        ? { nombreModelo: nombre.trim(), foto: "URL_DEFAULT_O_CAMPO_DE_ENTRADA" }
+        : { nombre: nombre.trim(), status: true };
+  
+      await axios.post(endpoint, data, { headers });
       setNombre("");
-      setImagen(null);
       handleClose();
       fetchData();
     } catch (err) {
-      console.error(`Error al crear ${title.toLowerCase()}: `, err);
-      setError(`Hubo un error al crear ${title.toLowerCase()}. Inténtalo de nuevo.`);
+      console.error(`Error al crear ${entidad}: `, err);
+      setError(`Hubo un error al crear ${entidad}. Inténtalo de nuevo.`);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
+      <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, bgcolor: "background.paper", boxShadow: 24, p: 4, borderRadius: 2 }}>
         <Typography variant="h6" component="h2" gutterBottom>
-          Crear {title}
+          Crear {entidad}
         </Typography>
-        <TextField
-          fullWidth
-          label="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          error={!!error}
-          helperText={error}
-          margin="normal"
-        />
-        {includeImage && (
-          <Box sx={{ mt: 2 }}>
-            <Button
-              variant="contained"
-              component="label"
-              startIcon={<CloudUploadIcon />}
-            >
-              Subir Imagen
-              <input type="file" hidden onChange={handleImageChange} />
-            </Button>
-            {imagen && <Typography variant="body2" sx={{ mt: 1 }}>{imagen.name}</Typography>}
-          </Box>
-        )}
+        <TextField fullWidth label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} error={!!error} helperText={error} margin="normal" />
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button variant="outlined" onClick={handleClose} disabled={loading}>
             Cancelar
@@ -114,46 +71,29 @@ const Categorias = () => {
   const [marcas, setMarcas] = useState([]);
   const [modelos, setModelos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modalTipoOpen, setModalTipoOpen] = useState(false);
-  const [modalMarcaOpen, setModalMarcaOpen] = useState(false);
-  const [modalModeloOpen, setModalModeloOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(null);
 
-  const fetchTiposBien = async () => {
+  const fetchData = async () => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const tiposRes = await axios.get("http://localhost:8080/tipo-bien", { headers });
+      const [tiposRes, marcasRes, modelosRes] = await Promise.all([
+        axios.get("http://localhost:8080/tipo-bien", { headers }),
+        axios.get("http://localhost:8080/marca", { headers }),
+        axios.get("http://localhost:8080/modelo", { headers }),
+      ]);
+
       setTiposBien(tiposRes.data.result);
-    } catch (error) {
-      console.error("Error al obtener los tipos de bien: ", error);
-    }
-  };
-
-  const fetchMarcas = async () => {
-    try {
-      const headers = { Authorization: `Bearer ${token}` };
-      const marcasRes = await axios.get("http://localhost:8080/marca", { headers });
       setMarcas(marcasRes.data.result);
-    } catch (error) {
-      console.error("Error al obtener las marcas: ", error);
-    }
-  };
-
-  const fetchModelos = async () => {
-    try {
-      const headers = { Authorization: `Bearer ${token}` };
-      const modelosRes = await axios.get("http://localhost:8080/modelo", { headers });
       setModelos(modelosRes.data.result);
     } catch (error) {
-      console.error("Error al obtener los modelos: ", error);
+      console.error("Error al obtener los datos: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (token) {
-      fetchTiposBien();
-      fetchMarcas();
-      fetchModelos();
-    }
+    if (token) fetchData();
   }, [token]);
 
   return (
@@ -163,18 +103,26 @@ const Categorias = () => {
         <Marcas data={marcas} loading={loading} />
         <Modelos data={modelos} loading={loading} />
       </Stack>
-      <Button variant="contained" onClick={() => setModalTipoOpen(true)} sx={{ mt: 2 }}>
+
+      <Button variant="contained" onClick={() => setModalOpen("tipo-bien")} sx={{ mt: 2 }}>
         Agregar Tipo de Bien
       </Button>
-      <Button variant="contained" onClick={() => setModalMarcaOpen(true)} sx={{ mt: 2, ml: 2 }}>
+      <Button variant="contained" onClick={() => setModalOpen("marca")} sx={{ mt: 2, ml: 2 }}>
         Agregar Marca
       </Button>
-      <Button variant="contained" onClick={() => setModalModeloOpen(true)} sx={{ mt: 2, ml: 2 }}>
+      <Button variant="contained" onClick={() => setModalOpen("modelo")} sx={{ mt: 2, ml: 2 }}>
         Agregar Modelo
       </Button>
-      <CrearModal open={modalTipoOpen} handleClose={() => setModalTipoOpen(false)} fetchData={fetchTiposBien} endpoint="tipo-bien" title="Tipo de Bien" />
-      <CrearModal open={modalMarcaOpen} handleClose={() => setModalMarcaOpen(false)} fetchData={fetchMarcas} endpoint="marca" title="Marca" />
-      <CrearModal open={modalModeloOpen} handleClose={() => setModalModeloOpen(false)} fetchData={fetchModelos} endpoint="modelo" title="Modelo" includeImage={true} />
+
+      {modalOpen === "tipo-bien" && (
+        <CrearEntidadModal open handleClose={() => setModalOpen(null)} fetchData={fetchData} endpoint="http://localhost:8080/tipo-bien" entidad="Tipo de Bien" />
+      )}
+      {modalOpen === "marca" && (
+        <CrearEntidadModal open handleClose={() => setModalOpen(null)} fetchData={fetchData} endpoint="http://localhost:8080/marca" entidad="Marca" />
+      )}
+      {modalOpen === "modelo" && (
+        <CrearEntidadModal open handleClose={() => setModalOpen(null)} fetchData={fetchData} endpoint="http://localhost:8080/modelo" entidad="Modelo" />
+      )}
     </>
   );
 };

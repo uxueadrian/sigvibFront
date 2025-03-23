@@ -10,6 +10,8 @@ import Lugares from "./modules/admin/pages/Lugares";
 import Marcas from "./modules/admin/pages/Marcas";
 import Modelos from "./modules/admin/pages/Modelos";
 import TipoBien from "./modules/admin/pages/TipoBien";
+import Bajas from "./modules/admin/pages/Bajas"; 
+import Bienes from "./modules/admin/pages/Bienes"; // Importa la nueva pantalla
 
 const Inicio = () => <h1>Bienvenido al Inicio</h1>;
 
@@ -40,6 +42,8 @@ const App = () => {
                       <Route path="/marcas" element={<Marcas />} />
                       <Route path="/modelos" element={<Modelos />} />
                       <Route path="/tipobien" element={<TipoBien />} />
+                      <Route path="/bienes" element={<Bienes />} /> {/* Nueva ruta */}
+                      <Route path="/bajas" element={<Bajas />} /> {/* Nueva ruta */}
                     </Routes>
                   </div>
                 </div>

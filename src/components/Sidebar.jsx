@@ -32,6 +32,13 @@ const Sidebar = () => {
         <li>
           <Link to="/categorias">Categorias</Link>
         </li>
+        <li>
+          <Link to="/bienes">Bienes</Link> {/* Nuevo enlace para Bienes */}
+        </li>
+        <li>
+  <Link to="/bajas">Bajas</Link>
+</li>
+
       </ul>
       {/* Agregar el botón de cerrar sesión */}
       <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>

@@ -13,7 +13,7 @@ const TipoBien = () => {
 
   // Columnas de la tabla
   const columnas = [
-    { field: "id", headerName: "ID", width: 100 },
+ 
     { field: "nombre", headerName: "Tipo de bien", width: 120 },
     {
       field: "status",
@@ -35,14 +35,14 @@ const TipoBien = () => {
   ];
 
   // Obtener tipos de bien
-  const fetchTiposBien = async () => {
+  const fetchTipoBien = async () => {
     try {
       const response = await axios.get("http://localhost:8080/tipo-bien");
-      const tipos = response.data.result.map((tipobien) => ({
+      const tipo = response.data.result.map((tipobien) => ({
         ...tipobien,
         id: tipobien.idTipo,
       }));
-      setTipoBien(tipos);
+      setTipoBien(tipo);
     } catch (error) {
       console.error("Error al obtener los tipos de bien:", error);
     } finally {
@@ -51,7 +51,7 @@ const TipoBien = () => {
   };
 
   useEffect(() => {
-    fetchTiposBien();
+    fetchTipoBien();
   }, []);
 
   // Crear tipo de bien
@@ -65,14 +65,14 @@ const TipoBien = () => {
     setError(null);
 
     try {
-      await axios.post("http://localhost:8080/tipos-bienes", {
+      await axios.post("http://localhost:8080/tipo-bien", {
         nombre: nombre.trim(),
         status: true,
       });
 
       setNombre("");
       setModalOpen(false);
-      fetchTiposBien();
+      fetchTipoBien();
     } catch (error) {
       console.error("Error al crear el tipo de bien:", error);
       setError("Hubo un error al crear el tipo de bien. Inténtalo de nuevo.");
