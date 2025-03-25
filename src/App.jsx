@@ -5,6 +5,7 @@ import DashboardAdmin from '../src/pages/admin/DashboardAdmin';
 import BienesBecario from '../src/pages/becario/BienesBecario';
 import BienResponsable from '../src/pages/responsable/BienesResponsable';
 import ProtectedRoute from '../src/context/ProtectedRoute';
+import "../src/styles/index.css";
 
 function App () {
     return (
@@ -12,17 +13,17 @@ function App () {
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/dashboardAdmin" element={
-                <ProtectedRoute requiredRole="admin">
+                <ProtectedRoute requiredRole="ROLE_ADMINISTRADOR">
                     <DashboardAdmin />
                 </ProtectedRoute>
             } />
             <Route path="/bienesBecario" element={
-                <ProtectedRoute requiredRole="becario">
+                <ProtectedRoute requiredRole="ROLE_BECARIO">
                     <BienesBecario />
                 </ProtectedRoute>
             } />
             <Route path="/bienesResponsable" element={
-                <ProtectedRoute requiredRole="responsable">
+                <ProtectedRoute requiredRole="ROLE_RESPONSABLE">
                     <BienResponsable />
                 </ProtectedRoute>
             } />
