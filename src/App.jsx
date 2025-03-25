@@ -4,6 +4,9 @@ import Login from "./components/Login";
 import Sidebar from "./components/Sidebar";
 import { AuthContext, AuthProvider } from "./context/AuthContext";  
 import Areas from "./modules/admin/pages/Areas";
+import Dashboard from "./modules/admin/pages/Dashboard";
+import BienesResponsable from "./modules/responsable/pages/BienesResponsable";
+import BienesBecario from "./modules/becario/pages/BienesBecario";
 import Usuarios from "./modules/admin/pages/Usuarios";
 import Categorias from "./modules/admin/pages/Categorias";
 import Lugares from "./modules/admin/pages/Lugares";
@@ -15,9 +18,19 @@ import Bienes from "./modules/admin/pages/Bienes"; // Importa la nueva pantalla
 
 const Inicio = () => <h1>Bienvenido al Inicio</h1>;
 
-const ProtectedRoute = ({ children }) => {
+const AdminRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
-  return user ? children : <Navigate to="/login" />;
+  return user?.role === "ROLE_ADMINISTRADOR" ? children : <Navigate to="/" />;
+};
+
+const ResponsableRoute = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  return user?.role === "ROLE_RESPONSABLE" ? children : <Navigate to="/" />;
+};
+
+const BecarioRoute = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  return user?.role === "ROLE_BECARIO" ? children : <Navigate to="/" />;
 };
 
 const App = () => {
@@ -26,30 +39,71 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+
+          {/* Rutas para ADMINISTRADOR */}
           <Route
-            path="/*"
+            path="/admin/*"
             element={
-              <ProtectedRoute>
+              <AdminRoute>
+                <div style={{ display: "flex" }}>
+                  <Sidebar />
+                  <div style={{ marginLeft: "220px", padding: "40px", width: "100%" }}>
+                  <Routes>
+  <Route path="dashboard" element={<Dashboard />} />
+  <Route path="usuarios" element={<Usuarios />} />
+  <Route path="lugares" element={<Lugares />} />
+  <Route path="areas" element={<Areas />} />
+  <Route path="categorias" element={<Categorias />} />
+  <Route path="bienes" element={<Bienes />} />
+  <Route path="bajas" element={<Bajas />} />
+</Routes>
+
+
+                  </div>
+                </div>
+              </AdminRoute>
+            }
+          />
+
+          {/* Rutas para RESPONSABLE */}
+          <Route
+            path="/responsable/*"
+            element={
+              <ResponsableRoute>
                 <div style={{ display: "flex" }}>
                   <Sidebar />
                   <div style={{ marginLeft: "220px", padding: "40px", width: "100%" }}>
                     <Routes>
-                      <Route path="/" element={<Inicio />} />
-                      <Route path="/areas" element={<Areas />} />
-                      <Route path="/usuarios" element={<Usuarios />} />
-                      <Route path="/categorias" element={<Categorias />} />
-                      <Route path="/lugares" element={<Lugares />} />
-                      <Route path="/marcas" element={<Marcas />} />
-                      <Route path="/modelos" element={<Modelos />} />
-                      <Route path="/tipobien" element={<TipoBien />} />
-                      <Route path="/bienes" element={<Bienes />} /> {/* Nueva ruta */}
-                      <Route path="/bajas" element={<Bajas />} /> {/* Nueva ruta */}
+                      <Route path="bienes" element={<BienesResponsable />} />
+                      <Route path="asignar" element={<BienesResponsable />} />
+                      <Route path="cargo" element={<BienesResponsable />} />
                     </Routes>
                   </div>
                 </div>
-              </ProtectedRoute>
+              </ResponsableRoute>
             }
           />
+
+          {/* Rutas para BECARIO */}
+          <Route
+            path="/becario/*"
+            element={
+              <BecarioRoute>
+                <div style={{ display: "flex" }}>
+                  <Sidebar />
+                  <div style={{ marginLeft: "220px", padding: "40px", width: "100%" }}>
+                    <Routes>
+                      <Route path="bienes" element={<BienesBecario />} />
+                      <Route path="asignar" element={<BienesBecario />} />
+                    </Routes>
+                  </div>
+                </div>
+              </BecarioRoute>
+            }
+          />
+
+          {/* Ruta por defecto */}
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -16,46 +16,37 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
   
-
   const login = async (username, password) => {
     try {
-      const response = await fetch("http://192.168.111.249:8080/auth/login", {
+      const response = await fetch("http://192.168.0.37:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
         mode: "cors",
       });
-  
+
       if (!response.ok) {
         return false;
       }
-  
+
       const data = await response.json();
       const jwtToken = data.token;
-      const userRole = data.role; // Asegúrate de que el backend devuelva el rol
-  
+      const userRole = data.role; 
+
       setUser({ username, role: userRole });
       setToken(jwtToken);
       localStorage.setItem("token", jwtToken);
-      localStorage.setItem("role", userRole); // Guardamos el rol en localStorage
-  
+      localStorage.setItem("role", userRole);
+
       return true;
     } catch (error) {
       console.error(error.message);
       return false;
     }
   };
-  
-  
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
-  };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login }}>
       {children}
     </AuthContext.Provider>
   );

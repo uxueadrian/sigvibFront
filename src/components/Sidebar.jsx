@@ -1,46 +1,53 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Importamos useNavigate
-import "./Sidebar.css"; // Agregar estilos básicos
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import "./Sidebar.css";
 
 const Sidebar = () => {
-  const navigate = useNavigate(); // Inicializamos useNavigate
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const handleLogout = () => {
-    // Eliminar el token del almacenamiento local
     localStorage.removeItem("token");
-
-    // Redirigir al login
+    localStorage.removeItem("role");
     navigate("/login");
   };
+
+  const adminLinks = (
+    <>
+      <li><Link to="/admin/dashboard">Dashboard</Link></li>
+      <li><Link to="/admin/usuarios">Usuarios</Link></li>
+      <li><Link to="/admin/lugares">Lugares</Link></li>
+      <li><Link to="/admin/areas">Áreas</Link></li>
+      <li><Link to="/admin/categorias">Categorías</Link></li>
+      <li><Link to="/admin/bienes">Bienes</Link></li>
+      <li><Link to="/admin/bajas">Bajas</Link></li>
+    </>
+  );
+
+  const responsableLinks = (
+    <>
+    <li><Link to="/responsable/bienes">Mis Bienes</Link></li>
+    <li><Link to="/responsable/asignar">Solicitar</Link></li>
+    <li><Link to="/responsable/cargo">Bienes a cargo</Link></li>
+    </>
+  );
+
+  const becarioLinks = (
+    <>
+    <li><Link to="/becario/bienes">Bienes Becario</Link></li>
+    <li><Link to="/becario/asignar">Solicitar</Link></li>
+    </>
+  );
 
   return (
     <div className="sidebar">
       <h2>Menú</h2>
       <ul>
-        <li>
-          <Link to="/">Inicio</Link>
-        </li>
-        <li>
-          <Link to="/usuarios">Usuarios</Link>
-        </li>
-        <li>
-          <Link to="/lugares">Lugares</Link>
-        </li>
-        <li>
-          <Link to="/areas">Areas</Link>
-        </li>
-        <li>
-          <Link to="/categorias">Categorias</Link>
-        </li>
-        <li>
-          <Link to="/bienes">Bienes</Link> {/* Nuevo enlace para Bienes */}
-        </li>
-        <li>
-  <Link to="/bajas">Bajas</Link>
-</li>
-
+        {user?.role === "ROLE_ADMINISTRADOR" && adminLinks}
+        {user?.role === "ROLE_RESPONSABLE" && responsableLinks}
+        {user?.role === "ROLE_BECARIO" && becarioLinks}
       </ul>
-      {/* Agregar el botón de cerrar sesión */}
       <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
     </div>
   );

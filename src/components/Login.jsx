@@ -1,51 +1,37 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError(""); // Limpiar errores previos
-  try {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
     const success = await login(username, password);
     if (success) {
-      navigate("/");
+      const role = localStorage.getItem("role");
+      if (role === "ROLE_ADMINISTRADOR") {
+        navigate("/admin/dashboard");
+      } else if (role === "ROLE_RESPONSABLE") {
+        navigate("/responsable/bienes");
+      } else if (role === "ROLE_BECARIO") {
+        navigate("/becario/bienes");
+      }
     } else {
-      setError("Credenciales incorrectas");
+      alert("Credenciales incorrectas");
     }
-  } catch (err) {
-    setError("Credenciales incorrectas");
-  }
-};
-
+  };
 
   return (
-    <div>
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Entrar</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="username" placeholder="Usuario" />
+      <input type="password" name="password" placeholder="Contraseña" />
+      <button type="submit">Iniciar sesión</button>
+    </form>
   );
 };
 
