@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     return <Navigate to="/login" replace/>;
   }
 
-  if (roleRequerid && user.role !== requiredRole) {
+  if (requiredRole && user.role !== `ROLE_${requiredRole.toUpperCase()}`) {
     return <Navigate to="/login" replace/>; 
   }
 

@@ -10,12 +10,12 @@ export function routersBecario () {
         <Routes>
             <Route path="/login" element= { <Login/> } />
             <Route path="/bienesBecario" element={
-                <ProtectedRoute requiredRole="becario">
+                <ProtectedRoute requiredRole="BECARIO">
                     <BienesBecario/>
                 </ProtectedRoute>
             } />
             <Route path="/solicitarBienBecario" element={
-                <ProtectedRoute requiredRole="becario">
+                <ProtectedRoute requiredRole="BECARIO">
                     <SolicitarBienBecario/>
                 </ProtectedRoute>
             } />

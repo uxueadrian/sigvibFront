@@ -11,13 +11,13 @@ export function routersResponsable () {
             <Route path="/login" element= { <Login/> } />
 
             <Route path="/bienResponsable" element={
-                <ProtectedRoute requiredRole="responsable">
+                <ProtectedRoute requiredRole="RESPONSABLE">
                     <BienesResponsable/>
                 </ProtectedRoute>
             } /> 
 
             <Route path="/solicitarBienResponsable" element={
-                <ProtectedRoute requiredRole="responsable">
+                <ProtectedRoute requiredRole="RESPONSABLE">
                     <SolicitarBienResponsable/>
                 </ProtectedRoute>
             } />

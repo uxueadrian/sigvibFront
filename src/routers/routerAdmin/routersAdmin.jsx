@@ -15,37 +15,37 @@ export function routersAdmin(){
         <Routes>
                 <Route path="/login" element={ <Login/> } />
                 <Route path="/dashboardAdmin" element={ 
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMINISTRADOR">
                         <DashboardAdmin/> 
                     </ProtectedRoute>
                 } />
 
                 <Route path="/consultarUsuarios" element = { 
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMINISTRADOR">
                         <ConsultarUsuarios/> 
                     </ProtectedRoute>
                 } />
 
                 <Route path="/consultarLugares" element= { 
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMINISTRADOR">
                         <ConsultarLugares/> 
                     </ProtectedRoute>
                 } />
 
                 <Route path="/consultarBien" element={ 
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole="ADMINISTRADOR">
                         <ConsultarBien/> 
                     </ProtectedRoute>
                 } />
 
                 <Route path="/consultarAreasComunes" element={ 
-                    <ProtectedRoute requiredRole="admin">       
+                    <ProtectedRoute requiredRole="ADMINISTRADOR"> 
                         <ConsultarAreasComunes/> 
                     </ProtectedRoute>           
                 } />
 
                 <Route path="/categorias" element = { 
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredRole="ADMINISTRADOR">
                         <Categorias/> 
                     </ProtectedRoute>
                 }/>

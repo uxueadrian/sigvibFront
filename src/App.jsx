@@ -13,17 +13,17 @@ function App () {
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/dashboardAdmin" element={
-                <ProtectedRoute requiredRole="ROLE_ADMINISTRADOR">
+                <ProtectedRoute requiredRole="ADMINISTRADOR">
                     <DashboardAdmin />
                 </ProtectedRoute>
             } />
             <Route path="/bienesBecario" element={
-                <ProtectedRoute requiredRole="ROLE_BECARIO">
+                <ProtectedRoute requiredRole="BECARIO">
                     <BienesBecario />
                 </ProtectedRoute>
             } />
             <Route path="/bienesResponsable" element={
-                <ProtectedRoute requiredRole="ROLE_RESPONSABLE">
+                <ProtectedRoute requiredRole="RESPONSABLE">
                     <BienResponsable />
                 </ProtectedRoute>
             } />
