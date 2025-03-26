@@ -6,7 +6,10 @@ import { AuthContext, AuthProvider } from "./context/AuthContext";
 import Areas from "./modules/admin/pages/Areas";
 import Dashboard from "./modules/admin/pages/Dashboard";
 import BienesResponsable from "./modules/responsable/pages/BienesResponsable";
+import CargoResponsable from "./modules/responsable/pages/CargoResponsable";
 import BienesBecario from "./modules/becario/pages/BienesBecario";
+import SolicitarBienBecario from "./modules/becario/pages/SolicitarBienBecario";
+import SolicitarBienResponsable from "./modules/responsable/pages/SolicitarBienResponsable";
 import Usuarios from "./modules/admin/pages/Usuarios";
 import Categorias from "./modules/admin/pages/Categorias";
 import Lugares from "./modules/admin/pages/Lugares";
@@ -75,8 +78,8 @@ const App = () => {
                   <div style={{ marginLeft: "220px", padding: "40px", width: "100%" }}>
                     <Routes>
                       <Route path="bienes" element={<BienesResponsable />} />
-                      <Route path="asignar" element={<BienesResponsable />} />
-                      <Route path="cargo" element={<BienesResponsable />} />
+                      <Route path="asignar" element={<SolicitarBienResponsable />} />
+                      <Route path="cargo" element={<CargoResponsable />} />
                     </Routes>
                   </div>
                 </div>
@@ -94,7 +97,7 @@ const App = () => {
                   <div style={{ marginLeft: "220px", padding: "40px", width: "100%" }}>
                     <Routes>
                       <Route path="bienes" element={<BienesBecario />} />
-                      <Route path="asignar" element={<BienesBecario />} />
+                      <Route path="asignar" element={<SolicitarBienBecario />} />
                     </Routes>
                   </div>
                 </div>

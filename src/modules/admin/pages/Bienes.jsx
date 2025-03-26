@@ -1,8 +1,10 @@
+// admin/pages/Bienes.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, TextField, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle, Switch, Box, CircularProgress } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import Barcode from 'react-barcode';
+import { Button, Switch } from "@mui/material";
+import BienesTable from "../components/BienesTable";
+import BienesForm from "../components/BienesForm";
+import BienesBajaDialog from "../components/BienesBajaDialog";
 
 const Bienes = () => {
   const [bienes, setBienes] = useState([]);
@@ -29,7 +31,7 @@ const Bienes = () => {
     axios.get("http://localhost:8080/bienes")
       .then(response => {
         const bienesData = response.data.result
-          .filter(bien => bien.status) // Filtrar solo bienes con status true
+          .filter(bien => bien.status)
           .map(bien => ({
             ...bien,
             id: bien.idBien,
@@ -47,7 +49,7 @@ const Bienes = () => {
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/usuarios/lugares-sin-usuarios")
+    axios.get("http://localhost:8080/lugares")
       .then(response => setLugares(response.data.result))
       .catch(error => console.error("Error al obtener lugares:", error));
   }, []);
@@ -56,11 +58,9 @@ const Bienes = () => {
     axios.get("http://localhost:8080/tipo-bien")
       .then(response => setTiposBien(response.data.result))
       .catch(error => console.error("Error al obtener tipo bien:", error));
-
     axios.get("http://localhost:8080/modelo")
       .then(response => setModelos(response.data.result))
       .catch(error => console.error("Error al obtener modelos:", error));
-
     axios.get("http://localhost:8080/marca")
       .then(response => setMarcas(response.data.result))
       .catch(error => console.error("Error al obtener marcas:", error));
@@ -74,7 +74,7 @@ const Bienes = () => {
     const bienFormateado = {
       nSerie: nuevoBien.nSerie,
       idTipoBien: parseInt(nuevoBien.idTipo),
-      idUsuario: 3, // Ajusta según corresponda
+      idUsuario: 3,
       status: true,
       idModelo: parseInt(nuevoBien.idModelo),
       idMarca: parseInt(nuevoBien.idMarca),
@@ -94,13 +94,7 @@ const Bienes = () => {
 
   const handleDarDeBaja = () => {
     if (!selectedBien || !motivoBaja.trim()) return;
-
-    const bajaData = {
-      idBien: selectedBien.id,
-      motivo: motivoBaja,
-      fecha: new Date().toISOString()
-    };
-
+    const bajaData = { idBien: selectedBien.id, motivo: motivoBaja, fecha: new Date().toISOString() };
     axios.post("http://localhost:8080/bajas", bajaData)
       .then(() => {
         setBienes(bienes.filter(bien => bien.id !== selectedBien.id));
@@ -111,41 +105,6 @@ const Bienes = () => {
       .catch(error => console.error("Error al dar de baja:", error.response?.data || error.message));
   };
 
-  const columns = [
-    {
-      field: "codigoBarras",
-      headerName: "Código de Barras",
-      width: 180,
-      renderCell: (params) => <Barcode value={params.value} />,
-    },
-    { field: "nSerie", headerName: "Número de Serie", width: 180 },
-    { field: "tipoBien", headerName: "Tipo de Bien", width: 180 },
-    { field: "modelo", headerName: "Modelo", width: 180 },
-    { field: "marca", headerName: "Marca", width: 180 },
-    { field: "lugar", headerName: "Lugar", width: 180 },
-    {
-      field: "imagen", headerName: "Imagen", width: 180,
-      renderCell: (params) => <img src={params.value} alt="modelo" style={{ width: "100px", height: "auto" }} />
-    },
-    {
-      field: "actions",
-      headerName: "Acciones",
-      width: 150,
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            setSelectedBien(params.row);
-            setOpenBaja(true);
-          }}
-        >
-          Dar de Baja
-        </Button>
-      )
-    }
-  ];
-
   return (
     <div style={{ padding: "20px", minHeight: "100vh", backgroundColor: darkMode ? "#1E1E1E" : "#F3F4F6" }}>
       <h1 style={{ color: darkMode ? "#AED581" : "#7CB342" }}>Bienes</h1>
@@ -153,125 +112,9 @@ const Bienes = () => {
         <Button variant="contained" color="primary" onClick={() => setOpen(true)}>Agregar Bien</Button>
         <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
       </div>
-
-      <Box sx={{ height: 400, width: "100%", margin: "20px auto" }}>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <DataGrid
-            rows={bienes}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            autoHeight
-            sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: darkMode ? "#333" : "#6A1B9A",
-                color: "#FFF",
-              },
-              "& .MuiDataGrid-row": {
-                backgroundColor: darkMode ? "#1E1E1E" : "#FFF",
-              },
-              "& .MuiDataGrid-footerContainer": {
-                backgroundColor: darkMode ? "#333" : "#6A1B9A",
-                color: "#FFF",
-              },
-            }}
-          />
-        )}
-      </Box>
-
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Agregar Bien</DialogTitle>
-        <DialogContent>
-          <TextField label="Número de Serie" name="nSerie" fullWidth onChange={handleChange} margin="dense" />
-          <TextField
-            select
-            label="Tipo de Bien"
-            name="idTipo"
-            value={nuevoBien.idTipo}
-            fullWidth
-            onChange={handleChange}
-            margin="dense"
-          >
-            {tiposBien.map(tipo => (
-              <MenuItem key={tipo.idTipo} value={tipo.idTipo}>{tipo.nombre}</MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            label="Modelo"
-            name="idModelo"
-            value={nuevoBien.idModelo}
-            fullWidth
-            onChange={handleChange}
-            margin="dense"
-          >
-            {modelos.map(modelo => (
-              <MenuItem key={modelo.idModelo} value={modelo.idModelo}>{modelo.nombreModelo}</MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            label="Marca"
-            name="idMarca"
-            value={nuevoBien.idMarca}
-            fullWidth
-            onChange={handleChange}
-            margin="dense"
-          >
-            {marcas.map(marca => (
-              <MenuItem key={marca.idmarca} value={marca.idmarca}>{marca.nombre}</MenuItem>
-            ))}
-          </TextField>
-
-<TextField
-  select
-  label="Lugar Asignado"
-  name="idLugar"
-  value={nuevoBien.idLugar}
-  fullWidth
-  onChange={handleChange}
-  margin="dense"
->
-  {lugares.length === 0 ? (
-    <MenuItem disabled>Cargando Lugares...</MenuItem>
-  ) : (
-    lugares.map(lugar => (
-      <MenuItem key={lugar.idlugar} value={lugar.idlugar}>
-        {lugar.lugar}
-      </MenuItem>
-    ))
-  )}
-</TextField>
-
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancelar</Button>
-          <Button onClick={handleSubmit} color="primary">Guardar</Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={openBaja} onClose={() => setOpenBaja(false)}>
-  <DialogTitle>Dar de Baja</DialogTitle>
-  <DialogContent>
-    <TextField
-      label="Motivo de Baja"
-      fullWidth
-      multiline
-      rows={4}
-      value={motivoBaja}
-      onChange={(e) => setMotivoBaja(e.target.value)}
-      margin="dense"
-    />
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setOpenBaja(false)}>Cancelar</Button>
-    <Button onClick={handleDarDeBaja} color="primary">
-      Confirmar Baja
-    </Button>
-  </DialogActions>
-</Dialog>
-
+      <BienesTable bienes={bienes} loading={loading} darkMode={darkMode} setSelectedBien={setSelectedBien} setOpenBaja={setOpenBaja} />
+      <BienesForm open={open} handleClose={() => setOpen(false)} handleSubmit={handleSubmit} handleChange={handleChange} nuevoBien={nuevoBien} tiposBien={tiposBien} modelos={modelos} marcas={marcas} lugares={lugares} />
+      <BienesBajaDialog openBaja={openBaja} handleClose={() => setOpenBaja(false)} handleDarDeBaja={handleDarDeBaja} motivoBaja={motivoBaja} setMotivoBaja={setMotivoBaja} />
     </div>
   );
 };

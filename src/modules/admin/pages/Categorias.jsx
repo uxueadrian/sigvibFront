@@ -7,15 +7,54 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { Button, Modal, TextField, Box, Typography, CircularProgress } from "@mui/material";
 
+const UploadImage = ({ setFoto, nombre, handleCreate }) => {
+  const handleUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "emyrouge");
+
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dxow9lddk/image/upload",
+        formData
+      );
+
+      const imageUrl = response.data.secure_url;
+      console.log("Imagen subida a Cloudinary:", imageUrl);
+      setFoto(imageUrl);
+
+      // Si el usuario ya ingresó un nombre, crear automáticamente el modelo
+      if (nombre.trim()) {
+        handleCreate(imageUrl);
+      }
+    } catch (error) {
+      console.error("Error al subir la imagen", error);
+    }
+  };
+
+  return <input type="file" accept="image/*" onChange={handleUpload} />;
+};
+
+
+
 const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) => {
   const { token } = useContext(AuthContext);
   const [nombre, setNombre] = useState("");
+  const [foto, setFoto] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleCreate = async () => {
+  const handleCreate = async (imageUrl = foto) => {
     if (nombre.trim() === "") {
       setError("El nombre es obligatorio.");
+      return;
+    }
+
+    if (entidad === "Modelo" && !imageUrl) {
+      setError("Debes subir una imagen antes de crear el modelo.");
       return;
     }
 
@@ -30,11 +69,15 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) 
 
       const data =
         entidad === "Modelo"
-          ? { nombreModelo: nombre.trim(), foto: "URL_DEFAULT_O_CAMPO_DE_ENTRADA" }
+          ? { nombreModelo: nombre.trim(), foto: imageUrl }
           : { nombre: nombre.trim(), status: true };
 
+      console.log("Enviando datos al backend:", data);
+
       await axios.post(endpoint, data, { headers });
+
       setNombre("");
+      setFoto(""); // Limpiar imagen después de enviar
       handleClose();
       fetchData();
     } catch (err) {
@@ -51,12 +94,21 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) 
         <Typography variant="h6" component="h2" gutterBottom>
           Crear {entidad}
         </Typography>
-        <TextField fullWidth label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} error={!!error} helperText={error} margin="normal" />
+        <TextField
+          fullWidth
+          label="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          error={!!error}
+          helperText={error}
+          margin="normal"
+        />
+        {entidad === "Modelo" && <UploadImage setFoto={setFoto} nombre={nombre} handleCreate={handleCreate} />}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button variant="outlined" onClick={handleClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button variant="contained" onClick={handleCreate} disabled={loading}>
+          <Button variant="contained" onClick={() => handleCreate()} disabled={loading}>
             {loading ? <CircularProgress size={24} /> : "Crear"}
           </Button>
         </Box>
@@ -64,6 +116,7 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad }) 
     </Modal>
   );
 };
+
 
 const Categorias = () => {
   const { token } = useContext(AuthContext);
@@ -100,32 +153,18 @@ const Categorias = () => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
       await axios.patch(`http://localhost:8080/${endpoint}/cambiar-status/${id}`, {}, { headers });
-      fetchData(); // Refresca la lista después del cambio de estado
+      fetchData();
     } catch (error) {
       console.error(`Error al cambiar estado en ${endpoint}:`, error.response?.data || error.message);
     }
   };
-  
 
   return (
     <>
       <Stack direction="row" spacing={3}>
-        <TipoBien
-          data={tiposBien}
-          loading={loading}
-          onChangeStatus={(id) => handleChangeStatus(id, "tipo-bien")}
-        />
-        <Marcas
-          data={marcas}
-          loading={loading}
-          onChangeStatus={(id) => handleChangeStatus(id, "marca")}
-        />
-        <Modelos
-  data={modelos}
-  loading={loading}
-  onChangeStatus={(id) => handleChangeStatus(id, "modelo")}
-/>
-
+        <TipoBien data={tiposBien} loading={loading} onChangeStatus={(id) => handleChangeStatus(id, "tipo-bien")} />
+        <Marcas data={marcas} loading={loading} onChangeStatus={(id) => handleChangeStatus(id, "marca")} />
+        <Modelos data={modelos} loading={loading} onChangeStatus={(id) => handleChangeStatus(id, "modelo")} />
       </Stack>
 
       <Button variant="contained" onClick={() => setModalOpen("tipo-bien")} sx={{ mt: 2 }}>

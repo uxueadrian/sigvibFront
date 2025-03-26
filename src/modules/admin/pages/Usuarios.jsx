@@ -29,7 +29,7 @@ const Usuarios = () => {
       .then((response) => {
         const usuarios = response.data.result.map((usuario, index) => ({
           ...usuario,
-          id: usuario.idusuario ?? `temp-${index}`, // Usa un índice único temporal si no hay idusuario
+          id: usuario.idusuario ?? `temp-${index}`,
           lugar: usuario.lugar ? usuario.lugar.lugar : "Sin asignar",
           rolNombre: usuario.rol ? usuario.rol.nombre : "Sin rol"
         }));
@@ -38,7 +38,8 @@ const Usuarios = () => {
       })
       .catch((error) => console.error("Error al obtener usuarios:", error))
       .finally(() => setLoading(false));
-  });
+  }, []); // ✅ Se ejecuta solo una vez
+  
   
 
   useEffect(() => {
@@ -47,7 +48,8 @@ const Usuarios = () => {
         setLugares(response.data.result);
       })
       .catch((error) => console.error("Error al obtener lugares:", error));
-  }, []);
+  }, []); // ✅ Se ejecuta solo una vez
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
