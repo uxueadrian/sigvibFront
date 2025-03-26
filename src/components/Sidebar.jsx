@@ -60,7 +60,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
-export default function Sidebar({linksArray}) {
+export default function Sidebar({children ,linksArray}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -135,9 +135,10 @@ export default function Sidebar({linksArray}) {
         
         <Button variant="contained" endIcon={<LogoutIcon/>}>Cerrar sesion</Button>
 
-        <Typography>Cambio de modo:
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography component="span">Cambio de modo:</Typography>
           <ComponentSwitch/>
-        </Typography>
+        </Box>
                 
       </Drawer>
 

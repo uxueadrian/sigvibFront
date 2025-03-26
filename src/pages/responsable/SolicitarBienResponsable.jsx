@@ -1,6 +1,6 @@
 import React from "react";
 import "../../styles/Vista-BR.css"; 
-import { useFetch } from "../../services/useFetch";
+import { responsableLinks } from "../../routers/links";
 import CardComponent from "../../components/Cards";
 import DownloadPDFButton from "../../components/pdf/DownloadPDFButton";
 
@@ -22,6 +22,8 @@ const SolicitarBienResponsable = () => {
     return(
         <div className="container">
             <h1 className="Titulo">Bienes becario</h1>
+
+            <Sidebar linksArray={responsableLinks}/>
 
             <div className="top-section">
                 <DownloadPDFButton data={items}/>

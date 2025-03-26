@@ -21,6 +21,7 @@ export function routersResponsable () {
                     <SolicitarBienResponsable/>
                 </ProtectedRoute>
             } />
+            
         </Routes>
     );
 

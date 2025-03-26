@@ -14,6 +14,7 @@ export function routersAdmin(){
     return(
         <Routes>
                 <Route path="/login" element={ <Login/> } />
+
                 <Route path="/dashboardAdmin" element={ 
                     <ProtectedRoute requiredRole="ADMINISTRADOR">
                         <DashboardAdmin/> 
@@ -49,6 +50,7 @@ export function routersAdmin(){
                         <Categorias/> 
                     </ProtectedRoute>
                 }/>
+                
         </Routes>
     );
 }

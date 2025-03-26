@@ -9,16 +9,19 @@ export function routersBecario () {
     return(
         <Routes>
             <Route path="/login" element= { <Login/> } />
+
             <Route path="/bienesBecario" element={
                 <ProtectedRoute requiredRole="BECARIO">
                     <BienesBecario/>
                 </ProtectedRoute>
             } />
+            
             <Route path="/solicitarBienBecario" element={
                 <ProtectedRoute requiredRole="BECARIO">
                     <SolicitarBienBecario/>
                 </ProtectedRoute>
             } />
+
         </Routes>
     );
 }
