@@ -1,18 +1,19 @@
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import '../styles/login.css';
 import '../styles/stilo.css';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
-import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const {login} = useContext(AuthContext);
+    //const {login} = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const {login} = useAuth();
     const navigate = useNavigate();
 
     const decodeJwt = (token) => {
@@ -55,41 +56,35 @@ const Login = () => {
             });
     
             const data = await response.json();
-
             console.log("Respuesta completa del backend", data);
 
             if (response.ok) {
-                if (data.token) {
-                    const decoded = decodeJwt(data.token);
-                    const role = decoded?.role || decoded?.roles?.[0];
 
-                    if (role) {
-                        login({
-                            token: data.token,
-                            role: role
-                        });
-
-                        console.log("Rol obtenido:", role); 
-
-                        switch(role) {
-                            case "ROLE_ADMINISTRADOR": 
-                                navigate("/dashboardAdmin");
-                                break;
-                            case "ROLE_BECARIO":
-                                navigate("/bienesBecario");
-                                break;
-                            case "ROLE_RESPONSABLE":
-                                navigate("/bienesResponsable");
-                                break;
-                            default: 
-                                setError(`Rol no reconocido: ${role}`);
-                        }
-                    } else {
-                        setError("El token no contiene información de rol");
-                    }
-                } else {
-                    setError("La respuesta no incluye token");
+                if (!data.token || !data.role || !data.idUsuario) {
+                    throw new Error("Datos de autenticación incompletos");
                 }
+
+                login({
+                    token: data.token,
+                    role: data.role,
+                    username: username,
+                    idUsuario: data.idUsuario
+                }, navigate);
+
+                switch(data.role) {
+                    case "ROLE_ADMINISTRADOR": 
+                        navigate("/dashboardAdmin");
+                        break;
+                    case "ROLE_BECARIO":
+                        navigate("/bienesBecario");
+                        break;
+                    case "ROLE_RESPONSABLE":
+                        navigate("/bienesResponsable");
+                        break;
+                    default: 
+                        setError(`Rol no reconocido: ${role}`);
+                }
+
             } else {
                 setError(data.message || "Error en credenciales");
             }

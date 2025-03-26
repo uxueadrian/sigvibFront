@@ -1,18 +1,22 @@
 import React from "react";
 import "../../styles/Vista-BR.css"; 
+import "../../styles/Vista.css";
 import Sidebar from "../../components/Sidebar";
 import {becarioLinks} from "../../routers/links";
 import CardComponent from "../../components/Cards";
 import DownloadPDFButton from "../../components/pdf/DownloadPDFButton";
 
+import {useAuth} from "../../context/AuthContext";
+
 const SolicitarBienBecario = () => {
-    const items = [
-       
-    ];
+    const items = [];
+    const {user} = useAuth();
 
     return(
         <div className="container">
             <h1 className="Titulo">Bienes ocupados :3</h1>
+
+            {user && <h2 className="Subtitulo"> Bienvenido, {user.username} </h2>}
 
             <Sidebar linksArray={becarioLinks}/>
 

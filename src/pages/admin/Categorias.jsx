@@ -1,11 +1,17 @@
-import "../../styles/Vista.css"; 
 import React, { useState } from "react";
 import { useFetch } from "../../services/useFetch";
 import Nabvar from "../../components/NavBar";
 import Modals from "../../components/Modals";
 import SubirImagen from '../../assets/Subir_Image.svg';
 
+import "../../styles/Vista-BR.css"; 
+import "../../styles/Vista.css";
+import {adminLinks} from "../../routers/links";
+import Sidebar from "../../components/Sidebar";
+import {useAuth} from "../../context/AuthContext";
+
 const Categorias = () => {
+    const {user} = useAuth();
     const {data, loading, error } = useFetch(
         ""
     );  
@@ -17,7 +23,11 @@ const Categorias = () => {
         <div className="container">
             <Nabvar/>
 
-            <h1 className="Titulo">Categorias</h1>
+            <h1 className="Titulo">Categorias ||||</h1>
+
+            {user && <h2 className="Subtitulo"> Bienvenido, {user.username} </h2>}
+            <Sidebar linksArray={adminLinks}/>
+
             <input type="text" placeholder="buscar" className="buscador"/>
 
             <div className="header">

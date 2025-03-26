@@ -19,6 +19,12 @@
     gap: 20px;
 }
 
+.Subtitulo {
+    color: #555;
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
 .child {
     display: flex;
     align-items: center;

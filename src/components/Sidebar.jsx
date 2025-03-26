@@ -7,10 +7,12 @@ import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 import ComponentSwitch from './Switch';
-import LogoutButton from '../context/LogoutButton';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+import {useAuth} from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -63,6 +65,8 @@ const label = { inputProps: { 'aria-label': 'Switch demo' } };
 export default function Sidebar({children ,linksArray}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const {user, logout} = useAuth();
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -70,6 +74,10 @@ export default function Sidebar({children ,linksArray}) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout(navigate); // Aqui estamos cerrando sesion
   };
 
   return (
@@ -87,9 +95,16 @@ export default function Sidebar({children ,linksArray}) {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             SIGVIB
           </Typography>
+
+          {user && (
+            <Typography variant="subtitle2" component="div">
+              {user.username}
+            </Typography>
+          )}
+
         </Toolbar>
       </AppBar>
 
@@ -133,9 +148,15 @@ export default function Sidebar({children ,linksArray}) {
 
         <Divider/>
         
-        <Button variant="contained" endIcon={<LogoutIcon/>}>Cerrar sesion</Button>
+        <Button 
+          variant="contained" 
+          endIcon={<LogoutIcon/>}
+          onClick={handleLogout}
+          sx={{ m: 2 }} >
+          Cerrar sesión
+        </Button>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
           <Typography component="span">Cambio de modo:</Typography>
           <ComponentSwitch/>
         </Box>
@@ -143,7 +164,8 @@ export default function Sidebar({children ,linksArray}) {
       </Drawer>
 
       <Main open={open}>
-        <DrawerHeader />    
+        <DrawerHeader />  
+        {children}  
       </Main>
 
     </Box>

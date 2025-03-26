@@ -4,10 +4,10 @@ import Login from '../src/pages/Login';
 
 import DashboardAdmin from '../src/pages/admin/DashboardAdmin';
 import ConsultarAreasComunes from "../src/pages/admin/ConsultarAreasComunes";
-import ConsultarBien from "../src/pages/admin/ConsultarAreasComunes";
-import ConsultarLugares from "../src/pages/admin/ConsultarAreasComunes";
-import ConsultarUsuarios from "../src/pages/admin/ConsultarAreasComunes";
-import Categorias from "../src/pages/admin/ConsultarAreasComunes";
+import ConsultarBien from "../src/pages/admin/ConsultarBien";
+import ConsultarLugares from "../src/pages/admin/ConsultarLugares";
+import ConsultarUsuarios from "../src/pages/admin/ConsultarUsuarios";
+import Categorias from "../src/pages/admin/Categorias";
 
 import BienesBecario from '../src/pages/becario/BienesBecario';
 import SolicitarBienBecario from "../src/pages/becario/SolicitarBienBecario";
