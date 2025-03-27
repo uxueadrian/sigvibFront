@@ -1,173 +1,77 @@
-import React from 'react';
-import {NavLink} from 'react-router-dom';
-import {Box, Drawer, Divider, IconButton, Toolbar, Typography, CssBaseline, Button} from "@mui/material";
-import { styled, useTheme } from '@mui/material/styles';
-import MuiAppBar from '@mui/material/AppBar';
-
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-import ComponentSwitch from './Switch';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ComponentSwitch from './Switch';
 
-import {useAuth} from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import "../styles/ComponenteSidebar.css";
 
-const drawerWidth = 240;
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginLeft: `-${drawerWidth}px`,
-      ...(open && {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      }),
-
-      width: '100%',
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '80px 20px 20px', // Ajuste para el AppBar
-    }),
-);
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-  })(({ theme, open }) => ({
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: `${drawerWidth}px`,
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    }),
-}));
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-}));
-
-const label = { inputProps: { 'aria-label': 'Switch demo' } };
-
-export default function Sidebar({children ,linksArray}) {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const {user, logout} = useAuth();
+const Sidebar = ({ children, linksArray }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
   const handleLogout = () => {
-    logout(navigate); // Aqui estamos cerrando sesion
+    logout(navigate);
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={[{mr: 2, }, open && { display: 'none' }, ]} >
-            <MenuIcon />
-          </IconButton>
-
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            SIGVIB
-          </Typography>
-          
-        </Toolbar>
-      </AppBar>
-
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}> 
-
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-
-        <Divider />
-
-        <Box sx={{ width: 240, bgcolor: "background.paper", p: 2 }}>
+    <div className="sidebar-layout">
+      {/* Sidebar */}
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <button className="close-btn" onClick={() => setIsOpen(false)}>
+            <ChevronLeftIcon />
+          </button>
+        </div>
+        
+        <nav className="sidebar-nav">
           {linksArray.map(({ icon, label, to }) => (
             <NavLink
               to={to}
               key={label}
-              style={{ textDecoration: "none", color: "inherit" }}
+              className={({ isActive }) => 
+                `nav-link ${isActive ? 'active' : ''}`
+              }
             >
-              <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
-                {icon}
-                <Typography variant="body1" sx={{ ml: 2 }}>
-                  {label}
-                </Typography>
-              </Box>
+              {icon}
+              <span>{label}</span>
             </NavLink>
           ))}
-        </Box>
-
-        <Divider/>
+        </nav>
         
-        <Button 
-          variant="contained" 
-          endIcon={<LogoutIcon/>}
-          onClick={handleLogout}
-          sx={{ m: 2 }} >
-          Cerrar sesión
-        </Button>
+        <div className="sidebar-footer">
+          <button className="logout-btn" onClick={handleLogout}>
+            <LogoutIcon style={{ fontSize: '1.1rem' }} />
+            <span>Cerrar sesión</span>
+          </button>
+          <div className="theme-switch">
+            <span>Cambio de modo:</span>
+            <ComponentSwitch />
+          </div>
+        </div>
+      </aside>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
-          <Typography component="span">Cambio de modo:</Typography>
-          <ComponentSwitch/>
-        </Box>
-                
-      </Drawer>
-
-      <Main open={open}>
-        <DrawerHeader />  
-        {children}  
-      </Main>
-
-    </Box>
+      {/* Main Content */}
+      <div className={`main-content ${isOpen ? 'sidebar-open' : ''}`}>
+        {/* Mobile Header */}
+        <header className="mobile-header">
+          <button className="menu-btn" onClick={() => setIsOpen(true)}>
+            <MenuIcon />
+          </button>
+          <h1>SIGVIB</h1>
+        </header>
+        
+        {/* Page Content */}
+        <div className="page-content">
+          {children}
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default Sidebar;
 
