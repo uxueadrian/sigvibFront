@@ -7,11 +7,13 @@ import Areas from "./modules/admin/pages/Areas";
 import Categorias from "./modules/admin/pages/Categorias";
 import TipoBien from "./modules/admin/pages/TipoBien";
 import Modelos from "./modules/admin/pages/Modelos";
+import BienesChart from "./components/BienesChart";
+import Dashboard from "./modules/admin/pages/Dashboard";
 
 
 
-// Simulación de páginas
-const Inicio = () => <h1>Bienvenido al Inicio</h1>;
+
+
 
 const Configuracion = () => <h1>Configuración</h1>;
 
@@ -23,10 +25,10 @@ const App = () => {
         <Sidebar />
         <div style={{ marginLeft: "220px", padding: "40px", width: "100%" }}>
           <Routes>
-            <Route path="/" element={<Inicio />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="usuarios" element={<Usuarios />} />
             <Route path="/lugares" element={<Lugares />} />
-            <Route path="/areas" element={<Configuracion />} />
+            <Route path="/areas" element={<Areas />} />
             <Route path="/categorias" element={<Categorias />} />
             <Route path="/tipobien" element={<TipoBien />} />
             <Route path="/modelos" element={<Modelos />} />

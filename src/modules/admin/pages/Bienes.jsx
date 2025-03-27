@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CustomTable from "../../../components/CustomTable";
 
-const Usuarios = () => {
+const Bienes = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Definir las columnas
   const columnas = [
-    { field: "rol", headerName: "Rol", width: 120 },
+    { field: "modelo", headerName: "Modelo", width: 120 },
     { field: "idUsuario", headerName: "ID", width: 100 },
     { field: "nombre", headerName: "Nombre", width: 200 },
     { field: "usuario", headerName: "Usuario", width: 200 },
@@ -41,10 +41,10 @@ const Usuarios = () => {
 
   return (
     <div>
-      <h2>Listado de Usuarios</h2>
-      <CustomTable columns={columnas} rows={usuarios} loading={loading} />
+      <h2>Listado de Bienes</h2>
+      <CustomTable columns={columnas} rows={bienes} loading={loading}  pagina={Bienes} />
     </div>
   );
 };
 
-export default Usuarios;
+export default Bienes;
