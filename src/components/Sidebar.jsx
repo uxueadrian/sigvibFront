@@ -32,6 +32,11 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
         }),
         marginLeft: 0,
       }),
+
+      width: '100%',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '80px 20px 20px', // Ajuste para el AppBar
     }),
 );
 
@@ -98,13 +103,7 @@ export default function Sidebar({children ,linksArray}) {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             SIGVIB
           </Typography>
-
-          {user && (
-            <Typography variant="subtitle2" component="div">
-              {user.username}
-            </Typography>
-          )}
-
+          
         </Toolbar>
       </AppBar>
 

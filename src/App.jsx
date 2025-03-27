@@ -17,6 +17,9 @@ import SolicitarBienResponsable from '../src/pages/responsable/SolicitarBienResp
 
 import ProtectedRoute from '../src/context/ProtectedRoute';
 
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import "../src/styles/global.css";
+
 function App () {
     return (
       <Router>

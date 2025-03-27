@@ -1,0 +1,107 @@
+/* Reset mejorado */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
+html {
+    font-size: 16px;
+}
+  
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+  
+  /* Estilos base para elementos comunes */
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+  
+h2 {
+    font-size: 1.75rem;
+}
+  
+h3 {
+    font-size: 1.5rem;
+}
+  
+  /* Contenedores */
+.container {
+    width: 100%;
+    padding: 1rem;
+}
+  
+  /* Formularios y inputs */
+input, select, button {
+    font-family: inherit;
+    font-size: 1rem;
+}
+  
+input[type="text"],
+input[type="password"],
+select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 500px;
+    transition: border 0.3s;
+}
+  
+input:focus, select:focus {
+    outline: none;
+    border-color: #7033FF;
+    box-shadow: 0 0 0 2px rgba(112, 51, 255, 0.2);
+}
+  
+  /* Botones */
+button {
+    padding: 0.75rem 1.5rem;
+    background-color: #7033FF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+  
+button:hover {
+    background-color: #5a2bd6;
+}
+  
+  /* Utilidades */
+.flex {
+    display: flex;
+}
+  
+.flex-col {
+    flex-direction: column;
+}
+  
+.gap-2 {
+    gap: 0.5rem;
+}
+  
+.gap-4 {
+    gap: 1rem;
+}
+  
+.mt-4 {
+    margin-top: 1rem;
+}
+  
+.mb-4 {
+    margin-bottom: 1rem;
+}
+

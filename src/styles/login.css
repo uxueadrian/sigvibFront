@@ -1,3 +1,30 @@
-* {
-    background-color: goldenrod;
+/* Fondo y contenedor principal */
+body {
+    background-color: #0D1A2B;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Animación para el wrapper */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -45%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.wrapper {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+

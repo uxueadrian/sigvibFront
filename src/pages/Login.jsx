@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import '../styles/login.css';
-import '../styles/stilo.css';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from "react-router-dom";
+
+import '../styles/login.css';
+import '../styles/stilo.css';
 
 const Login = () => {
     //const {login} = useContext(AuthContext);
@@ -97,43 +98,46 @@ const Login = () => {
         }
     };
 
-    return(
-        <div className="wrapper">
-            <form onSubmit={handleSubmit}>
-                <h1>Bienvenido</h1>
+    return (
+        <div className="login-container"> {/* Nuevo contenedor */}
+            <div className="wrapper">
+                <form onSubmit={handleSubmit}>
+                    <h1>Bienvenido</h1>
                     
                     <div className="input-box">
                         <input 
-                          type="text" 
-                          placeholder="Usuario" 
-                          value={username} 
-                          onChange={(e)=> setUsername(e.target.value)}  
-                          required/>
+                            type="text" 
+                            placeholder="Usuario" 
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)}  
+                            required
+                        />
                         <PersonIcon className="icon" />
                     </div>
-
+    
                     <div className="input-box">
                         <input 
-                          type="password" 
-                          placeholder="Contraseña" 
-                          value={password}
-                          onChange={(e)=> setPassword(e.target.value)}
-                          required/>
-                        <LockIcon className="icon"/>
+                            type="password" 
+                            placeholder="Contraseña" 
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <LockIcon className="icon" />
                     </div>
-
+    
                     <div className="remember-forgot">
-                        <label> </label>
-                        <a href="">Olvidaste tu contraseña</a> 
+                        <a href="#">Olvidaste tu contraseña?</a> 
                     </div>
-
+    
                     <button type="submit" disabled={loading}>
-                      {loading ? "Cargando..." : "Login"}
+                        {loading ? "Cargando..." : "Iniciar Sesión"}
                     </button>
-                    {error && <p style={{color: "red"}}> {error} </p>}
-            
-            </form>     
-        </div>    
+                    
+                    {error && <div className="error-message">{error}</div>}
+                </form>     
+            </div>
+        </div>
     );
 
 };
