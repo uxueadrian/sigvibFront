@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import "./Login.css"; // Archivo de estilos externo
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -27,13 +28,15 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="username" placeholder="Usuario" />
-      <input type="password" name="password" placeholder="Contraseña" />
-      <button type="submit">Iniciar sesión</button>
-    </form>
+    <div className="login-container">
+      <h2 className="login-title">Iniciar sesión</h2>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <input type="text" name="username" placeholder="Usuario" className="login-input" />
+        <input type="password" name="password" placeholder="Contraseña" className="login-input" />
+        <button type="submit" className="login-button">Iniciar sesión</button>
+      </form>
+    </div>
   );
 };
 
-// ✅ Asegúrate de exportarlo correctamente
 export default Login;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Snackbar, Alert } from "@mui/material";
 import axios from "axios";
 
+
 const EditarBienDialog = ({ open, onClose, bien, tiposBien, modelos, marcas, lugares, onEditSuccess }) => {
   const [editedBien, setEditedBien] = useState(bien);
   const [isLoading, setIsLoading] = useState(false);

@@ -26,15 +26,13 @@ const BienesBecario = ({ user }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Obtener el idLugar desde el usuario o localStorage
     const idLugar = user?.idLugar || localStorage.getItem("idLugar");
 
-    // Función para obtener los bienes asociados al idLugar
     const fetchBienes = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/lugares/${idLugar}/bienes`);
             if (response.status === 200 && response.data.type === "SUCCESS") {
-                setBienes(response.data.result); // Acceder correctamente a la data
+                setBienes(response.data.result);
             } else {
                 setError("No se encontraron bienes.");
             }
@@ -45,6 +43,20 @@ const BienesBecario = ({ user }) => {
         }
     };
 
+    const eliminarLugarDeBien = async (idBien) => {
+        try {
+            const response = await axios.patch(`http://localhost:8080/bienes/${idBien}/eliminar-lugar`);
+            if (response.status === 200 && response.data.type === "SUCCESS") {
+                alert("Lugar eliminado exitosamente del bien.");
+                fetchBienes(); // Refrescar la lista de bienes
+            } else {
+                alert("No se pudo eliminar el lugar del bien.");
+            }
+        } catch (error) {
+            alert("Error al eliminar el lugar del bien.");
+        }
+    };
+
     useEffect(() => {
         if (!idLugar) {
             setError("No se encontró el ID del lugar.");
@@ -52,29 +64,15 @@ const BienesBecario = ({ user }) => {
             return;
         }
 
-        fetchBienes(); // Ejecutar la función para obtener los bienes
+        fetchBienes();
     }, [idLugar]);
 
     return (
-        <div style={{
-            backgroundColor: "rgb(255, 207, 74)",
-            fontFamily: "system-ui, Avenir, Helvetica, Arial, sans-serif",
-            padding: "40px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px"
-        }}>
-            <h1 style={{ marginBottom: "10px", color: "#B0E338" }}>Bienes Becario</h1>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "40px", marginBottom: "5px" }}>
-                <button style={{ background: "#7033FF", borderRadius: "4px", height: "40px", width: "140px", color: "white", border: "none", cursor: "pointer" }}>Descargar PDF</button>
-                <input type="text" placeholder="Buscar" style={{ width: "300px", height: "40px", padding: "5px", border: "1px solid #ddd", borderRadius: "4px" }} />
-            </div>
-
+        <div style={{ padding: "40px", backgroundColor: "rgb(255, 207, 74)" }}>
+            <h1>Bienes Becario</h1>
             {loading && <p>Cargando bienes...</p>}
             {error && <p>{error}</p>}
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "flex-start" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
                 {bienes.length > 0 ? (
                     bienes.map((bien) => (
                         <div key={bien.idBien} style={{ flex: "1 1 calc(20% - 20px)", maxWidth: "calc(20% - 20px)" }}>
@@ -83,6 +81,20 @@ const BienesBecario = ({ user }) => {
                                 title={bien.tipoBien.nombre}
                                 description={`Marca: ${bien.marca.nombre} | Modelo: ${bien.modelo.nombreModelo}`}
                             />
+                            <button
+                                style={{
+                                    marginTop: "10px",
+                                    padding: "8px 12px",
+                                    backgroundColor: "#FF5733",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => eliminarLugarDeBien(bien.idBien)}
+                            >
+                                Eliminar Lugar
+                            </button>
                         </div>
                     ))
                 ) : (
@@ -94,3 +106,4 @@ const BienesBecario = ({ user }) => {
 };
 
 export default BienesBecario;
+

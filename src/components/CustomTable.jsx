@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Switch, CssBaseline, FormControlLabel, Box, CircularProgress } from "@mui/material";
+import { Button, Switch, CssBaseline, Box, CircularProgress, Typography, Paper } from "@mui/material";
 
 // Define dos temas: claro y oscuro
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: "#673AB7" }, // Color principal (morado)
+    primary: { main: "#673AB7" }, // Morado
     secondary: { main: "#7CB342" }, // Verde
     background: { default: "#F3F4F6", paper: "#FFFFFF" },
     text: { primary: "#333" },
@@ -24,51 +24,103 @@ const darkTheme = createTheme({
   },
 });
 
-
-
-const CustomTable = ({columns, rows, loading, pagina}) => {
+const CustomTable = ({ columns, rows, loading, pagina }) => {
   const [darkMode, setDarkMode] = useState(false);
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <CssBaseline /> {/* Asegura que el fondo cambie con el tema */}
-      <div style={{ padding: "20px", minHeight: "100vh", backgroundColor: darkMode ? "#1E1E1E" : "#F3F4F6" }}>
-        <h1 style={{ color: darkMode ? "#AED581" : "#7CB342" }}>{pagina}</h1>
-
-        {/* Botón para agregar usuario y switch para cambiar tema */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-          <Button variant="contained" color="primary">Agregar {pagina}</Button>
-          <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
-        </div>
-
-        {/* Tabla de usuarios */}
-        <Box sx={{ height: 400, width: "100%", margin: "20px auto" }}>
-        {loading ? (
-        <CircularProgress /> // Muestra un loader mientras se cargan los datos
-      ) : (
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            autoHeight
+      <CssBaseline />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          backgroundColor: (theme) => theme.palette.background.default,
+          padding: "20px",
+        }}
+      >
+        <Paper
+          elevation={5}
+          sx={{
+            width: "90%",
+            maxWidth: "1200px",
+            padding: "30px",
+            borderRadius: "15px",
+            backgroundColor: (theme) => theme.palette.background.paper,
+          }}
+        >
+          <Typography
+            variant="h4"
+            align="center"
             sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: darkMode ? "#333" : "#6A1B9A",
-                color: "#FFF",
-              },
-              "& .MuiDataGrid-row": {
-                backgroundColor: darkMode ? "#1E1E1E" : "#FFF",
-              },
-              "& .MuiDataGrid-footerContainer": {
-                backgroundColor: darkMode ? "#333" : "#6A1B9A",
-                color: "#FFF",
-              },
+              color: (theme) => theme.palette.secondary.main,
+              marginBottom: "20px",
+              fontWeight: "bold",
             }}
-          />
-        )}
-        </Box>
-      </div>
+          >
+            Gestión de {pagina}
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ borderRadius: "10px", fontWeight: "bold", boxShadow: 3 }}
+            >
+              Agregar {pagina}
+            </Button>
+            <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
+          </Box>
+
+          <Box sx={{ height: 450, width: "100%" }}>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                autoHeight
+                sx={{
+                  backgroundColor: (theme) => theme.palette.background.paper,
+                  borderRadius: "10px",
+                  boxShadow: 3,
+                  "& .MuiDataGrid-columnHeaders": {
+                    backgroundColor: darkMode ? "#333" : "#6A1B9A",
+                    color: "#FFF",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    color: (theme) => theme.palette.text.primary,
+                    fontSize: "14px",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    backgroundColor: darkMode ? "#333" : "#6A1B9A",
+                    color: "#FFF",
+                    fontWeight: "bold",
+                    borderBottomLeftRadius: "10px",
+                    borderBottomRightRadius: "10px",
+                  },
+                }}
+              />
+            )}
+          </Box>
+        </Paper>
+      </Box>
     </ThemeProvider>
   );
 };
