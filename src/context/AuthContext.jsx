@@ -23,11 +23,7 @@ export const AuthProvider = ({ children }) => {
 
 const login = async (username, password) => {
   try {
-<<<<<<< Updated upstream
       const response = await fetch("http://192.168.107.185:8080/auth/login", {
-=======
-      const response = await fetch("http://localhost:8080/auth/login", {
->>>>>>> Stashed changes
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password }),

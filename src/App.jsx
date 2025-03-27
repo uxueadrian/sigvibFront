@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
+import Sidebar from "./components/Sidebar";
 import { AuthContext, AuthProvider } from "./context/AuthContext";  
 import Areas from "./modules/admin/pages/Areas";
 import Dashboard from "./modules/admin/pages/Dashboard";
@@ -17,7 +18,6 @@ import Modelos from "./modules/admin/pages/Modelos";
 import TipoBien from "./modules/admin/pages/TipoBien";
 import Bajas from "./modules/admin/pages/Bajas"; 
 import Bienes from "./modules/admin/pages/Bienes"; // Importa la nueva pantalla
-import Sidebar from "./components/SideBar";
 
 const Inicio = () => <h1>Bienvenido al Inicio</h1>;
 
