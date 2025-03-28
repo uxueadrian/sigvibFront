@@ -53,32 +53,38 @@ const BienesResponsable = ({ user }) => {
         <div>
             {loading && <p>Cargando bienes...</p>}
             {error && <p>{error}</p>}
-            {bienes.length > 0 && (
-                <ul>
-                    {bienes.map((bien) => (
-                        <li key={bien.idBien} style={{ marginBottom: "20px" }}>
-                            <img src={bien.modelo.foto} alt={bien.tipoBien.nombre} width={100} />
-                            <p>{bien.tipoBien.nombre}</p>
-                            <p>Marca: {bien.marca.nombre}</p>
-                            <p>Modelo: {bien.modelo.nombreModelo}</p>
-                            <button
-                                style={{
-                                    marginTop: "10px",
-                                    padding: "8px 12px",
-                                    backgroundColor: "#FF5733",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                }}
-                                onClick={() => eliminarLugarDeBien(bien.idBien)}
-                            >
-                                Eliminar Lugar
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center", marginTop: "20px" }}>
+                {bienes.map((bien) => (
+                    <div key={bien.idBien} style={{
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        padding: "15px",
+                        textAlign: "center",
+                        boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.1)",
+                        width: "calc(25% - 20px)",
+                        minWidth: "200px"
+                    }}>
+                        <img src={bien.modelo.foto} alt={bien.tipoBien.nombre} width={100} style={{ borderRadius: "4px" }} />
+                        <h3>{bien.tipoBien.nombre}</h3>
+                        <p><strong>Marca:</strong> {bien.marca.nombre}</p>
+                        <p><strong>Modelo:</strong> {bien.modelo.nombreModelo}</p>
+                        <button
+                            style={{
+                                marginTop: "10px",
+                                padding: "8px 12px",
+                                backgroundColor: "#FF5733",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => eliminarLugarDeBien(bien.idBien)}
+                        >
+                            Eliminar Lugar
+                        </button>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
