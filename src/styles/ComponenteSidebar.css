@@ -20,12 +20,34 @@
     transition: transform 0.3s ease;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   }
-  
+
   .sidebar-header {
     padding: 1rem;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Cambiado para alinear el botón a la derecha */
+    align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Estilos para el AppBar */
+  .app-bar {
+    position: fixed;
+    top: 0;
+    left: 240px; /* Igual al ancho del sidebar */
+    right: 0;
+    height: 64px;
+    background-color: #7033FF;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 999; /* Un poco menos que el sidebar */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .app-bar h1 {
+    font-size: 1.25rem;
+    margin: 0;
   }
   
   .close-btn {
@@ -36,6 +58,7 @@
     padding: 0.5rem;
     display: flex;
     align-items: center;
+    margin-left: auto; /* Esto empuja el botón a la derecha */
   }
   
   .sidebar-nav {
@@ -100,6 +123,7 @@
   /* Main Content */
   .main-content {
     margin-left: 240px;
+    padding-top: 80px; /* Espacio para el AppBar */
     transition: margin-left 0.3s ease;
     min-height: 100vh;
   }
@@ -132,7 +156,32 @@
     max-width: 1200px;
     margin: 0 auto;
   }
-  
+
+  .sidebar:not(.open) {
+    transform: translateX(-100%);
+  }
+
+  /* Cuando el sidebar está cerrado */
+  .sidebar:not(.open) + .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar:not(.open) ~ .app-bar {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    display: none;
+  }
+
+
   /* Responsive Styles */
   @media (max-width: 768px) {
     .sidebar {
@@ -153,8 +202,34 @@
     }
     
     .page-content {
-      padding-top: 60px;
+      padding-top: 80px;
     }
+
+    .app-bar {
+      left: 0;
+    }
+  
+    .sidebar.open ~ .app-bar {
+      left: 240px;
+    }
+}
+
+@media (min-width: 769px) {
+  .menu-btn {
+    display: flex !important; /* Forzar visibilidad en desktop */
   }
+  
+  .sidebar:not(.open) ~ .app-bar .menu-btn {
+    margin-right: auto; /* Posición correcta cuando el sidebar está cerrado */
+  }
+
+  .app-bar h1 {
+    margin-left: 50px; /* Compensar espacio del botón */
+  }
+
+
+}
+
+
 
 

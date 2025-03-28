@@ -66,3 +66,4 @@ const BienesBecario = () => {
 };
 
 export default BienesBecario;
+
