@@ -1,52 +1,163 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {Box, Button, Card, CardContent, CardMedia, CircularProgress, Container, Grid, Snackbar, Typography, Alert, Paper } from "@mui/material";
+import { createTheme, styled } from "@mui/material/styles";
 
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Container,
-  Grid,
-  Snackbar,
-  Typography,
-  Alert,
-  Paper
-} from "@mui/material";
+const theme = createTheme({ breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536, }, }, 
+  palette: { primary: { main: '#B0E338', }, error: { main: '#f44336', dark: '#d32f2f', }, }, });
 
-const BienCard = ({ bien, onEliminarLugar }) => {
+const Tituloh1 = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  fontSize: '2.5rem',
+  fontWeight: 700,
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '2rem',
+    marginBottom: theme.spacing(3),
+  },
+}));
+
+const EliminarBtn = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.error.main,
+  color: theme.palette.common.white,
+  fontWeight: 500,
+  padding: theme.spacing(1, 1),
+  borderRadius: '3px',
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: theme.palette.error.dark,
+    transform: 'translateY(-1px)',
+    boxShadow: theme.shadows[2],
+  },
+  '&:active': {
+    transform: 'translateY(0)',
+  },
+}));
+
+const BienCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+
+  backgroundColor: theme.palette.common.white,
+  borderRadius: '12px',
+  transition: 'all 0.3s ease',
+  flexDirection: 'column','&:hover': {
+    transform: 'translateY(-1px)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    borderRadius: '8px',
+  },
+}));
+
+const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  '& .MuiTypography-root': {
+    marginBottom: theme.spacing(1),
+    '&:last-child': {
+      marginBottom: 0,
+    },
+  },
+}));
+
+const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
+  height: 200,
+  backgroundSize: 'contain',
+  backgroundColor: '#f5f5f5',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const ContainerResponsiva = styled(Container)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginTop: '64px', // Ajusta según la altura de tu Navbar
+  transition: 'margin 0.3s ease',
+  '&.sidebar-open': {
+    marginLeft: '240px',
+    width: 'calc(100% - 240px)',
+  },
+  [theme.breakpoints.down('md')]: {
+    '&.sidebar-open, &.sidebar-closed': {
+      marginLeft: 0,
+      width: '100%',
+      padding: theme.spacing(2),
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
+}));
+
+const CardsGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
+}));
+
+const CardItem = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
+}));
+
+const PaperResponsiva = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(1),
+  borderRadius: '12px',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
+}));
+
+const CustomSnackbar = styled(Snackbar)(({ theme }) => ({
+  '& .MuiAlert-root': {
+    boxShadow: theme.shadows[6],
+  },
+}));
+
+const CustomBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '50px'
+}));
+
+const CustomAlert = styled(Alert)(({ theme }) => ({
+  borderRadius: '8px',
+  fontWeight: 500,
+}));
+
+const BienCardComponent = ({ bien, onEliminarLugar }) => {
   return (
-    <Card sx={{ maxWidth: 345, height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardMedia
-        component="img"
-        height="140"
+    <BienCard >
+      <CardMediaResponsiva
         image={bien.modelo.foto}
-        alt={bien.tipoBien.nombre}
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h6" component="div">
+        alt={bien.tipoBien.nombre} />
+      <CardContentResponsiva >
+
+        <Typography>
           {bien.tipoBien.nombre}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+
+        <Typography>
           Marca: {bien.marca.nombre}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        
+        <Typography >
           Modelo: {bien.modelo.nombreModelo}
         </Typography>
-      </CardContent>
-      <Box sx={{ p: 2 }}>
-        <Button
-          variant="contained"
-          color="error"
-          fullWidth
-          onClick={() => onEliminarLugar(bien.idBien)}
-        >
+
+      </CardContentResponsiva>
+
+      <CustomBox>
+        <EliminarBtn onClick={() => onEliminarLugar(bien.idBien)} >
           Eliminar Lugar
-        </Button>
-      </Box>
-    </Card>
+        </EliminarBtn>
+      </CustomBox>
+      
+    </BienCard>
   );
 };
 
@@ -119,49 +230,43 @@ const BienesBecario = ({ user }) => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 4, backgroundColor: "#FFF3E0" }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
-          Bienes Becario
-        </Typography>
-
+    <ContainerResponsiva maxWidth="xl">
+      <Tituloh1> Bienes Becarios </Tituloh1>
+      <PaperResponsiva elevation={3} >
         {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+          <CustomBox >
             <CircularProgress />
-          </Box>
+          </CustomBox>
         ) : error ? (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
+          <CustomAlert severity="error">
+            Error al obtener los bienes. Por favor intenta más tarde.
+          </CustomAlert>
         ) : bienes.length > 0 ? (
-          <Grid container spacing={3}>
+          <CardsGrid container spacing={3}>
             {bienes.map((bien) => (
-              <Grid item key={bien.idBien} xs={12} sm={6} md={4} lg={3}>
-                <BienCard bien={bien} onEliminarLugar={eliminarLugarDeBien} />
-              </Grid>
+              <CardItem item xs={12} sm={6} md={4} lg={3} key={bien.idBien}>
+                <BienCardComponent bien={bien} onEliminarLugar={eliminarLugarDeBien} />
+              </CardItem>
             ))}
-          </Grid>
+          </CardsGrid>
         ) : (
-          <Alert severity="info" sx={{ mb: 3 }}>
+          <CustomAlert severity="info">
             No hay bienes disponibles para mostrar.
-          </Alert>
+          </CustomAlert>
         )}
-      </Paper>
+      </PaperResponsiva>
 
-      <Snackbar
+      <CustomSnackbar
         open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar} >
         <Alert
           onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
+          severity={snackbar.severity} >
           {snackbar.message}
         </Alert>
-      </Snackbar>
-    </Container>
+      </CustomSnackbar>
+    </ContainerResponsiva>
   );
 };
 

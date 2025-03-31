@@ -1,51 +1,135 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Container,
-  Grid,
-  Typography,
-  Alert,
-  Paper
-} from "@mui/material";
+import { Box, Button, Card, CardContent, CardMedia, CircularProgress, Container, Grid, Typography, Alert, Paper } from "@mui/material";
 import { AuthContext } from "../../../context/AuthContext";
+import { createTheme, styled } from "@mui/material/styles";
 
-const BienCard = ({ bien, onSolicitar }) => {
+const theme = createTheme({ breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536, }, }, 
+  palette: { primary: { main: '#B0E338', }, error: { main: '#f44336', dark: '#d32f2f', }, }, });
+
+const SolicitarBtn = styled(Button)(({ theme }) => ({ //Este debe tener un estilo y diseño similar al de eliminar que esta en becario
+  backgroundColor: '#00B4DC',
+  color: theme.palette.common.white,
+  fontWeight: 500,
+  padding: theme.spacing(1, 1),
+  borderRadius: '3px',
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0095B6',
+    transform: 'translateY(-1px)',
+    boxShadow: theme.shadows[2],
+  },
+  '&:active': {
+    transform: 'translateY(0)',
+  },
+}));
+
+const Tituloh1 = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  fontSize: '2.5rem',
+  fontWeight: 700,
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '2rem',
+    marginBottom: theme.spacing(3),
+  },
+}));
+
+const BienCard = styled(Card)(({ theme }) => ({
+  backgroundColor: theme.palette.common.white,
+  borderRadius: '12px',
+  transition: 'all 0.3s ease',
+
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  
+  flexDirection: 'column','&:hover': {
+    transform: 'translateY(-1px)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    borderRadius: '8px',
+  },
+}));
+
+const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  '& .MuiTypography-root': {
+    marginBottom: theme.spacing(1),
+    '&:last-child': {
+      marginBottom: 0,
+    },
+  },
+}));
+
+const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
+  height: 200,
+  backgroundSize: 'contain',
+  backgroundColor: '#f5f5f5',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const PaperResponsiva = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(1),
+  borderRadius: '12px',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
+}));
+
+const ContainerResponsiva = styled(Container)(({ theme }) => ({
+  paddingTop: theme.spacing(4),
+  paddingBottom: theme.spacing(4),
+  transition: 'margin 0.3s ease',
+  '&.sidebar-open': {
+    marginLeft: '240px',
+    width: 'calc(100% - 240px)',
+  },
+  [theme.breakpoints.down('md')]: {
+    '&.sidebar-open, &.sidebar-closed': {
+      marginLeft: 0,
+      width: '100%',
+    },
+  },
+}));
+
+const CustomBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '50px'
+}));
+
+const CustomAlert = styled(Alert)(({ theme }) => ({
+  borderRadius: '8px',
+  fontWeight: 500,
+}));
+
+const BienCardComponent = ({ bien, onSolicitar }) => {
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardMedia
-        component="img"
-        height="160"
+    <BienCard>
+      <CardMediaResponsiva
+        component= "img"
         image={bien.modelo?.foto || "/placeholder-item.png"}
-        alt={bien.tipoBien?.nombre}
-        sx={{ objectFit: "cover" }}
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h6" component="h3">
+        alt={bien.tipoBien?.nombre} />
+
+      <CardContentResponsiva >
+        <Typography >
           {bien.tipoBien?.nombre || "Sin asignar"}
         </Typography>
-        <Typography variant="body2" color="text.secondary" paragraph>
+        <Typography >
           <strong>Marca:</strong> {bien.marca?.nombre || "Sin asignar"}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography >
           <strong>Modelo:</strong> {bien.modelo?.nombreModelo || "Sin asignar"}
         </Typography>
-      </CardContent>
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={() => onSolicitar(bien.idBien)}
-        sx={{ mt: "auto" }}
-      >
-        Solicitar
-      </Button>
-    </Card>
+      </CardContentResponsiva>
+      
+      <SolicitarBtn onClick={() => onSolicitar(bien.idBien)} > Solicitar </SolicitarBtn>
+
+    </BienCard>
   );
 };
 
@@ -99,43 +183,39 @@ const SolicitarBienBecario = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 4, backgroundColor: "#E3F2FD" }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, color: "#1565C0" }}>
-          Solicitar Bienes
-        </Typography>
+    <ContainerResponsiva>
+      <Tituloh1> Solicitar Bienes </Tituloh1>
 
+      <PaperResponsiva >
         {successMessage && (
-          <Alert severity="success" sx={{ mb: 3 }}>
+          <CustomAlert >
             {successMessage}
-          </Alert>
+          </CustomAlert>
         )}
 
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <CustomAlert >
             {error}
-          </Alert>
+          </CustomAlert>
         )}
 
         {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+          <CustomBox >
             <CircularProgress />
-          </Box>
+          </CustomBox>
         ) : bienes.length > 0 ? (
-          <Grid container spacing={3}>
+          <Grid >
             {bienes.map((bien) => (
-              <Grid item key={bien.idBien} xs={12} sm={6} md={4} lg={3}>
-                <BienCard bien={bien} onSolicitar={handleSolicitar} />
+              <Grid item key={bien.idBien}>
+                <BienCardComponent bien={bien} onSolicitar={handleSolicitar} />
               </Grid>
             ))}
           </Grid>
         ) : (
-          <Alert severity="info">
-            No hay bienes libres disponibles actualmente.
-          </Alert>
+          <CustomAlert > No hay bienes libres disponibles actualmente. </CustomAlert>
         )}
-      </Paper>
-    </Container>
+      </PaperResponsiva>
+    </ContainerResponsiva>
   );
 };
 

@@ -39,13 +39,11 @@ const BienesResponsable = ({ user }) => {
 
     useEffect(() => {
         console.log("ID Lugar obtenido:", idLugar);
-
         if (!idLugar) {
             setError("No se encontró el ID del lugar.");
             setLoading(false);
             return;
         }
-
         fetchBienes();
     }, [idLugar]);
 
@@ -53,35 +51,14 @@ const BienesResponsable = ({ user }) => {
         <div>
             {loading && <p>Cargando bienes...</p>}
             {error && <p>{error}</p>}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center", marginTop: "20px" }}>
+            <div >
                 {bienes.map((bien) => (
-                    <div key={bien.idBien} style={{
-                        border: "1px solid #ddd",
-                        borderRadius: "8px",
-                        padding: "15px",
-                        textAlign: "center",
-                        boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.1)",
-                        width: "calc(25% - 20px)",
-                        minWidth: "200px"
-                    }}>
-                        <img src={bien.modelo.foto} alt={bien.tipoBien.nombre} width={100} style={{ borderRadius: "4px" }} />
+                    <div key={bien.idBien} >
+                        <img src={bien.modelo.foto} alt={bien.tipoBien.nombre} />
                         <h3>{bien.tipoBien.nombre}</h3>
                         <p><strong>Marca:</strong> {bien.marca.nombre}</p>
                         <p><strong>Modelo:</strong> {bien.modelo.nombreModelo}</p>
-                        <button
-                            style={{
-                                marginTop: "10px",
-                                padding: "8px 12px",
-                                backgroundColor: "#FF5733",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                            }}
-                            onClick={() => eliminarLugarDeBien(bien.idBien)}
-                        >
-                            Eliminar Lugar
-                        </button>
+                        <button onClick={() => eliminarLugarDeBien(bien.idBien)} > Eliminar Lugar </button>
                     </div>
                 ))}
             </div>

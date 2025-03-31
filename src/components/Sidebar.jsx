@@ -1,14 +1,67 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { Drawer, List, ListItem, ListItemButton, ListItemText, Divider, Typography, Box, Button, IconButton } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemText, Divider, Typography, Box, Button, IconButton, styled, useTheme, useMediaQuery } from "@mui/material";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE, DRAWER_WIDTH } from "../constants/layout";
+
+const MenuButton = styled(IconButton)(({ theme, open }) => {
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
+  return {
+    position: "fixed",
+    top: isMobile ? theme.spacing(1.5) : theme.spacing(2),
+    left: open ? (isMobile ? 'auto' : `${DRAWER_WIDTH - 40}px`) : theme.spacing(2),
+    right: open && isMobile ? theme.spacing(2) : 'auto',
+    color: "white",
+    zIndex: theme.zIndex.modal + 1,
+    backgroundColor: "#7033FF",
+    transition: theme.transitions.create(['left', 'right'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.standard,
+    }),
+    '&:hover': {
+      backgroundColor: "#5a2bd6",
+    },
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+  };
+});
+
+// Componente estilizado del Drawer
+const CustomDrawer = styled(Drawer)(({ theme, open }) => ({
+  width: open ? DRAWER_WIDTH : 0,
+  flexShrink: 0,
+  '& .MuiDrawer-paper': {
+    width: DRAWER_WIDTH,
+    backgroundColor: "#7033FF",
+    color: "white",
+    borderRight: 'none',
+    boxSizing: 'border-box',
+    position: 'absolute', // Cambio clave IMPORTANTISIMO para eliminar espacios muertos
+    height: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+    top: APP_BAR_HEIGHT,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    [theme.breakpoints.down('md')]: {
+      height: `calc(100vh - ${APP_BAR_HEIGHT_MOBILE}px)`,
+      top: APP_BAR_HEIGHT_MOBILE,
+      zIndex: theme.zIndex.drawer,
+    },
+    overflowX: 'hidden',
+  },
+}));
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const [open, setOpen] = useState(true); // Estado para mostrar/ocultar el sidebar
+  const [open, setOpen] = useState(true);
+  const isMobile = useMediaQuery(theme => theme.breakpoints.down('md'));
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -39,76 +92,70 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Botón para alternar la visibilidad */}
-      <IconButton 
-        onClick={() => setOpen(!open)} 
-        sx={{ position: "absolute", top: 10, left: 10, color: "white", zIndex: 1301 }}
+      <MenuButton 
+        open={open}
+        onClick={() => setOpen(!open)}
+        aria-label="toggle sidebar"
       >
-        <MenuIcon />
-      </IconButton>
+        {open ? <CloseIcon /> : <MenuIcon />}
+      </MenuButton>
 
-      <Drawer
-        variant={open ? "permanent" : "temporary"} // Cambia entre fijo y temporal
+      <CustomDrawer
+        variant={isMobile ? "temporary" : "persistent"}
         open={open}
         onClose={() => setOpen(false)}
-        sx={{
-          width: open ? 240 : 0,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 240,
-            bgcolor: "#2c3e50",
-            color: "white",
-            padding: 2,
-            transition: "width 0.3s ease-in-out",
-          },
+        ModalProps={{
+          keepMounted: true,
         }}
       >
-        <Box sx={{ textAlign: "center", py: 3 }}>
-          <Typography variant="h5" fontWeight="bold" letterSpacing={1.2}>
-            Menú
-          </Typography>
+        <Box sx={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Box sx={{ textAlign: "center", py: 3 }}>
+            <Typography variant="h5" fontWeight="bold" letterSpacing={1.2}>
+              Menú
+            </Typography>
+          </Box>
+          
+          <Divider sx={{ bgcolor: "#ffffff40" }} />
+          
+          <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
+            {(menuItems[user?.role] || []).map(({ text, path }) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  component={Link}
+                  to={path}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          
+          <Divider sx={{ bgcolor: "#ffffff40" }} />
+          
+          <Box sx={{ p: 2 }}>
+            <Button
+              fullWidth
+              onClick={handleLogout}
+              startIcon={<ExitToAppIcon />}
+              sx={{
+                color: "white",
+                justifyContent: 'flex-start',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                }
+              }} > Cerrar sesión
+            </Button>
+          </Box>
         </Box>
-        <Divider sx={{ bgcolor: "#ffffff40" }} />
-        <List>
-          {(menuItems[user?.role] || []).map(({ text, path }) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton
-                component={Link}
-                to={path}
-                sx={{
-                  color: "white",
-                  "&:hover": {
-                    bgcolor: "rgba(255, 215, 0, 0.2)",
-                    transition: "all 0.3s ease",
-                  },
-                }}
-              >
-                <ListItemText primary={text} primaryTypographyProps={{ fontSize: 16, fontWeight: "medium" }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Box sx={{ position: "absolute", bottom: 20, left: 20, right: 20 }}>
-          <Button
-            variant="contained"
-            fullWidth
-            color="error"
-            onClick={handleLogout}
-            startIcon={<ExitToAppIcon />}
-            sx={{
-              background: "linear-gradient(135deg, #e74c3c, #c0392b)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #c0392b, #e74c3c)",
-              },
-              transition: "all 0.3s ease",
-            }}
-          >
-            Cerrar sesión
-          </Button>
-        </Box>
-      </Drawer>
+      </CustomDrawer>
     </>
   );
 };
 
 export default Sidebar;
+

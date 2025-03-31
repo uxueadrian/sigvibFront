@@ -4,25 +4,13 @@ import { Container, Typography, Grid, Card, CardMedia, CardContent } from "@mui/
 
 const CardComponent = ({ image, title, description }) => {
   return (
-    <Card sx={{
-      backgroundColor: "#FFF",
-      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-      borderRadius: "8px",
-      overflow: "hidden",
-      maxWidth: 300
-    }}>
-      <CardMedia
-        component="img"
-        height="140"
-        image={image}
-        alt={title}
-        sx={{ objectFit: "cover" }}
-      />
+    <Card>
+      <CardMedia />
       <CardContent>
-        <Typography variant="h6" color="#7033FF" gutterBottom>
+        <Typography >
           {title}
         </Typography>
-        <Typography variant="body2" color="#555">
+        <Typography >
           {description}
         </Typography>
       </CardContent>
@@ -50,8 +38,8 @@ const CargoResponsable = () => {
   }, [user]);
 
   return (
-    <Container sx={{ backgroundColor: "rgb(255, 207, 74)", minHeight: "100vh", padding: "40px" }}>
-      <Typography variant="h4" color="#B0E338" gutterBottom>
+    <Container >
+      <Typography >
         Bienes asignados a {user?.username}
       </Typography>
       <Grid container spacing={3}>
@@ -66,7 +54,7 @@ const CargoResponsable = () => {
             </Grid>
           ))
         ) : (
-          <Typography variant="body1" color="#555">
+          <Typography >
             No tienes bienes asignados
           </Typography>
         )}

@@ -4,14 +4,11 @@ import { AuthContext } from "../../../context/AuthContext"; // Importar el conte
 
 const CardComponent = ({ image, title, description, onSolicitar }) => {
     return (
-        <div style={{ border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden", padding: "10px", backgroundColor: "#fff", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", textAlign: "center" }}>
-            <img src={image} alt={title} style={{ width: "100%", height: "auto", borderRadius: "8px" }} />
-            <h3 style={{ margin: "10px 0", fontSize: "1.2em" }}>{title}</h3>
-            <p style={{ fontSize: "0.9em", color: "#555" }}>{description}</p>
-            <button 
-                style={{ marginTop: "10px", padding: "5px 10px", backgroundColor: "#7033FF", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-                onClick={onSolicitar}
-            >
+        <div >
+            <img src={image} alt={title} />
+            <h3  >{title}</h3>
+            <p >{description}</p>
+            <button onClick={onSolicitar} >
                 Solicitar
             </button>
         </div>
@@ -76,13 +73,13 @@ const SolicitarBienBecario = () => {
     
 
     return (
-        <div style={{ padding: "40px", backgroundColor: "rgb(99, 134, 160)", fontFamily: "system-ui, Avenir, Helvetica, Arial, sans-serif" }}>
-            <h1 style={{ color: "rgb(56, 161, 227)" }}>Bienes Becario</h1>
+        <div >
+            <h1 >Bienes Becario</h1>
 
             {loading && <p>Cargando bienes...</p>}
             {error && <p>{error}</p>}
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+            <div >
                 {bienes.length > 0 ? (
                     bienes.map((item) => (
                         <CardComponent 
