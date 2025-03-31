@@ -1,18 +1,26 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import { useTheme } from './context/ThemeContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
+import { lightTheme, darkTheme } from '../theme/theme.js';
 
-import { ThemeProvider, CssBaseline } from '@mui/material'; // Importa los componentes necesarios
-import theme from '../theme/theme.js'; // Importa tu tema personalizado
-
+function Root() {
+  const { darkMode } = useTheme();
+  
+  return (
+    <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <CssBaseline />
+      <App />
+    </MuiThemeProvider>
+  );
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* Esto es esencial para el reset de estilos */}
-      <App />
+    <ThemeProvider>
+      <Root />
     </ThemeProvider>
-  </StrictMode>,
-)
-
-
+  </StrictMode>
+);

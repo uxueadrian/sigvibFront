@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import { Card, CardMedia, CardContent } from "@mui/material";
 
 export const BienCard = styled(Card)(({ theme }) => ({
-  backgroundColor: theme.palette.common.white,
+  backgroundColor: theme.palette.background.paper,
   borderRadius: '12px',
   transition: 'all 0.3s ease',
   display: 'flex',
@@ -20,12 +20,12 @@ export const BienCard = styled(Card)(({ theme }) => ({
 
 export const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
   height: 0,
-  paddingTop: '56.25%', // Relación 16:9
+  paddingTop: '56.25%',
   position: 'relative',
   backgroundSize: 'contain',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
-  backgroundColor: '#f5f5f5',
+  backgroundColor: theme.palette.mode === 'light' ? '#f5f5f5' : '#2A2A2A',
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
@@ -34,9 +34,9 @@ export const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
   padding: theme.spacing(2),
   '& .MuiTypography-root': {
     marginBottom: theme.spacing(1),
+    color: theme.palette.text.primary,
     '&:last-child': {
       marginBottom: 0,
     },
   },
 }));
-

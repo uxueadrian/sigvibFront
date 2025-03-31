@@ -39,6 +39,7 @@ export const CardItem = styled(Grid)(({ theme }) => ({
 export const PaperResponsiva = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   borderRadius: '12px',
+  backgroundColor: theme.palette.background.paper,
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },

@@ -39,7 +39,7 @@ const CustomDrawer = styled(Drawer)(({ theme, open }) => ({
   flexShrink: 0,
   '& .MuiDrawer-paper': {
     width: DRAWER_WIDTH,
-    backgroundColor: "#7033FF",
+    backgroundColor: theme.palette.mode === 'light' ? '#7033FF' : '#1E1E1E',
     color: "white",
     borderRight: 'none',
     borderRadius: 0,
@@ -65,11 +65,16 @@ const Sidebar = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(true);
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('md'));
+  const { darkMode, setDarkMode } = useTheme(); // Obtenemos el estado del tema desde el contexto
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     navigate("/login");
+  };
+
+  const handleThemeChange = (event) => {
+    setDarkMode(event.target.checked);
   };
 
   const menuItems = {
@@ -144,15 +149,21 @@ const Sidebar = () => {
                     }} 
                   />
                 </ListItemButton>
-                
+
               </ListItem>
             ))}
           </List>
 
           <Divider sx={{ bgcolor: "#ffffff40" }} />
-          <Box sx={{ px: 2 }}>  {/* Añade padding horizontal */}
-            <Switch/>
+            
+          <Box sx={{ px: 2, display: 'flex', alignItems: 'center' }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>Modo Oscuro</Typography>
+            <Switch 
+            checked={darkMode}
+            onChange={handleThemeChange}
+            color="secondary" />
           </Box>
+
           <Divider sx={{ bgcolor: "#ffffff40" }} />
           
           <Box sx={{ p: 2 }}>
@@ -169,6 +180,7 @@ const Sidebar = () => {
               }} > Cerrar sesión
             </Button>
           </Box>
+          
         </Box>
       </CustomDrawer>
     </>
