@@ -1,4 +1,4 @@
-// src/styles/components/cards.js
+//../../../styles/cards.js
 import { styled } from "@mui/material/styles";
 import { Card, CardMedia, CardContent } from "@mui/material";
 

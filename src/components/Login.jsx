@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import "./Login.css"; // Archivo de estilos externo
+import { LoginContainer, LoginCard, LoginTitle, LoginTextField, LoginButton, } from "../../styles/login";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -11,8 +11,8 @@ const Login = () => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
-
     const success = await login(username, password);
+    
     if (success) {
       const role = localStorage.getItem("role");
       if (role === "ROLE_ADMINISTRADOR") {
@@ -28,14 +28,29 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2 className="login-title">Iniciar sesión</h2>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <input type="text" name="username" placeholder="Usuario" className="login-input" />
-        <input type="password" name="password" placeholder="Contraseña" className="login-input" />
-        <button type="submit" className="login-button">Iniciar sesión</button>
-      </form>
-    </div>
+    <LoginContainer>
+      <LoginCard component="form" onSubmit={handleSubmit}>
+        <LoginTitle variant="h4">Iniciar sesión</LoginTitle>
+        <LoginTextField
+          name="username"
+          label="Usuario"
+          variant="outlined"
+          fullWidth
+          required
+        />
+        <LoginTextField
+          name="password"
+          label="Contraseña"
+          type="password"
+          variant="outlined"
+          fullWidth
+          required
+        />
+        <LoginButton type="submit" variant="contained">
+          Iniciar sesión
+        </LoginButton>
+      </LoginCard>
+    </LoginContainer>
   );
 };
 

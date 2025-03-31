@@ -1,4 +1,4 @@
-// src/styles/components/layout.js
+//../../../styles/layout.js
 import { styled } from "@mui/material/styles";
 import { Container, Grid, Paper, Box } from "@mui/material";
 

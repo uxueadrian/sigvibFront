@@ -1,4 +1,4 @@
-// src/styles/components/typography.js
+//../../../styles/typography.js
 import { styled } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 
