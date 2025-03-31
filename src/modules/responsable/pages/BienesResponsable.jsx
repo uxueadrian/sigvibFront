@@ -1,146 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { Button, Typography, Card, CardMedia, CardContent, Grid, Paper, Container, Box, Alert, CircularProgress, Snackbar } from "@mui/material";
+import { Typography, CircularProgress, Box } from "@mui/material";
 import axios from "axios";
-import { createTheme, styled } from "@mui/material/styles";
 
-const theme = createTheme({ breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536, }, }, 
-  palette: { primary: { main: '#B0E338', }, error: { main: '#f44336', dark: '#d32f2f', }, }, });
-
-const Tituloh1 = styled(Typography)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  fontSize: '2.5rem',
-  fontWeight: 700,
-  marginBottom: theme.spacing(4),
-  textAlign: 'center',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '2rem',
-    marginBottom: theme.spacing(3),
-  },
-}));
-
-const EliminarBtn = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.error.main,
-  color: theme.palette.common.white,
-  fontWeight: 500,
-  padding: theme.spacing(1, 1),
-  borderRadius: '3px',
-  textTransform: 'none',
-  '&:hover': {
-    backgroundColor: theme.palette.error.dark,
-    transform: 'translateY(-1px)',
-    boxShadow: theme.shadows[2],
-  },
-  '&:active': {
-    transform: 'translateY(0)',
-  },
-}));
-
-const BienCard = styled(Card)(({ theme }) => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-
-  backgroundColor: theme.palette.common.white,
-  borderRadius: '12px',
-  transition: 'all 0.3s ease',
-  flexDirection: 'column','&:hover': {
-    transform: 'translateY(-1px)',
-  },
-  [theme.breakpoints.down('sm')]: {
-    borderRadius: '8px',
-  },
-}));
-
-const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
-  height: 0,
-  paddingTop: '56.25%', // Relación 16:9
-  position: 'relative',
-  backgroundSize: 'contain',
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center',
-  backgroundColor: '#f5f5f5',
-  borderBottom: `1px solid ${theme.palette.divider}`,
-}));
-
-const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(2),
-  '& .MuiTypography-root': {
-    marginBottom: theme.spacing(1),
-    '&:last-child': {
-      marginBottom: 0,
-    },
-  },
-}));
-
-const ContainerResponsiva = styled(Container)(({ theme }) => ({
-  padding: theme.spacing(2),
-  marginTop: '64px', // Ajusta según la altura de tu Navbar
-  transition: 'margin 0.3s ease',
-  '&.sidebar-open': {
-    marginLeft: '240px',
-    width: 'calc(100% - 240px)',
-  },
-  [theme.breakpoints.down('md')]: {
-    '&.sidebar-open, &.sidebar-closed': {
-      marginLeft: 0,
-      width: '100%',
-      padding: theme.spacing(2),
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1),
-  },
-}));
-
-const CardsGrid = styled(Grid)(({ theme }) => ({
-  padding: theme.spacing(2),
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1),
-  },
-}));
-
-const CardItem = styled(Grid)(({ theme }) => ({
-  padding: theme.spacing(2),
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1),
-  },
-}));
-
-const PaperResponsiva = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(1),
-  borderRadius: '12px',
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
-  },
-}));
-
-const CustomSnackbar = styled(Snackbar)(({ theme }) => ({
-  '& .MuiAlert-root': {
-    boxShadow: theme.shadows[6],
-  },
-}));
-
-const CustomBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '50px'
-}));
-
-const CustomAlert = styled(Alert)(({ theme }) => ({
-  borderRadius: '8px',
-  fontWeight: 500,
-}));
+import { Tituloh1 } from "../../../../styles/typography";
+import { EliminarBtn } from "../../../../styles/buttons";
+import { BienCard, CardMediaResponsiva, CardContentResponsiva } from "../../../../styles/cards";
+import { ContainerResponsiva, CardsGrid, CardItem, PaperResponsiva, CustomBox } from "../../../../styles/layout";
+import { CustomAlert, CustomSnackbar } from "../../../../styles/feedback";
 
 const BienCardComponent = ({ bien, onEliminar }) => {
     return (
       <BienCard>
         <CardMediaResponsiva
           image={bien.modelo?.foto || "/placeholder-item.png"}
-          alt={bien.tipoBien?.nombre}
-        />
+          alt={bien.tipoBien?.nombre}/>
         <CardContentResponsiva>
           <Typography variant="h6" component="div">
             {bien.tipoBien?.nombre || "Sin tipo"}
@@ -264,8 +138,7 @@ const BienCardComponent = ({ bien, onEliminar }) => {
         <CustomSnackbar
           open={!!successMessage || !!error}
           autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-        >
+          onClose={handleCloseSnackbar}>
           <div>
             {successMessage && (
               <CustomAlert onClose={handleCloseSnackbar} severity="success">
