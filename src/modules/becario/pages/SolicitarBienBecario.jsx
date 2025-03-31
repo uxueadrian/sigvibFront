@@ -54,8 +54,19 @@ const BienCard = styled(Card)(({ theme }) => ({
 }));
 
 const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
+  height: 0,
+  paddingTop: '56.25%', // Relación 16:9
+  position: 'relative',
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+  backgroundColor: '#f5f5f5',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: theme.spacing(2),
   '& .MuiTypography-root': {
     marginBottom: theme.spacing(1),
     '&:last-child': {
@@ -64,11 +75,11 @@ const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
   },
 }));
 
-const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
-  height: 200,
-  backgroundSize: 'contain',
-  backgroundColor: '#f5f5f5',
-  borderBottom: `1px solid ${theme.palette.divider}`,
+const CardsGrid = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
 }));
 
 const PaperResponsiva = styled(Paper)(({ theme }) => ({
@@ -80,8 +91,8 @@ const PaperResponsiva = styled(Paper)(({ theme }) => ({
 }));
 
 const ContainerResponsiva = styled(Container)(({ theme }) => ({
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
+  padding: theme.spacing(2),
+  marginTop: '64px', // Ajusta según la altura de tu Navbar
   transition: 'margin 0.3s ease',
   '&.sidebar-open': {
     marginLeft: '240px',
@@ -91,7 +102,18 @@ const ContainerResponsiva = styled(Container)(({ theme }) => ({
     '&.sidebar-open, &.sidebar-closed': {
       marginLeft: 0,
       width: '100%',
+      padding: theme.spacing(2),
     },
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+  },
+}));
+
+const CardItem = styled(Grid)(({ theme }) => ({
+  padding: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -111,18 +133,17 @@ const BienCardComponent = ({ bien, onSolicitar }) => {
   return (
     <BienCard>
       <CardMediaResponsiva
-        component= "img"
         image={bien.modelo?.foto || "/placeholder-item.png"}
         alt={bien.tipoBien?.nombre} />
 
       <CardContentResponsiva >
-        <Typography >
+        <Typography variant="h6" component="div">
           {bien.tipoBien?.nombre || "Sin asignar"}
         </Typography>
-        <Typography >
+        <Typography variant="body2" color="text.secondary">
           <strong>Marca:</strong> {bien.marca?.nombre || "Sin asignar"}
         </Typography>
-        <Typography >
+        <Typography variant="body2" color="text.secondary">
           <strong>Modelo:</strong> {bien.modelo?.nombreModelo || "Sin asignar"}
         </Typography>
       </CardContentResponsiva>
@@ -183,36 +204,34 @@ const SolicitarBienBecario = () => {
   };
 
   return (
-    <ContainerResponsiva>
+    <ContainerResponsiva maxWidth="xl">
       <Tituloh1> Solicitar Bienes </Tituloh1>
 
-      <PaperResponsiva >
+      <PaperResponsiva elevation={3}>
         {successMessage && (
-          <CustomAlert >
+          <CustomAlert severity="success">
             {successMessage}
           </CustomAlert>
         )}
-
         {error && (
-          <CustomAlert >
+          <CustomAlert severity="error">
             {error}
           </CustomAlert>
         )}
-
         {loading ? (
           <CustomBox >
             <CircularProgress />
           </CustomBox>
         ) : bienes.length > 0 ? (
-          <Grid >
+          <CardsGrid container spacing={3}>  {/* Contenedor Grid principal */}
             {bienes.map((bien) => (
-              <Grid item key={bien.idBien}>
+              <CardItem item xs={12} sm={6} md={4} lg={3} key={bien.idBien}>  {/* Items con responsive */}
                 <BienCardComponent bien={bien} onSolicitar={handleSolicitar} />
-              </Grid>
+              </CardItem>
             ))}
-          </Grid>
+          </CardsGrid>
         ) : (
-          <CustomAlert > No hay bienes libres disponibles actualmente. </CustomAlert>
+          <CustomAlert severity="info"> No hay bienes libres disponibles actualmente. </CustomAlert>
         )}
       </PaperResponsiva>
     </ContainerResponsiva>

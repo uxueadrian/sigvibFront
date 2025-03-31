@@ -52,21 +52,25 @@ const BienCard = styled(Card)(({ theme }) => ({
 }));
 
 const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
+  height: 0,
+  paddingTop: '56.25%', // Relación 16:9
+  position: 'relative',
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+  backgroundColor: '#f5f5f5',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: theme.spacing(2),
   '& .MuiTypography-root': {
     marginBottom: theme.spacing(1),
     '&:last-child': {
       marginBottom: 0,
     },
   },
-}));
-
-const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
-  height: 200,
-  backgroundSize: 'contain',
-  backgroundColor: '#f5f5f5',
-  borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
 const ContainerResponsiva = styled(Container)(({ theme }) => ({
@@ -131,21 +135,21 @@ const CustomAlert = styled(Alert)(({ theme }) => ({
 
 const BienCardComponent = ({ bien, onEliminarLugar }) => {
   return (
-    <BienCard >
+    <BienCard>
       <CardMediaResponsiva
-        image={bien.modelo.foto}
+        image={bien.modelo.foto || '/placeholder-image.jpg'} // Añade imagen por defecto
         alt={bien.tipoBien.nombre} />
       <CardContentResponsiva >
 
-        <Typography>
+        <Typography variant="h6" component="div">
           {bien.tipoBien.nombre}
         </Typography>
 
-        <Typography>
+        <Typography variant="body2" color="text.secondary">
           Marca: {bien.marca.nombre}
         </Typography>
         
-        <Typography >
+        <Typography variant="body2" color="text.secondary">
           Modelo: {bien.modelo.nombreModelo}
         </Typography>
 

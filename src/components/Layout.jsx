@@ -7,7 +7,7 @@ import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE } from '../constants/layout';
 const MainContent = styled('main')(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  paddingTop: `calc(${theme.spacing(2)} + ${APP_BAR_HEIGHT}px)`,
+  paddingTop: `calc(${theme.spacing(-4)} + ${APP_BAR_HEIGHT}px)`,
   width: '100%',
   minHeight: '100vh',
   backgroundColor: '#f5f5f5',
