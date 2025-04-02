@@ -27,16 +27,14 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
 .card {
   padding: 2em;
+  background-color: #333; /* Fondo oscuro */
+  color: white; /* Texto blanco */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .read-the-docs {
-  color: #888;
+  color: #bbb; /* Texto más claro en modo oscuro */
 }

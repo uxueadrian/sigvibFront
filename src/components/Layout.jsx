@@ -10,7 +10,7 @@ const MainContent = styled('main')(({ theme, open }) => ({
   paddingTop: `calc(${theme.spacing(-4)} + ${APP_BAR_HEIGHT}px)`,
   width: '100%',
   minHeight: '100vh',
-  backgroundColor: '#f5f5f5',
+  backgroundColor: theme.palette.background.default,
   marginLeft: open ? `${DRAWER_WIDTH}px` : 0,
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.easeOut,
@@ -31,7 +31,7 @@ const Layout = ({ children }) => {
     <Box sx={{ 
       display: 'flex',
       minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
+      backgroundColor: theme => theme.palette.background.default
     }}>
       <Navbar />
       <Sidebar 
