@@ -3,14 +3,20 @@
   "version": "1.0.0",
   "description": ">[!NOTE]\r > Si clonas el repositorio, solo vuelve a descargar las dependecias con el comando de abajo :relaxed:\r ```bash\r     npm i \r     #o \r     npm install\r ```",
   "main": "eslint.config.js",
-  "devDependencies": {},
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "start": "vite preview"
-}
-,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@mui/icons-material": "^7.0.1",
+    "@react-pdf/renderer": "^4.3.0",
+    "install": "^0.13.0",
+    "npm": "^11.2.0",
+    "react-to-print": "^3.0.5",
+    "recharts": "^2.15.1"
+  }
 }

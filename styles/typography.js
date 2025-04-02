@@ -2,7 +2,7 @@ import { styled } from "@mui/material/styles"
 import { Typography } from "@mui/material"
 
 export const Tituloh1 = styled(Typography)(({ theme }) => ({
-  color: theme.palette.mode === "light" ? theme.palette.primary.main : "#fff",
+  color: theme.palette.mode === "light" ? theme.palette.primary.main : "rgba(0, 0, 0, 0.4)",
   fontSize: "2.5rem",
   fontWeight: 700,
   marginBottom: theme.spacing(4),

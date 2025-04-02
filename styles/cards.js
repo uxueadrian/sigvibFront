@@ -2,7 +2,7 @@ import { styled } from "@mui/material/styles";
 import { Card, CardMedia, CardContent } from "@mui/material";
 
 export const BienCard = styled(Card)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.background.paper : '#2d2d2d',
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.background.paper : 'rgba(0, 0, 0, 0.4)',
   borderRadius: '16px',
   transition: 'all 0.3s ease',
   display: 'flex',
@@ -29,7 +29,7 @@ export const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
   position: 'relative',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  backgroundColor: theme.palette.mode === 'light' ? '#f5f5f5' : '#424242',
+  backgroundColor: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.4)',
   borderBottom: `2px solid ${theme.palette.secondary.main}`,
   transition: 'transform 0.3s ease',
   '&:hover': {
@@ -40,16 +40,16 @@ export const CardMediaResponsiva = styled(CardMedia)(({ theme }) => ({
 export const CardContentResponsiva = styled(CardContent)(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(2.5),
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.background.paper : '#2d2d2d',
+  backgroundColor: theme.palette.mode === 'light' ? theme.palette.background.paper : 'rgba(0, 0, 0, 0.4)',
   '& .MuiTypography-root': {
     marginBottom: theme.spacing(1.5),
-    color: theme.palette.mode === 'light' ? theme.palette.text.primary : '#fff',
+    color: theme.palette.mode === 'light' ? theme.palette.text.primary : 'rgba(0, 0, 0, 0.4)',
     fontWeight: 600,
     '&:last-child': {
       marginBottom: 0,
     },
   },
   '& .MuiTypography-body2': {
-    color: theme.palette.mode === 'light' ? theme.palette.text.secondary : '#e0e0e0',
+    color: theme.palette.mode === 'light' ? theme.palette.text.secondary : 'rgba(0, 0, 0, 0.4)',
   },
 }));
