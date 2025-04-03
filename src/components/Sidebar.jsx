@@ -86,7 +86,7 @@ const CustomDrawer = styled(Drawer)(({ theme, open }) => ({
     borderRight: "none",
     borderRadius: 0,
     boxSizing: "border-box",
-    position: "absolute",
+    position: "fixed",
     height: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
     top: APP_BAR_HEIGHT,
     transition: theme.transitions.create(["width", "box-shadow"], {
@@ -239,7 +239,7 @@ const FooterBox = styled(Box)(({ theme }) => ({
 const Sidebar = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user } = useContext(AuthContext)
+  const { user, logout } = useContext(AuthContext)
   const [open, setOpen] = useState(true)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
@@ -252,8 +252,7 @@ const Sidebar = () => {
   }, [location.pathname, isMobile])
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("role")
+    logout()
     navigate("/login")
   }
 

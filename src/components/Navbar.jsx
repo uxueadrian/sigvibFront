@@ -214,7 +214,7 @@ const Navbar = () => {
   }
 
   return (
-    <CustomAppBar position="fixed">
+    <CustomAppBar>
       <CustomToolbar>
         {/* Space for sidebar toggle button */}
         <Box sx={{ width: { xs: "48px", md: "48px" } }} />
@@ -255,7 +255,42 @@ const Navbar = () => {
             )}
           </UserInfo>
 
-         
+          {/* User menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                mt: 1.5,
+                backgroundColor: "#2D2D2D",
+                color: "white",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+                border: "1px solid rgba(157, 78, 221, 0.2)",
+                minWidth: 180,
+              },
+            }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <MenuItem onClick={handleMenuClose} sx={{ "&:hover": { backgroundColor: alpha("#9D4EDD", 0.1) } }}>
+              Mi Perfil
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose} sx={{ "&:hover": { backgroundColor: alpha("#9D4EDD", 0.1) } }}>
+              Configuración
+            </MenuItem>
+            <MenuItem 
+              onClick={() => {
+                handleMenuClose();
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                window.location.href = "/login";
+              }} 
+              sx={{ "&:hover": { backgroundColor: alpha("#9D4EDD", 0.1) } }}
+            >
+              Cerrar Sesión
+            </MenuItem>
+          </Menu>
         </Box>
       </CustomToolbar>
     </CustomAppBar>
@@ -263,4 +298,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-

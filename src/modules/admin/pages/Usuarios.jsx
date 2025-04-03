@@ -30,8 +30,8 @@ import UsuarioEditDialog from "../components/UsuarioEditDialog"
 
 const themeColors = {
   primary: "#673AB7", // Morado principal
-  secondary: "#9575CD", // Morado más claro
-  textLight: "#FFFFFF", // Blanco
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
   textDark: "#000000", // Negro
   backgroundLight: "#F3F4F6", // Fondo claro
   backgroundDark: "#1E1E1E", // Fondo oscuro

@@ -1,54 +1,50 @@
-import React, { useState } from 'react';
-import { Box, styled, useMediaQuery } from '@mui/material';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
-import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE } from '../constants/layout';
+"use client"
 
-const MainContent = styled('main')(({ theme, open }) => ({
+import { Outlet } from "react-router-dom"
+import { Box, styled } from "@mui/material"
+import Navbar from "./Navbar"
+import Sidebar from "./Sidebar"
+import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE } from "../constants/layout"
+import { DRAWER_WIDTH } from "../constants/layout"
+import { useTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery"
+
+const MainContent = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  paddingTop: `calc(${theme.spacing(-4)} + ${APP_BAR_HEIGHT}px)`,
-  width: '100%',
-  minHeight: '100vh',
-  backgroundColor: theme.palette.background.default,
-  marginLeft: open ? `${DRAWER_WIDTH}px` : 0,
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.easeOut,
-    duration: theme.transitions.duration.enteringScreen,
+  marginTop: APP_BAR_HEIGHT,
+  width: `calc(100% - ${DRAWER_WIDTH}px)`, // Adjust width instead of using margin
+  minHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+  backgroundColor: "#f5f5f5",
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
   }),
-  [theme.breakpoints.down('md')]: {
-    marginLeft: 0,
+  [theme.breakpoints.down("md")]: {
+    marginTop: APP_BAR_HEIGHT_MOBILE,
+    minHeight: `calc(100vh - ${APP_BAR_HEIGHT_MOBILE}px)`,
     padding: theme.spacing(2),
-    paddingTop: `calc(${theme.spacing(2)} + ${APP_BAR_HEIGHT_MOBILE}px)`,
+    width: "100%", // Full width on mobile
   },
-}));
+  overflow: "auto", // Allow scrolling if content is too large
+}))
 
-const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isDesktop = useMediaQuery(theme => theme.breakpoints.up('md'));
+const Layout = () => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
   return (
-    <Box sx={{ 
-      display: 'flex',
-      minHeight: '100vh',
-      backgroundColor: theme => theme.palette.background.default
-    }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Navbar />
-      <Sidebar 
-        open={isDesktop ? sidebarOpen : false} 
-        setOpen={setSidebarOpen}
-      />
-      <MainContent open={isDesktop && sidebarOpen}>
-        <Box sx={{ 
-          maxWidth: '1200px',
-          margin: '0 auto',
-          width: '100%'
-        }}>
-          {children}
-        </Box>
-      </MainContent>
+      <Box sx={{ display: "flex", flex: 1 }}>
+        <Sidebar />
+        <MainContent>
+          <Outlet />
+        </MainContent>
+      </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout
+

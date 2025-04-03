@@ -245,7 +245,7 @@ const VersionText = styled(Typography)(({ theme }) => ({
 }))
 
 const Login = () => {
-  const { login } = useContext(AuthContext)
+  const { login, user } = useContext(AuthContext)
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
@@ -253,6 +253,19 @@ const Login = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isFormValid, setIsFormValid] = useState(false)
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ROLE_ADMINISTRADOR") {
+        navigate("/admin/dashboard")
+      } else if (user.role === "ROLE_RESPONSABLE") {
+        navigate("/responsable/bienes")
+      } else if (user.role === "ROLE_BECARIO") {
+        navigate("/becario/bienes")
+      }
+    }
+  }, [user, navigate])
 
   useEffect(() => {
     // Validate form whenever username or password changes
