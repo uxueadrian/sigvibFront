@@ -2,52 +2,43 @@
 
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
-import { DataGrid } from "@mui/x-data-grid"
 import {
   Button,
   Switch,
-  CssBaseline,
   Box,
   CircularProgress,
-  Modal,
-  TextField,
-  MenuItem,
-  Paper,
   Typography,
+  Paper,
   useMediaQuery,
   useTheme,
-  IconButton,
   Card,
   CardContent,
   CardActions,
-  Chip,
   Grid,
+  Chip,
+  IconButton,
+  Tooltip,
+  Modal,
+  TextField,
+  MenuItem,
 } from "@mui/material"
-import AddIcon from "@mui/icons-material/Add"
+import { DataGrid } from "@mui/x-data-grid"
 import EditIcon from "@mui/icons-material/Edit"
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew"
+import AddIcon from "@mui/icons-material/Add"
 import DarkModeIcon from "@mui/icons-material/DarkMode"
 import LightModeIcon from "@mui/icons-material/LightMode"
 
-const lightTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: { main: "#673AB7" },
-    secondary: { main: "#7CB342" },
-    background: { default: "#F3F4F6", paper: "#FFFFFF" },
-    text: { primary: "#333" },
-  },
-})
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: "#9575CD" },
-    secondary: { main: "#AED581" },
-    background: { default: "#1E1E1E", paper: "#333" },
-    text: { primary: "#FFF" },
-  },
-})
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
 
 const Areas = () => {
   const [areas, setAreas] = useState([])
@@ -64,44 +55,6 @@ const Areas = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"))
-
-  const columnas = [
-    {
-      field: "nombreArea",
-      headerName: "Área",
-      flex: 1,
-      minWidth: 150,
-    },
-    {
-      field: "lugar",
-      headerName: "Lugar",
-      flex: 1,
-      minWidth: 150,
-      hide: isMobile,
-    },
-    {
-      field: "status",
-      headerName: "Estado",
-      flex: 0.7,
-      minWidth: 120,
-    },
-    {
-      field: "edit",
-      headerName: "Editar",
-      flex: 0.7,
-      minWidth: 100,
-      renderCell: (params) =>
-        isMobile ? (
-          <IconButton color="primary" onClick={() => handleOpenModal(params.row)} size="small">
-            <EditIcon />
-          </IconButton>
-        ) : (
-          <Button variant="outlined" onClick={() => handleOpenModal(params.row)} size={isTablet ? "small" : "medium"}>
-            Editar
-          </Button>
-        ),
-    },
-  ]
 
   useEffect(() => {
     fetchAreas()
@@ -178,6 +131,41 @@ const Areas = () => {
       .catch((error) => console.error("Error al guardar el área:", error))
   }
 
+  const columnas = [
+    {
+      field: "nombreArea",
+      headerName: "Área",
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: "lugar",
+      headerName: "Lugar",
+      flex: 1,
+      minWidth: 150,
+      hide: isMobile,
+    },
+    {
+      field: "acciones",
+      headerName: "Acciones",
+      flex: 0.8,
+      minWidth: 120,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Editar">
+            <IconButton 
+              color="primary" 
+              onClick={() => handleOpenModal(params.row)}
+              size="small"
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
+    },
+  ]
+
   // Card view for mobile devices
   const renderMobileCards = () => {
     return (
@@ -186,24 +174,23 @@ const Areas = () => {
           <Grid item xs={12} key={area.id}>
             <Card
               sx={{
-                backgroundColor: darkMode ? "#333" : "#fff",
-                boxShadow: 2,
-                borderRadius: "8px",
+                backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+                color: darkMode ? themeColors.textLight : themeColors.textDark,
+                boxShadow: 3,
+                borderLeft: `4px solid ${themeColors.primary}`,
               }}
             >
               <CardContent>
-                <Typography variant="h6" component="div" sx={{ fontWeight: "bold", color: darkMode ? "#fff" : "#333" }}>
+                <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
                   {area.nombreArea}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ color: darkMode ? "#ccc" : "inherit", mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ color: darkMode ? themeColors.secondary : "inherit", mt: 1 }}
+                >
                   Lugar: {area.lugar}
                 </Typography>
-                <Chip
-                  label={area.status ? "Activo" : "Inactivo"}
-                  color={area.status ? "success" : "error"}
-                  size="small"
-                  sx={{ mt: 1 }}
-                />
               </CardContent>
               <CardActions>
                 <Button
@@ -212,6 +199,7 @@ const Areas = () => {
                   color="primary"
                   onClick={() => handleOpenModal(area)}
                   startIcon={<EditIcon />}
+                  sx={{ borderRadius: "8px" }}
                 >
                   Editar
                 </Button>
@@ -223,168 +211,200 @@ const Areas = () => {
     )
   }
 
+  // Modal para agregar o editar área
+  const renderAreaModal = () => (
+    <Modal
+      open={modalOpen}
+      onClose={handleCloseModal}
+      aria-labelledby="modal-area"
+      aria-describedby="modal-area-descripcion"
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: { xs: '90%', sm: 400 },
+        bgcolor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+        boxShadow: 24,
+        p: 4,
+        borderRadius: '10px',
+      }}>
+        <Typography id="modal-area" variant="h6" component="h2" sx={{ 
+          color: darkMode ? themeColors.textLight : themeColors.primary,
+          fontWeight: 'bold',
+          mb: 2
+        }}>
+          {isEditing ? "Editar Área Común" : "Agregar Área Común"}
+        </Typography>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="nombreArea"
+          label="Nombre del Área"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={nombreArea}
+          onChange={(e) => setNombreArea(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          select
+          margin="dense"
+          id="lugarSeleccionado"
+          label="Seleccionar Lugar"
+          fullWidth
+          variant="outlined"
+          value={lugarSeleccionado}
+          onChange={(e) => setLugarSeleccionado(e.target.value)}
+          sx={{ mb: 3 }}
+        >
+          {lugares.map((lugar) => (
+            <MenuItem key={lugar.idlugar} value={lugar.idlugar}>
+              {lugar.lugar}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button 
+            onClick={handleCloseModal} 
+            variant="outlined"
+            sx={{ borderRadius: '8px' }}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            onClick={handleSaveArea} 
+            variant="contained"
+            sx={{ 
+              borderRadius: '8px',
+              backgroundColor: themeColors.primary,
+              '&:hover': { backgroundColor: darkMode ? themeColors.secondary : '#5E35B1' },
+            }}
+          >
+            {isEditing ? "Actualizar" : "Guardar"}
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  )
+
   return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
-      <Box
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.backgroundLight,
+        padding: { xs: "16px", sm: "24px", md: "40px" },
+      }}
+    >
+      <Paper
+        elevation={5}
         sx={{
-          padding: { xs: "10px", sm: "15px", md: "20px" },
-          minHeight: "100vh",
-          backgroundColor: darkMode ? "#1E1E1E" : "#F3F4F6",
+          width: "100%",
+          maxWidth: "1200px",
+          padding: { xs: "16px", sm: "20px", md: "30px" },
+          borderRadius: "15px",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
         }}
       >
-        <Paper
-          elevation={2}
+        <Typography
+          variant={isMobile ? "h5" : "h4"}
+          align="center"
           sx={{
-            padding: { xs: "15px", sm: "20px", md: "30px" },
-            borderRadius: "10px",
-            backgroundColor: darkMode ? "#333" : "#FFFFFF",
+            color: darkMode ? themeColors.secondary : themeColors.primary,
+            marginBottom: { xs: "16px", md: "20px" },
+            fontWeight: "bold",
           }}
         >
-          <Typography
-            variant={isMobile ? "h5" : "h4"}
-            sx={{
-              color: darkMode ? "#AED581" : "#7CB342",
-              fontWeight: "bold",
-              mb: 2,
-            }}
-          >
-            Áreas Comunes
-          </Typography>
+          Gestión de Áreas Comunes
+        </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: "space-between",
-              alignItems: { xs: "flex-start", sm: "center" },
-              gap: { xs: 2, sm: 0 },
-              mb: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={() => handleOpenModal()}
-              fullWidth={isMobile}
-              sx={{ borderRadius: "8px" }}
-            >
-              Agregar Área
-            </Button>
-
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                alignSelf: { xs: "flex-end", sm: "auto" },
-              }}
-            >
-              {darkMode ? (
-                <DarkModeIcon sx={{ mr: 1, color: "#AED581" }} />
-              ) : (
-                <LightModeIcon sx={{ mr: 1, color: "#7CB342" }} />
-              )}
-              <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
-            </Box>
-          </Box>
-
-          <Box sx={{ width: "100%", margin: "20px auto" }}>
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <>
-                {/* Mobile view with cards */}
-                {isMobile && renderMobileCards()}
-
-                {/* Tablet and desktop view with DataGrid */}
-                {!isMobile && (
-                  <DataGrid
-                    rows={areas}
-                    columns={columnas}
-                    pageSize={5}
-                    rowsPerPageOptions={[5, 10]}
-                    autoHeight
-                    disableColumnMenu={isMobile}
-                    sx={{
-                      "& .MuiDataGrid-cell": {
-                        fontSize: { xs: "0.875rem", md: "1rem" },
-                      },
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: darkMode ? "#444" : "#f5f5f5",
-                        borderRadius: "8px 8px 0 0",
-                      },
-                    }}
-                  />
-                )}
-              </>
-            )}
-          </Box>
-        </Paper>
-
-        {/* Modal para agregar o editar área común */}
-        <Modal
-          open={modalOpen}
-          onClose={handleCloseModal}
+        <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 2, sm: 0 },
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", sm: "center" },
+            marginBottom: "20px",
           }}
         >
-          <Box
+          <Button
+            variant="contained"
             sx={{
-              width: { xs: "90%", sm: 400 },
-              padding: 3,
-              backgroundColor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 24,
-              maxHeight: "90vh",
-              overflow: "auto",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              backgroundColor: themeColors.primary,
+              "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
             }}
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenModal()}
+            fullWidth={isMobile}
           >
-            <Typography variant="h6" component="h2" gutterBottom>
-              {isEditing ? "Editar Área Común" : "Agregar Área Común"}
-            </Typography>
-            <TextField
-              fullWidth
-              label="Nombre del Área"
-              value={nombreArea}
-              onChange={(e) => setNombreArea(e.target.value)}
-              margin="normal"
-              size={isMobile ? "small" : "medium"}
-            />
-            <TextField
-              select
-              fullWidth
-              label="Seleccionar Lugar"
-              value={lugarSeleccionado}
-              onChange={(e) => setLugarSeleccionado(e.target.value)}
-              margin="normal"
-              size={isMobile ? "small" : "medium"}
-            >
-              {lugares.map((lugar) => (
-                <MenuItem key={lugar.idlugar} value={lugar.idlugar}>
-                  {lugar.lugar}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-              <Button variant="outlined" onClick={handleCloseModal} sx={{ mr: 1 }}>
-                Cancelar
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleSaveArea}>
-                {isEditing ? "Actualizar" : "Guardar"}
-              </Button>
-            </Box>
+            Agregar Área
+          </Button>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: { xs: "center", sm: "flex-end" } }}>
+            {darkMode ? <DarkModeIcon sx={{ mr: 1 }} /> : <LightModeIcon sx={{ mr: 1 }} />}
+            <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
           </Box>
-        </Modal>
-      </Box>
-    </ThemeProvider>
+        </Box>
+
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {/* Mobile view with cards */}
+            {isMobile && renderMobileCards()}
+
+            {/* Tablet and desktop view with DataGrid */}
+            {!isMobile && (
+              <DataGrid
+                rows={areas}
+                columns={columnas}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20]}
+                autoHeight
+                disableColumnMenu={isMobile}
+                sx={{
+                  backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
+                  borderRadius: "10px",
+                  boxShadow: 3,
+                  "& .MuiDataGrid-columnHeaders": {
+                    backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                    color: themeColors.textLight,
+                    fontWeight: "bold",
+                    fontSize: { xs: "14px", md: "16px" },
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    color: darkMode ? themeColors.textLight : themeColors.textDark,
+                    fontSize: { xs: "13px", md: "14px" },
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                    color: themeColors.textLight,
+                    fontWeight: "bold",
+                    borderBottomLeftRadius: "10px",
+                    borderBottomRightRadius: "10px",
+                  },
+                }}
+              />
+            )}
+          </>
+        )}
+      </Paper>
+
+      {/* Modal */}
+      {renderAreaModal()}
+    </Box>
   )
 }
 
 export default Areas
-

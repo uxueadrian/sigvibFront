@@ -40,6 +40,7 @@ import {
   Fullscreen as FullscreenIcon,
   MoreVert as MoreVertIcon,
   Info as InfoIcon,
+  Dashboard as DashboardIcon,
 } from "@mui/icons-material"
 import {
   BarChart,
@@ -58,6 +59,7 @@ import {
   AreaChart,
   Area,
 } from "recharts"
+import logo1 from "../../../components/logo1.png"
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -78,6 +80,8 @@ const Dashboard = () => {
     marcas: [],
     activosVsBajas: [],
     tendencia: [],
+    modelos: [],
+    lugares: [],
   })
 
   const theme = useTheme()
@@ -103,6 +107,8 @@ const Dashboard = () => {
       const inactiveBienes = bienes.filter((bien) => !bien.status)
       const tipos = tiposRes.data.result
       const marcas = marcasRes.data.result
+      const modelos = modelosRes.data.result
+      const lugares = lugaresRes.data.result
 
       // Get 5 most recent active bienes
       const sortedActiveBienes = [...activeBienes]
@@ -139,9 +145,7 @@ const Dashboard = () => {
       // 1. Tipos de bien chart data
       const tiposBienData = tipos
         .map((tipo) => {
-          const count = activeBienes.filter(
-            (bien) => bien.tipoBien && bien.tipoBien.idTipoBien === tipo.idTipoBien,
-          ).length
+          const count = activeBienes.filter((bien) => bien.tipoBien && bien.tipoBien.idTipo === tipo.idTipo).length
           return {
             name: tipo.nombre,
             value: count,
@@ -162,13 +166,39 @@ const Dashboard = () => {
         .sort((a, b) => b.value - a.value)
         .slice(0, 6)
 
-      // 3. Activos vs Bajas
+      // 3. Modelos chart data
+      const modelosData = modelos
+        .map((modelo) => {
+          const count = activeBienes.filter((bien) => bien.modelo && bien.modelo.idModelo === modelo.idModelo).length
+          return {
+            name: modelo.nombreModelo,
+            value: count,
+          }
+        })
+        .filter((item) => item.value > 0)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 6)
+
+      // 4. Lugares chart data
+      const lugaresData = lugares
+        .map((lugar) => {
+          const count = activeBienes.filter((bien) => bien.lugar && bien.lugar.idlugar === lugar.idlugar).length
+          return {
+            name: lugar.lugar || "Sin asignar",
+            value: count,
+          }
+        })
+        .filter((item) => item.value > 0)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 6)
+
+      // 5. Activos vs Bajas
       const activosVsBajasData = [
         { name: "Activos", value: activeBienes.length },
         { name: "Bajas", value: inactiveBienes.length },
       ]
 
-      // 4. Tendencia mensual (simulada para demostración)
+      // 6. Tendencia mensual (simulada para demostración)
       // En un caso real, agruparíamos los bienes por mes de creación
       const currentDate = new Date()
       const tendenciaData = []
@@ -204,6 +234,8 @@ const Dashboard = () => {
         marcas: marcasData,
         activosVsBajas: activosVsBajasData,
         tendencia: tendenciaData,
+        modelos: modelosData,
+        lugares: lugaresData,
       })
 
       setRecentBienes(sortedActiveBienes)
@@ -340,32 +372,106 @@ const Dashboard = () => {
         minHeight: "100vh",
       }}
     >
+      {/* Header with Logo */}
       <Box
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           justifyContent: "space-between",
-          alignItems: { xs: "flex-start", md: "center" },
+          alignItems: { xs: "center", md: "center" },
           mb: 4,
+          pb: 3,
+          borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
         }}
       >
-        <Box>
-          <Typography
-            variant={isMobile ? "h5" : "h4"}
-            component="h1"
-            fontWeight="bold"
-            color="#2c3e50"
+        <Box sx={{ display: "flex", alignItems: "center", mb: { xs: 2, md: 0 } }}>
+          <Box
             sx={{
-              background: "linear-gradient(45deg, #2c3e50 30%, #4a6491 90%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              mr: 3,
             }}
           >
-            Panel de Control
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Resumen de inventario y estadísticas
-          </Typography>
+            <Box
+              sx={{
+                width: { xs: 60, md: 70 },
+                height: { xs: 60, md: 70 },
+                borderRadius: "50%",
+                backgroundColor: "rgba(157, 78, 221, 0.08)",
+                border: "1px solid rgba(157, 78, 221, 0.2)",
+                position: "relative",
+                boxShadow: "0 4px 15px rgba(157, 78, 221, 0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  top: -3,
+                  left: -3,
+                  right: -3,
+                  bottom: -3,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, rgba(157, 78, 221, 0.2) 0%, rgba(180, 120, 255, 0.1) 100%)",
+                  zIndex: -1,
+                },
+                animation: "pulse 2s infinite",
+                "@keyframes pulse": {
+                  "0%": {
+                    boxShadow: "0 0 0 0 rgba(157, 78, 221, 0.4)",
+                  },
+                  "70%": {
+                    boxShadow: "0 0 0 10px rgba(157, 78, 221, 0)",
+                  },
+                  "100%": {
+                    boxShadow: "0 0 0 0 rgba(157, 78, 221, 0)",
+                  },
+                },
+              }}
+            >
+              <Box
+                component="img"
+                src={logo1}
+                alt="SIGVIB Logo"
+                sx={{
+                  width: "75%",
+                  height: "75%",
+                  objectFit: "contain",
+                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))",
+                }}
+              />
+            </Box>
+          </Box>
+          <Box>
+            <Typography
+              variant={isMobile ? "h5" : "h4"}
+              component="h1"
+              fontWeight="bold"
+              sx={{
+                background: "linear-gradient(45deg, #9D4EDD 30%, #B478FF 90%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: 1,
+                mb: 0.5,
+              }}
+            >
+              SIGVIB
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              color="text.secondary"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <DashboardIcon fontSize="small" sx={{ color: "#9D4EDD" }} />
+              Panel de Control y Estadísticas
+            </Typography>
+          </Box>
         </Box>
         <Button
           startIcon={<RefreshIcon />}
@@ -374,12 +480,11 @@ const Dashboard = () => {
           variant="contained"
           color="primary"
           sx={{
-            mt: { xs: 2, md: 0 },
             borderRadius: 2,
-            boxShadow: "0 4px 10px 0 rgba(33, 150, 243, 0.3)",
-            background: "linear-gradient(45deg, #2196f3 30%, #21cbf3 90%)",
+            boxShadow: "0 4px 10px 0 rgba(157, 78, 221, 0.3)",
+            background: "linear-gradient(45deg, #9D4EDD 30%, #B478FF 90%)",
             "&:hover": {
-              boxShadow: "0 6px 15px 0 rgba(33, 150, 243, 0.4)",
+              boxShadow: "0 6px 15px 0 rgba(157, 78, 221, 0.4)",
             },
           }}
         >
@@ -497,7 +602,51 @@ const Dashboard = () => {
                 </Grid>
               </Grid>
             </Box>
+
             <Box sx={{ p: 3, display: tabValue === 1 ? "block" : "none" }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <ChartCard title="Distribución por Modelo" icon={<ModelIcon />} color="#9c27b0">
+                    <ResponsiveContainer width="100%" height={280}>
+                      <BarChart
+                        data={chartData.modelos}
+                        layout="vertical"
+                        margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis type="number" />
+                        <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={70} />
+                        <RechartsTooltip formatter={(value, name) => [`${value} bienes`, "Cantidad"]} />
+                        <Bar dataKey="value" fill="#9c27b0" name="Cantidad" radius={[0, 4, 4, 0]}>
+                          {chartData.modelos.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <ChartCard title="Distribución por Lugar" icon={<LocationIcon />} color="#607d8b">
+                    <ResponsiveContainer width="100%" height={280}>
+                      <BarChart data={chartData.lugares} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} tick={{ fontSize: 12 }} />
+                        <YAxis />
+                        <RechartsTooltip formatter={(value, name) => [`${value} bienes`, "Cantidad"]} />
+                        <Bar dataKey="value" fill="#607d8b" name="Cantidad" radius={[4, 4, 0, 0]}>
+                          {chartData.lugares.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Box sx={{ p: 3, display: tabValue === 2 ? "block" : "none" }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <ChartCard title="Activos vs Bajas" icon={<PieChartIcon />} color="#9c27b0">
@@ -549,7 +698,8 @@ const Dashboard = () => {
                 </Grid>
               </Grid>
             </Box>
-            <Box sx={{ p: 3, display: tabValue === 2 ? "block" : "none" }}>
+
+            <Box sx={{ p: 3, display: tabValue === 3 ? "block" : "none" }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <ChartCard title="Tendencia Mensual" icon={<TimelineIcon />} color="#607d8b">

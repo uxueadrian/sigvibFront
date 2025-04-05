@@ -23,6 +23,8 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp"
 import MenuIcon from "@mui/icons-material/Menu"
 import CloseIcon from "@mui/icons-material/Close"
 import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE, DRAWER_WIDTH } from "../constants/layout"
+// Import the logo
+import logo1 from "./logo1.png"
 
 // Animations
 const fadeIn = keyframes`
@@ -199,7 +201,7 @@ const LogoutButton = styled(Button)(({ theme }) => ({
 
 const MenuHeader = styled(Box)(({ theme }) => ({
   textAlign: "center",
-  padding: theme.spacing(3),
+  padding: theme.spacing(3, 3, 2),
   background: "rgba(0, 0, 0, 0.2)",
   backdropFilter: "blur(5px)",
   borderBottom: "1px solid rgba(157, 78, 221, 0.2)",
@@ -217,6 +219,40 @@ const MenuHeader = styled(Box)(({ theme }) => ({
     borderRadius: 2,
   },
 }))
+
+// Updated logo container with more elegant styling
+const LogoContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  margin: "0 auto 16px auto",
+  width: 70,
+  height: 70,
+  borderRadius: "50%",
+  backgroundColor: "rgba(157, 78, 221, 0.08)",
+  border: "1px solid rgba(157, 78, 221, 0.2)",
+  position: "relative",
+  boxShadow: "0 4px 15px rgba(157, 78, 221, 0.15)",
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    top: -3,
+    left: -3,
+    right: -3,
+    bottom: -3,
+    borderRadius: "50%",
+    background: "linear-gradient(135deg, rgba(157, 78, 221, 0.2) 0%, rgba(180, 120, 255, 0.1) 100%)",
+    zIndex: -1,
+  },
+}))
+
+// Updated logo styling
+const Logo = styled("img")({
+  width: "75%",
+  height: "75%",
+  objectFit: "contain",
+  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))",
+})
 
 const FooterBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -258,7 +294,7 @@ const Sidebar = () => {
 
   const menuItems = {
     ROLE_ADMINISTRADOR: [
-      { text: "Dashboard", path: "/admin/dashboard" },
+      { text: "Resumen", path: "/admin/dashboard" },
       { text: "Usuarios", path: "/admin/usuarios" },
       { text: "Lugares", path: "/admin/lugares" },
       { text: "Áreas", path: "/admin/areas" },
@@ -303,6 +339,11 @@ const Sidebar = () => {
           }}
         >
           <MenuHeader>
+            {/* Logo container with refined styling */}
+            <LogoContainer>
+              <Logo src={logo1} alt="SIGVIB Logo" />
+            </LogoContainer>
+
             <Typography
               variant="h5"
               fontWeight="bold"
@@ -310,9 +351,10 @@ const Sidebar = () => {
               sx={{
                 color: "#B478FF",
                 textShadow: "0 2px 10px rgba(157, 78, 221, 0.3)",
+                marginBottom: 0.5,
               }}
             >
-              SIGVIB
+              
             </Typography>
             <Typography
               variant="subtitle2"

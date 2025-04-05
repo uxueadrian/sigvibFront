@@ -37,7 +37,22 @@ const UsuarioDialog = ({ open, setOpen, nuevoUsuario, setNuevoUsuario, roles, lu
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     })
       .then(response => {
-        setUsuarios([...usuarios, { ...response.data.result, id: response.data.result.idusuario }]);
+        // Aseguramos que el nuevo usuario tenga un ID válido
+        const nuevoUsuarioConId = { 
+          ...response.data.result, 
+          id: response.data.result.idusuario,
+          lugar: response.data.result.lugar ? response.data.result.lugar.lugar : "Sin asignar",
+          rolNombre: response.data.result.rol ? response.data.result.rol.nombre : "Sin rol",
+        };
+        
+        setUsuarios([...usuarios, nuevoUsuarioConId]);
+        setNuevoUsuario({
+          nombre: "",
+          usuario: "",
+          contrasena: "",
+          idLugar: "",
+          rol: "",
+        });
         setOpen(false);
       })
       .catch(error => console.error("Error al crear usuario:", error.response?.data || error.message));

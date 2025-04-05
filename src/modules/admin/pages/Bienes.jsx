@@ -6,22 +6,39 @@ import {
   Button,
   Switch,
   Box,
+  CircularProgress,
   Typography,
+  Paper,
   useMediaQuery,
   useTheme,
-  Paper,
-  Container,
-  Stack,
-  Fade,
-  Divider,
+  Card,
+  CardContent,
+  CardActions,
+  Grid,
+  Chip,
+  IconButton,
+  Tooltip,
 } from "@mui/material"
-import BienesTable from "./../components/BienesTable"
-import BienesForm from "./../components/BienesForm"
-import BienesBajaDialog from "./../components/BienesBajaDialog"
-import BienDetailModal from "./../components/BienDetailModal" // We'll create this new component
+import { DataGrid } from "@mui/x-data-grid"
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew"
 import AddIcon from "@mui/icons-material/Add"
 import DarkModeIcon from "@mui/icons-material/DarkMode"
 import LightModeIcon from "@mui/icons-material/LightMode"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import BienesForm from "./../components/BienesForm"
+import BienesBajaDialog from "./../components/BienesBajaDialog"
+import BienDetailModal from "./../components/BienDetailModal"
+
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
 
 const Bienes = () => {
   const [bienes, setBienes] = useState([])
@@ -36,7 +53,7 @@ const Bienes = () => {
   const [tiposBien, setTiposBien] = useState([])
   const [darkMode, setDarkMode] = useState(false)
   const [usuarios, setUsuarios] = useState([])
-  const [detailModalOpen, setDetailModalOpen] = useState(false) // New state for detail modal
+  const [detailModalOpen, setDetailModalOpen] = useState(false)
   const [nuevoBien, setNuevoBien] = useState({
     codigoBarras: "",
     nSerie: "",
@@ -188,7 +205,7 @@ const Bienes = () => {
     }
   }
 
-  // New handlers for detail modal
+  // Handlers for detail modal
   const handleOpenDetailModal = (bien) => {
     setSelectedBien(bien)
     setDetailModalOpen(true)
@@ -198,156 +215,282 @@ const Bienes = () => {
     setDetailModalOpen(false)
   }
 
+  // Columns for DataGrid
+  const columnas = [
+    {
+      field: "nSerie",
+      headerName: "Número de Serie",
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: "modelo",
+      headerName: "Modelo",
+      flex: 1,
+      minWidth: 150,
+    },
+  
+    {
+      field: "tipoBien",
+      headerName: "Tipo",
+      flex: 1,
+      minWidth: 120,
+      hide: isMobile,
+    },
+    {
+      field: "usuarioResponsable",
+      headerName: "Responsable",
+      flex: 1,
+      minWidth: 150,
+      hide: isMobile,
+    },
+    {
+      field: "acciones",
+      headerName: "Acciones",
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Ver Detalles">
+            <IconButton color="primary" onClick={() => handleOpenDetailModal(params.row)} size="small">
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Dar de Baja">
+            <IconButton
+              color="error"
+              onClick={() => {
+                setSelectedBien(params.row)
+                setOpenBaja(true)
+              }}
+              size="small"
+            >
+              <PowerSettingsNewIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
+    },
+  ]
+
+  // Card view for mobile devices
+  const renderMobileCards = () => {
+    return (
+      <Grid container spacing={2}>
+        {bienes.map((bien) => (
+          <Grid item xs={12} key={bien.id}>
+            <Card
+              sx={{
+                backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+                color: darkMode ? themeColors.textLight : themeColors.textDark,
+                boxShadow: 3,
+                borderLeft: `4px solid ${themeColors.primary}`,
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+                  {bien.modelo}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ color: darkMode ? themeColors.secondary : "inherit" }}
+                >
+                  Serie: {bien.nSerie}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ color: darkMode ? themeColors.secondary : "inherit" }}
+                >
+                  Marca: {bien.marca}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ color: darkMode ? themeColors.secondary : "inherit" }}
+                >
+                  Responsable: {bien.usuarioResponsable}
+                </Typography>
+                <Chip label={bien.tipoBien} size="small" color="primary" sx={{ mt: 1 }} />
+              </CardContent>
+              <CardActions>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleOpenDetailModal(bien)}
+                  startIcon={<VisibilityIcon />}
+                  sx={{ borderRadius: "8px" }}
+                >
+                  Detalles
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={() => {
+                    setSelectedBien(bien)
+                    setOpenBaja(true)
+                  }}
+                  startIcon={<PowerSettingsNewIcon />}
+                  sx={{ borderRadius: "8px" }}
+                >
+                  Dar de Baja
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    )
+  }
+
   return (
-    <Fade in={true} timeout={500}>
-      <Box
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.backgroundLight,
+        padding: { xs: "16px", sm: "24px", md: "40px" },
+      }}
+    >
+      <Paper
+        elevation={5}
         sx={{
-          padding: { xs: 2, sm: 3, md: 4 },
-          minHeight: "100vh",
-          backgroundColor: darkMode ? "#121212" : "#F5F7FA",
-          transition: "background-color 0.3s ease",
+          width: "100%",
+          maxWidth: "1200px",
+          padding: { xs: "16px", sm: "20px", md: "30px" },
+          borderRadius: "15px",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
         }}
       >
-        <Container maxWidth="xl">
-          <Paper
-            elevation={darkMode ? 2 : 1}
+        <Typography
+          variant={isMobile ? "h5" : "h4"}
+          align="center"
+          sx={{
+            color: darkMode ? themeColors.secondary : themeColors.primary,
+            marginBottom: { xs: "16px", md: "20px" },
+            fontWeight: "bold",
+          }}
+        >
+          Gestión de Bienes
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 2, sm: 0 },
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", sm: "center" },
+            marginBottom: "20px",
+          }}
+        >
+          <Button
+            variant="contained"
             sx={{
-              padding: { xs: 2, sm: 3, md: 4 },
-              borderRadius: "16px",
-              backgroundColor: darkMode ? "#1E1E1E" : "#FFFFFF",
-              transition: "background-color 0.3s ease",
-              overflow: "hidden",
-              border: darkMode ? "none" : "1px solid #EDF2F7", // Added border for better definition
+              borderRadius: "10px",
+              fontWeight: "bold",
+              backgroundColor: themeColors.primary,
+              "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
             }}
+            startIcon={<AddIcon />}
+            onClick={() => setOpen(true)}
+            fullWidth={isMobile}
           >
-            <Stack spacing={4}>
-              {/* Header Section */}
-              <Box>
-                <Typography
-                  variant={isMobile ? "h5" : "h4"}
-                  sx={{
-                    color: darkMode ? "#B478FF" : "#6A1B9A", // Changed to match navbar purple
+            Agregar Bien
+          </Button>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: { xs: "center", sm: "flex-end" } }}>
+            {darkMode ? <DarkModeIcon sx={{ mr: 1 }} /> : <LightModeIcon sx={{ mr: 1 }} />}
+            <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
+          </Box>
+        </Box>
+
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {/* Mobile view with cards */}
+            {isMobile && renderMobileCards()}
+
+            {/* Tablet and desktop view with DataGrid */}
+            {!isMobile && (
+              <DataGrid
+                rows={bienes}
+                columns={columnas}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20]}
+                autoHeight
+                disableColumnMenu={isMobile}
+                sx={{
+                  backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
+                  borderRadius: "10px",
+                  boxShadow: 3,
+                  "& .MuiDataGrid-columnHeaders": {
+                    backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                    color: themeColors.textLight,
                     fontWeight: "bold",
-                    mb: 1,
-                    letterSpacing: "0.3px",
-                  }}
-                >
-                  Gestión de Bienes
-                </Typography>
-                <Typography variant="body1" color={darkMode ? "text.secondary" : "text.secondary"} sx={{ mb: 2 }}>
-                  Administre el inventario de bienes de la organización
-                </Typography>
-                <Divider
-                  sx={{
-                    borderColor: darkMode ? "rgba(255,255,255,0.1)" : "rgba(106, 27, 154, 0.2)",
-                    my: 2,
-                  }}
-                />
-              </Box>
-
-              {/* Action Bar */}
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                justifyContent="space-between"
-                alignItems={{ xs: "stretch", sm: "center" }}
-                spacing={2}
-              >
-                <Button
-                  variant="contained"
-                  color="primary" // Changed from success to primary
-                  startIcon={<AddIcon />}
-                  onClick={() => setOpen(true)}
-                  fullWidth={isMobile}
-                  sx={{
-                    borderRadius: "8px",
-                    padding: "10px 20px",
-                    boxShadow: "0 2px 8px rgba(106, 27, 154, 0.2)", // Changed to purple
+                    fontSize: { xs: "14px", md: "16px" },
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    color: darkMode ? themeColors.textLight : themeColors.textDark,
+                    fontSize: { xs: "13px", md: "14px" },
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                    color: themeColors.textLight,
                     fontWeight: "bold",
-                    bgcolor: "#6A1B9A", // Changed to match navbar purple
-                    "&:hover": {
-                      bgcolor: "#5C1690", // Darker purple on hover
-                    },
-                  }}
-                >
-                  Agregar Bien
-                </Button>
-
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent={{ xs: "flex-end", sm: "flex-end" }}
-                  spacing={1}
-                >
-                  {
-                    darkMode ? (
-                      <DarkModeIcon sx={{ color: "#B478FF" }} />
-                    ) : (
-                      // Changed to light purple
-                      <LightModeIcon sx={{ color: "#6A1B9A" }} />
-                    ) // Changed to match navbar purple
-                  }
-                  <Switch
-                    checked={darkMode}
-                    onChange={() => setDarkMode(!darkMode)}
-                    color="secondary" // Changed to secondary which is purple in MUI
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    {darkMode ? "Modo Oscuro" : "Modo Claro"}
-                  </Typography>
-                </Stack>
-              </Stack>
-
-              {/* Table Section */}
-              <BienesTable
-                bienes={bienes}
-                loading={loading}
-                darkMode={darkMode}
-                setSelectedBien={setSelectedBien}
-                setOpenBaja={setOpenBaja}
-                isMobile={isMobile}
-                isTablet={isTablet}
-                onViewDetails={handleOpenDetailModal} // Pass the handler to open detail modal
+                    borderBottomLeftRadius: "10px",
+                    borderBottomRightRadius: "10px",
+                  },
+                }}
               />
-            </Stack>
-          </Paper>
-        </Container>
+            )}
+          </>
+        )}
+      </Paper>
 
-        {/* Dialogs */}
-        <BienesForm
-          open={open}
-          handleClose={() => setOpen(false)}
-          handleSubmit={handleSubmit}
-          handleChange={handleChange}
-          nuevoBien={nuevoBien}
-          tiposBien={tiposBien}
-          modelos={modelos}
-          marcas={marcas}
-          lugares={lugares}
-          usuarios={usuarios}
-          darkMode={darkMode}
-        />
+      {/* Modals and Dialogs */}
+      <BienesForm
+        open={open}
+        handleClose={() => setOpen(false)}
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        nuevoBien={nuevoBien}
+        tiposBien={tiposBien}
+        modelos={modelos}
+        marcas={marcas}
+        lugares={lugares}
+        usuarios={usuarios}
+        darkMode={darkMode}
+      />
 
-        <BienesBajaDialog
-          openBaja={openBaja}
-          handleClose={() => setOpenBaja(false)}
-          handleDarDeBaja={handleDarDeBaja}
-          motivoBaja={motivoBaja}
-          setMotivoBaja={setMotivoBaja}
-          selectedBien={selectedBien}
-          darkMode={darkMode}
-        />
+      <BienesBajaDialog
+        openBaja={openBaja}
+        handleClose={() => setOpenBaja(false)}
+        handleDarDeBaja={handleDarDeBaja}
+        motivoBaja={motivoBaja}
+        setMotivoBaja={setMotivoBaja}
+        selectedBien={selectedBien}
+        darkMode={darkMode}
+      />
 
-        {/* New Detail Modal with Barcode */}
-        <BienDetailModal
-          open={detailModalOpen}
-          onClose={handleCloseDetailModal}
-          bien={selectedBien}
-          darkMode={darkMode}
-          setSelectedBien={setSelectedBien}
-          setOpenBaja={setOpenBaja}
-        />
-      </Box>
-    </Fade>
+      <BienDetailModal
+        open={detailModalOpen}
+        onClose={handleCloseDetailModal}
+        bien={selectedBien}
+        darkMode={darkMode}
+        setSelectedBien={setSelectedBien}
+        setOpenBaja={setOpenBaja}
+      />
+    </Box>
   )
 }
 

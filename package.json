@@ -21,6 +21,7 @@
     "axios": "^1.8.4",
     "install": "^0.13.0",
     "jsbarcode": "^3.11.6",
+    "jwt-decode": "^4.0.0",
     "npm": "^11.2.0",
     "react-barcode": "^1.6.1",
     "react-router-dom": "^7.4.1",

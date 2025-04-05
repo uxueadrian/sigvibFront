@@ -1,143 +1,150 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { DataGrid } from "@mui/x-data-grid";
-import { 
-  Button, 
-  Switch, 
-  CssBaseline, 
-  Box, 
-  CircularProgress, 
-  Modal, 
-  TextField,
-  Paper,
+"use client"
+
+import { useState, useEffect } from "react"
+import axios from "axios"
+import {
+  Button,
+  Switch,
+  Box,
+  CircularProgress,
   Typography,
+  Paper,
   useMediaQuery,
   useTheme,
-  IconButton,
   Card,
   CardContent,
   CardActions,
-  Chip,
   Grid,
-  Tooltip
-} from "@mui/material";
-import { lightTheme, darkTheme } from "./../themes";
-import AgregarLugarModal from "./../components/AgregarLugarModal";
-import EditarLugarModal from "./../components/EditarLugarModal";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
+  Chip,
+  IconButton,
+  Tooltip,
+  Modal,
+  TextField,
+} from "@mui/material"
+import { DataGrid } from "@mui/x-data-grid"
+import EditIcon from "@mui/icons-material/Edit"
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew"
+import AddIcon from "@mui/icons-material/Add"
+import DarkModeIcon from "@mui/icons-material/DarkMode"
+import LightModeIcon from "@mui/icons-material/LightMode"
+
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
 
 const Lugares = () => {
-  const [lugares, setLugares] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalEditarOpen, setModalEditarOpen] = useState(false);
-  const [nuevoLugar, setNuevoLugar] = useState("");
-  const [lugarEditar, setLugarEditar] = useState({ id: null, lugar: "", status: true });
-  
+  const [lugares, setLugares] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [darkMode, setDarkMode] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalEditarOpen, setModalEditarOpen] = useState(false)
+  const [nuevoLugar, setNuevoLugar] = useState("")
+  const [lugarEditar, setLugarEditar] = useState({ id: null, lugar: "", status: true })
+
   // Theme and responsive breakpoints
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"))
 
   useEffect(() => {
-    axios.get("http://localhost:8080/lugares")
+    axios
+      .get("http://localhost:8080/lugares")
       .then((response) => {
-        const lugares = response.data.result.map((lugar) => ({ ...lugar, id: lugar.idlugar }));
-        setLugares(lugares);
+        const lugares = response.data.result.map((lugar) => ({ ...lugar, id: lugar.idlugar }))
+        setLugares(lugares)
       })
       .catch((error) => console.error("Error al obtener los lugares:", error))
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => setLoading(false))
+  }, [])
 
   const handleCambiarStatus = (idLugar) => {
-    axios.patch(`http://localhost:8080/lugares/${idLugar}/status`)
+    axios
+      .patch(`http://localhost:8080/lugares/${idLugar}/status`)
       .then(() => {
-        setLugares(lugares.map((lugar) => lugar.id === idLugar ? { ...lugar, status: !lugar.status } : lugar));
+        setLugares(lugares.map((lugar) => (lugar.id === idLugar ? { ...lugar, status: !lugar.status } : lugar)))
       })
-      .catch((error) => console.error("Error al cambiar el estado del lugar:", error));
-  };
+      .catch((error) => console.error("Error al cambiar el estado del lugar:", error))
+  }
 
   const handleAgregarLugar = () => {
-    if (!nuevoLugar.trim()) return;
-    axios.post("http://localhost:8080/lugares", { lugar: nuevoLugar, status: true })
+    if (!nuevoLugar.trim()) return
+    axios
+      .post("http://localhost:8080/lugares", { lugar: nuevoLugar, status: true })
       .then((response) => {
-        setLugares([...lugares, { id: response.data.result.idlugar, lugar: nuevoLugar, status: true }]);
-        setModalOpen(false);
-        setNuevoLugar("");
+        setLugares([...lugares, { id: response.data.result.idlugar, lugar: nuevoLugar, status: true }])
+        setModalOpen(false)
+        setNuevoLugar("")
       })
-      .catch((error) => console.error("Error al agregar el lugar:", error));
-  };
+      .catch((error) => console.error("Error al agregar el lugar:", error))
+  }
 
   const handleAbrirEditarLugar = (lugar) => {
-    setLugarEditar(lugar);
-    setModalEditarOpen(true);
-  };
+    setLugarEditar(lugar)
+    setModalEditarOpen(true)
+  }
 
   const handleActualizarLugar = () => {
-    const { id, lugar, status } = lugarEditar;
-    axios.put(`http://localhost:8080/lugares/${id}`, { lugar, status })
+    const { id, lugar, status } = lugarEditar
+    axios
+      .put(`http://localhost:8080/lugares/${id}`, { lugar, status })
       .then(() => {
-        setLugares(lugares.map((l) => (l.id === id ? { id, lugar, status } : l)));
-        setModalEditarOpen(false);
+        setLugares(lugares.map((l) => (l.id === id ? { id, lugar, status } : l)))
+        setModalEditarOpen(false)
       })
-      .catch((error) => console.error("Error al actualizar el lugar:", error));
-  };
+      .catch((error) => console.error("Error al actualizar el lugar:", error))
+  }
 
   const columnas = [
-    { 
-      field: "lugar", 
-      headerName: "Lugar", 
+    {
+      field: "lugar",
+      headerName: "Lugar",
       flex: 1,
-      minWidth: 120 
+      minWidth: 150,
     },
     {
-      field: "status", 
-      headerName: "Estado", 
+      field: "status",
+      headerName: "Estado",
+      width: 100,
+      renderCell: (params) => (
+        <Chip
+          label={params.row.status ? "Activo" : "Inactivo"}
+          color={params.row.status ? "success" : "error"}
+          size="small"
+        />
+      ),
+    },
+    {
+      field: "acciones",
+      headerName: "Acciones",
       flex: 0.8,
       minWidth: 120,
       renderCell: (params) => (
-        <Button 
-          variant="outlined" 
-          color={params.row.status ? "success" : "error"} 
-          onClick={() => handleCambiarStatus(params.row.id)}
-          size={isMobile ? "small" : "medium"}
-        >
-          {params.row.status ? "Activo" : "Inactivo"}
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title={params.row.status ? "Desactivar" : "Activar"}>
+            <IconButton
+              size="small"
+              color={params.row.status ? "error" : "success"}
+              onClick={() => handleCambiarStatus(params.row.id)}
+            >
+              <PowerSettingsNewIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Editar">
+            <IconButton size="small" color="primary" onClick={() => handleAbrirEditarLugar(params.row)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       ),
     },
-    {
-      field: "acciones", 
-      headerName: "Acciones", 
-      flex: 0.7,
-      minWidth: 100,
-      renderCell: (params) => (
-        isMobile ? (
-          <IconButton 
-            color="primary" 
-            onClick={() => handleAbrirEditarLugar(params.row)}
-            size="small"
-          >
-            <EditIcon />
-          </IconButton>
-        ) : (
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={() => handleAbrirEditarLugar(params.row)}
-            size={isTablet ? "small" : "medium"}
-          >
-            Editar
-          </Button>
-        )
-      ),
-    },
-  ];
+  ]
 
   // Card view for mobile devices
   const renderMobileCards = () => {
@@ -145,16 +152,19 @@ const Lugares = () => {
       <Grid container spacing={2}>
         {lugares.map((lugar) => (
           <Grid item xs={12} key={lugar.id}>
-            <Card sx={{ 
-              backgroundColor: darkMode ? "#333" : "#fff",
-              boxShadow: 2,
-              borderLeft: `4px solid ${lugar.status ? '#4caf50' : '#f44336'}`
-            }}>
+            <Card
+              sx={{
+                backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+                color: darkMode ? themeColors.textLight : themeColors.textDark,
+                boxShadow: 3,
+                borderLeft: `4px solid ${lugar.status ? "#4caf50" : "#f44336"}`,
+              }}
+            >
               <CardContent>
-                <Typography variant="h6" component="div" sx={{ fontWeight: "bold", color: darkMode ? "#fff" : "#333" }}>
+                <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
                   {lugar.lugar}
                 </Typography>
-                <Chip 
+                <Chip
                   label={lugar.status ? "Activo" : "Inactivo"}
                   color={lugar.status ? "success" : "error"}
                   size="small"
@@ -164,17 +174,21 @@ const Lugares = () => {
               <CardActions>
                 <Button
                   size="small"
-                  variant="outlined"
-                  color={lugar.status ? "success" : "error"}
+                  variant="contained"
+                  color={lugar.status ? "error" : "success"}
                   onClick={() => handleCambiarStatus(lugar.id)}
+                  startIcon={<PowerSettingsNewIcon />}
+                  sx={{ borderRadius: "8px" }}
                 >
                   {lugar.status ? "Desactivar" : "Activar"}
                 </Button>
                 <Button
                   size="small"
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
                   onClick={() => handleAbrirEditarLugar(lugar)}
+                  startIcon={<EditIcon />}
+                  sx={{ borderRadius: "8px" }}
                 >
                   Editar
                 </Button>
@@ -183,122 +197,256 @@ const Lugares = () => {
           </Grid>
         ))}
       </Grid>
-    );
-  };
+    )
+  }
 
-  return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
-      <Box sx={{ 
-        padding: { xs: "10px", sm: "15px", md: "20px" }, 
-        minHeight: "100vh", 
-        backgroundColor: darkMode ? "#1E1E1E" : "#F3F4F6" 
-      }}>
-        <Paper 
-          elevation={2} 
-          sx={{ 
-            padding: { xs: "15px", sm: "20px", md: "30px" },
-            borderRadius: "10px",
-            backgroundColor: darkMode ? "#333" : "#FFFFFF"
+  // Modal para agregar lugar
+  const renderAgregarLugarModal = () => (
+    <Modal
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
+      aria-labelledby="modal-agregar-lugar"
+      aria-describedby="modal-agregar-lugar-descripcion"
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90%", sm: 400 },
+          bgcolor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+          boxShadow: 24,
+          p: 4,
+          borderRadius: "10px",
+        }}
+      >
+        <Typography
+          id="modal-agregar-lugar"
+          variant="h6"
+          component="h2"
+          sx={{
+            color: darkMode ? themeColors.textLight : themeColors.primary,
+            fontWeight: "bold",
+            mb: 2,
           }}
         >
-          <Typography 
-            variant={isMobile ? "h5" : "h4"} 
-            sx={{ 
-              color: darkMode ? "#AED581" : "#7CB342", 
-              fontWeight: "bold", 
-              mb: 2 
+          Agregar Nuevo Lugar
+        </Typography>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="lugar"
+          label="Nombre del Lugar"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={nuevoLugar}
+          onChange={(e) => setNuevoLugar(e.target.value)}
+          sx={{ mb: 3 }}
+        />
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <Button onClick={() => setModalOpen(false)} variant="outlined" sx={{ borderRadius: "8px" }}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleAgregarLugar}
+            variant="contained"
+            sx={{
+              borderRadius: "8px",
+              backgroundColor: themeColors.primary,
+              "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
             }}
           >
-            Lugares
-          </Typography>
-          
-          <Box sx={{ 
-            display: "flex", 
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "space-between", 
-            alignItems: { xs: "flex-start", sm: "center" },
-            gap: { xs: 2, sm: 0 },
-            mb: 2 
-          }}>
-            <Button 
-              variant="contained" 
-              color="primary" 
-              startIcon={<AddIcon />}
-              onClick={() => setModalOpen(true)}
-              fullWidth={isMobile}
-              sx={{ borderRadius: "8px" }}
-            >
-              Agregar Lugar
-            </Button>
-            
-            <Box sx={{ 
-              display: "flex", 
-              alignItems: "center",
-              alignSelf: { xs: "flex-end", sm: "auto" }
-            }}>
-              {darkMode ? 
-                <DarkModeIcon sx={{ mr: 1, color: "#AED581" }} /> : 
-                <LightModeIcon sx={{ mr: 1, color: "#7CB342" }} />
-              }
-              <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
-            </Box>
-          </Box>
-          
-          <Box sx={{ width: "100%", margin: "20px auto" }}>
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <>
-                {/* Mobile view with cards */}
-                {isMobile && renderMobileCards()}
-                
-                {/* Tablet and desktop view with DataGrid */}
-                {!isMobile && (
-                  <DataGrid 
-                    rows={lugares} 
-                    columns={columnas} 
-                    pageSize={5} 
-                    autoHeight
-                    disableColumnMenu={isMobile}
-                    sx={{
-                      '& .MuiDataGrid-cell': {
-                        fontSize: { xs: '0.875rem', md: '1rem' }
-                      },
-                      '& .MuiDataGrid-columnHeaders': {
-                        backgroundColor: darkMode ? "#444" : "#f5f5f5",
-                        borderRadius: "8px 8px 0 0"
-                      }
-                    }}
-                  />
-                )}
-              </>
-            )}
-          </Box>
-        </Paper>
-        
-        <AgregarLugarModal 
-          open={modalOpen} 
-          onClose={() => setModalOpen(false)} 
-          nuevoLugar={nuevoLugar} 
-          setNuevoLugar={setNuevoLugar} 
-          handleAgregarLugar={handleAgregarLugar}
-          fullScreen={isMobile}
-        />
-        
-        <EditarLugarModal 
-          open={modalEditarOpen} 
-          onClose={() => setModalEditarOpen(false)} 
-          lugarEditar={lugarEditar} 
-          setLugarEditar={setLugarEditar} 
-          handleActualizarLugar={handleActualizarLugar}
-          fullScreen={isMobile}
-        />
+            Guardar
+          </Button>
+        </Box>
       </Box>
-    </ThemeProvider>
-  );
-};
+    </Modal>
+  )
 
-export default Lugares;
+  // Modal para editar lugar
+  const renderEditarLugarModal = () => (
+    <Modal
+      open={modalEditarOpen}
+      onClose={() => setModalEditarOpen(false)}
+      aria-labelledby="modal-editar-lugar"
+      aria-describedby="modal-editar-lugar-descripcion"
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90%", sm: 400 },
+          bgcolor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+          boxShadow: 24,
+          p: 4,
+          borderRadius: "10px",
+        }}
+      >
+        <Typography
+          id="modal-editar-lugar"
+          variant="h6"
+          component="h2"
+          sx={{
+            color: darkMode ? themeColors.textLight : themeColors.primary,
+            fontWeight: "bold",
+            mb: 2,
+          }}
+        >
+          Editar Lugar
+        </Typography>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="lugar-editar"
+          label="Nombre del Lugar"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={lugarEditar.lugar}
+          onChange={(e) => setLugarEditar({ ...lugarEditar, lugar: e.target.value })}
+          sx={{ mb: 3 }}
+        />
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+          <Button onClick={() => setModalEditarOpen(false)} variant="outlined" sx={{ borderRadius: "8px" }}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleActualizarLugar}
+            variant="contained"
+            sx={{
+              borderRadius: "8px",
+              backgroundColor: themeColors.primary,
+              "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
+            }}
+          >
+            Actualizar
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  )
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.backgroundLight,
+        padding: { xs: "16px", sm: "24px", md: "40px" },
+      }}
+    >
+      <Paper
+        elevation={5}
+        sx={{
+          width: "100%",
+          maxWidth: "1200px",
+          padding: { xs: "16px", sm: "20px", md: "30px" },
+          borderRadius: "15px",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+        }}
+      >
+        <Typography
+          variant={isMobile ? "h5" : "h4"}
+          align="center"
+          sx={{
+            color: darkMode ? themeColors.secondary : themeColors.primary,
+            marginBottom: { xs: "16px", md: "20px" },
+            fontWeight: "bold",
+          }}
+        >
+          Gestión de Lugares
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 2, sm: 0 },
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", sm: "center" },
+            marginBottom: "20px",
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{
+              borderRadius: "10px",
+              fontWeight: "bold",
+              backgroundColor: themeColors.primary,
+              "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
+            }}
+            startIcon={<AddIcon />}
+            onClick={() => setModalOpen(true)}
+            fullWidth={isMobile}
+          >
+            Agregar Lugar
+          </Button>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: { xs: "center", sm: "flex-end" } }}>
+            {darkMode ? <DarkModeIcon sx={{ mr: 1 }} /> : <LightModeIcon sx={{ mr: 1 }} />}
+            <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
+          </Box>
+        </Box>
+
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {/* Mobile view with cards */}
+            {isMobile && renderMobileCards()}
+
+            {/* Tablet and desktop view with DataGrid */}
+            {!isMobile && (
+              <DataGrid
+                rows={lugares}
+                columns={columnas}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20]}
+                autoHeight
+                disableColumnMenu={isMobile}
+                sx={{
+                  backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
+                  borderRadius: "10px",
+                  boxShadow: 3,
+                  "& .MuiDataGrid-columnHeaders": {
+                    backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                    color: themeColors.textLight,
+                    fontWeight: "bold",
+                    fontSize: { xs: "14px", md: "16px" },
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    color: darkMode ? themeColors.textLight : themeColors.textDark,
+                    fontSize: { xs: "13px", md: "14px" },
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                    color: themeColors.textLight,
+                    fontWeight: "bold",
+                    borderBottomLeftRadius: "10px",
+                    borderBottomRightRadius: "10px",
+                  },
+                }}
+              />
+            )}
+          </>
+        )}
+      </Paper>
+
+      {/* Modals */}
+      {renderAgregarLugarModal()}
+      {renderEditarLugarModal()}
+    </Box>
+  )
+}
+
+export default Lugares
+

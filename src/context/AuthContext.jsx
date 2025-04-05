@@ -1,20 +1,23 @@
 "use client"
 
-import { createContext, useState, useEffect } from "react"
+import { createContext, useState, useEffect, useContext } from "react"
 
+// Export the context directly so it can be imported by name
 export const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
-  const [loading, setLoading] = useState(true) // Add loading state
+  const [loading, setLoading] = useState(true)
 
+  // Update the useEffect to include the name from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("token")
     const storedRole = localStorage.getItem("role")
     const storedIdLugar = localStorage.getItem("idLugar")
     const storedIdUsuario = localStorage.getItem("idUsuario")
-    const storedUsername = localStorage.getItem("username") // Add username to storage
+    const storedUsername = localStorage.getItem("username")
+    const storedName = localStorage.getItem("name") // Add name from storage
 
     if (storedToken && storedRole) {
       setToken(storedToken)
@@ -23,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         role: storedRole,
         idLugar: storedIdLugar,
         idUsuario: storedIdUsuario,
+        name: storedName, // Include name in user object
       })
     }
 
@@ -30,6 +34,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
+  // Update the login function to store the name
   const login = async (username, password) => {
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
@@ -48,8 +53,15 @@ export const AuthProvider = ({ children }) => {
       const userRole = data.role
       const idLugar = data.id_lugar
       const idUsuario = data.idUsuario
+      const name = data.name // Get name from response
 
-      setUser({ username, role: userRole, idLugar, idUsuario })
+      setUser({
+        username,
+        role: userRole,
+        idLugar,
+        idUsuario,
+        name, // Include name in user state
+      })
       setToken(jwtToken)
 
       // Store all user data in localStorage
@@ -57,7 +69,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("role", userRole)
       localStorage.setItem("idLugar", idLugar)
       localStorage.setItem("idUsuario", idUsuario)
-      localStorage.setItem("username", username) // Store username too
+      localStorage.setItem("username", username)
+      localStorage.setItem("name", name) // Store name in localStorage
 
       return true
     } catch (error) {
@@ -66,6 +79,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  // Update the logout function to clear the name
   const logout = () => {
     setUser(null)
     setToken(null)
@@ -76,8 +90,21 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("idLugar")
     localStorage.removeItem("idUsuario")
     localStorage.removeItem("username")
+    localStorage.removeItem("name") // Remove name from localStorage
   }
 
-  return <AuthContext.Provider value={{ user, token, login, logout, loading }}>{children}</AuthContext.Provider>
+  const value = {
+    user,
+    token,
+    loading,
+    login,
+    logout,
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+
+export const useAuth = () => {
+  return useContext(AuthContext)
 }
 

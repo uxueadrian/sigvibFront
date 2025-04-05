@@ -18,6 +18,17 @@ import {
 import { Close as CloseIcon, Delete as DeleteIcon } from "@mui/icons-material"
 import JsBarcode from "jsbarcode"
 
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
+
 const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOpenBaja }) => {
   // Render barcode after modal opens
   useEffect(() => {
@@ -64,15 +75,15 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
       PaperProps={{
         sx: {
           borderRadius: "16px",
-          backgroundColor: darkMode ? "#1E1E1E" : "#FFFFFF",
-          backgroundImage: "none",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
           overflow: "hidden",
+          boxShadow: "0 8px 24px rgba(106, 27, 154, 0.15)",
         },
       }}
     >
       <DialogTitle
         sx={{
-          bgcolor: "#6A1B9A",
+          backgroundColor: themeColors.primary,
           color: "white",
           display: "flex",
           justifyContent: "space-between",
@@ -98,7 +109,7 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
               justifyContent: "center",
               alignItems: "center",
               p: 4,
-              backgroundColor: darkMode ? "#2D3748" : "#F8F9FA",
+              backgroundColor: darkMode ? "#2A2A2A" : "#F5F0F9",
             }}
           >
             <Avatar
@@ -109,8 +120,8 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                 width: "200px",
                 height: "200px",
                 borderRadius: "12px",
-                boxShadow: "0px 4px 12px rgba(0,0,0,0.15)",
-                border: `1px solid ${darkMode ? "#333" : "#e0e0e0"}`,
+                boxShadow: "0px 4px 12px rgba(106, 27, 154, 0.15)",
+                border: "1px solid #e0e0e0",
               }}
             />
           </Box>
@@ -119,23 +130,32 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
           <Box sx={{ width: { xs: "100%", md: "60%" }, p: 4 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography variant="h5" fontWeight="bold" color={darkMode ? "#E2E8F0" : "#6A1B9A"} gutterBottom>
+                <Typography
+                  variant="h5"
+                  fontWeight="bold"
+                  color={darkMode ? themeColors.textLight : themeColors.primary}
+                  gutterBottom
+                >
                   {bien.modelo}
                 </Typography>
-                <Typography variant="subtitle1" color={darkMode ? "#A0AEC0" : "text.secondary"} gutterBottom>
+                <Typography
+                  variant="subtitle1"
+                  color={darkMode ? "rgba(255,255,255,0.7)" : "text.secondary"}
+                  gutterBottom
+                >
                   {bien.marca}
                 </Typography>
-                <Divider sx={{ my: 2 }} />
+                <Divider sx={{ my: 2, borderColor: darkMode ? "rgba(255,255,255,0.1)" : "rgba(106, 27, 154, 0.1)" }} />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "#7B6F8A"}>
                   Número de Serie
                 </Typography>
                 <Typography
                   variant="body1"
                   fontWeight="medium"
-                  color={darkMode ? "#E2E8F0" : "text.primary"}
+                  color={darkMode ? "white" : "text.primary"}
                   gutterBottom
                 >
                   {bien.nSerie}
@@ -143,13 +163,13 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "#7B6F8A"}>
                   Código de Barras
                 </Typography>
                 <Typography
                   variant="body1"
                   fontWeight="medium"
-                  color={darkMode ? "#E2E8F0" : "text.primary"}
+                  color={darkMode ? "white" : "text.primary"}
                   gutterBottom
                 >
                   {bien.codigoBarras || "No asignado"}
@@ -157,7 +177,7 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "#7B6F8A"}>
                   Tipo de Bien
                 </Typography>
                 <Chip
@@ -165,15 +185,15 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                   size="small"
                   sx={{
                     mt: 0.5,
-                    backgroundColor: darkMode ? "#2D3748" : "#F0E6F8",
-                    color: darkMode ? "#E2E8F0" : "#6A1B9A",
+                    backgroundColor: darkMode ? "rgba(106, 27, 154, 0.2)" : "#F0E6F8",
+                    color: darkMode ? themeColors.textLight : themeColors.primary,
                     fontWeight: "medium",
                   }}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "#7B6F8A"}>
                   Ubicación
                 </Typography>
                 <Chip
@@ -181,14 +201,14 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                   size="small"
                   sx={{
                     mt: 0.5,
-                    backgroundColor: darkMode ? "#2A3746" : "#E8F0FD",
-                    color: darkMode ? "#EDF2F7" : "#3F51B5",
+                    backgroundColor: darkMode ? "rgba(63, 81, 181, 0.2)" : "#E8F0FD",
+                    color: darkMode ? "#A5B4FC" : "#3F51B5",
                   }}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "#7B6F8A"}>
                   Responsable
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
@@ -197,27 +217,27 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                       width: 32,
                       height: 32,
                       fontSize: "1rem",
-                      bgcolor: darkMode ? "#6A1B9A" : "#9C27B0",
-                      border: "2px solid #FFFFFF",
+                      bgcolor: themeColors.primary,
+                      border: `2px solid ${darkMode ? themeColors.paperDark : "white"}`,
                     }}
                   >
                     {bien.usuarioResponsable.charAt(0).toUpperCase()}
                   </Avatar>
-                  <Typography variant="body1" fontWeight="medium" color={darkMode ? "#E2E8F0" : "text.primary"}>
+                  <Typography variant="body1" fontWeight="medium" color={darkMode ? "white" : "text.primary"}>
                     {bien.usuarioResponsable}
                   </Typography>
                 </Box>
               </Grid>
 
-              {/* Código de Barras Visual - Implementación mejorada */}
+              {/* Código de Barras Visual */}
               <Grid item xs={12}>
                 <Box
                   sx={{
                     mt: 2,
                     p: 3,
                     borderRadius: 2,
-                    border: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(106, 27, 154, 0.2)"}`,
-                    backgroundColor: darkMode ? "#1A202C" : "#F5F0F9",
+                    border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(106, 27, 154, 0.2)",
+                    backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "#F8F4FB",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -225,7 +245,7 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                 >
                   <Typography
                     variant="subtitle2"
-                    color={darkMode ? "#A0AEC0" : "#6A1B9A"}
+                    color={darkMode ? themeColors.textLight : themeColors.primary}
                     gutterBottom
                     sx={{
                       fontWeight: "600",
@@ -239,7 +259,7 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                         transform: "translateX(-50%)",
                         width: "40px",
                         height: "2px",
-                        backgroundColor: darkMode ? "#B478FF" : "#6A1B9A",
+                        backgroundColor: themeColors.primary,
                       },
                     }}
                   >
@@ -249,7 +269,7 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                   {bien.codigoBarras ? (
                     <Box
                       sx={{
-                        bgcolor: "white",
+                        bgcolor: darkMode ? "#333" : "white",
                         p: 2,
                         borderRadius: 1,
                         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -263,7 +283,7 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
                   ) : (
                     <Typography
                       variant="body1"
-                      color={darkMode ? "#A0AEC0" : "text.secondary"}
+                      color={darkMode ? "rgba(255,255,255,0.5)" : "text.secondary"}
                       sx={{ fontStyle: "italic" }}
                     >
                       No hay código de barras asignado
@@ -279,22 +299,22 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
       <DialogActions
         sx={{
           padding: "16px 24px",
-          backgroundColor: darkMode ? "#1A202C" : "#F5F0F9",
-          borderTop: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(106, 27, 154, 0.1)"}`,
+          backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "#F8F4FB",
+          borderTop: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(106, 27, 154, 0.1)",
         }}
       >
         <Button
           variant="contained"
-          color="primary"
+          color="error"
           startIcon={<DeleteIcon />}
           sx={{
             borderRadius: "8px",
             fontWeight: "bold",
-            boxShadow: "0 2px 5px rgba(106, 27, 154, 0.2)",
-            bgcolor: "#6A1B9A",
+            boxShadow: "0 2px 5px rgba(211, 47, 47, 0.2)",
+            bgcolor: "#d32f2f",
             "&:hover": {
-              bgcolor: "#5C1690",
-              boxShadow: "0 4px 8px rgba(106, 27, 154, 0.3)",
+              bgcolor: "#b71c1c",
+              boxShadow: "0 4px 8px rgba(211, 47, 47, 0.3)",
             },
           }}
           onClick={handleDarDeBaja}
@@ -308,6 +328,12 @@ const BienDetailModal = ({ open, onClose, bien, darkMode, setSelectedBien, setOp
             borderRadius: "8px",
             fontWeight: "bold",
             ml: 2,
+            borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+            color: darkMode ? themeColors.textLight : themeColors.primary,
+            "&:hover": {
+              borderColor: darkMode ? themeColors.textLight : "#5E35B1",
+              backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "rgba(156, 39, 176, 0.04)",
+            },
           }}
         >
           Cerrar

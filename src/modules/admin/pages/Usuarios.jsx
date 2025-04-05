@@ -69,9 +69,10 @@ const Usuarios = () => {
     axios
       .get("http://localhost:8080/usuarios")
       .then((response) => {
-        const usuarios = response.data.result.map((usuario, index) => ({
+        // Aseguramos que cada usuario tenga un ID único
+        const usuarios = response.data.result.map((usuario) => ({
           ...usuario,
-          id: usuario.idusuario ?? `temp-${index}`,
+          id: usuario.idusuario, // Usamos idusuario como id
           lugar: usuario.lugar ? usuario.lugar.lugar : "Sin asignar",
           rolNombre: usuario.rol ? usuario.rol.nombre : "Sin rol",
         }))
@@ -103,6 +104,16 @@ const Usuarios = () => {
         )
       })
       .catch((error) => console.error("Error al cambiar el estado del usuario:", error))
+  }
+
+  // Función para preparar el usuario para editar
+  const prepararUsuarioParaEditar = (usuario) => {
+    setUsuarioEditar({
+      ...usuario,
+      rol: usuario.rol?.idRol || "",
+      idLugar: usuario.lugar?.idlugar || usuario.idLugar || "",
+    })
+    setEditOpen(true)
   }
 
   const columns = [
@@ -159,14 +170,7 @@ const Usuarios = () => {
             </IconButton>
           </Tooltip>
           <Tooltip title="Editar">
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => {
-                setUsuarioEditar(params.row)
-                setEditOpen(true)
-              }}
-            >
+            <IconButton size="small" color="primary" onClick={() => prepararUsuarioParaEditar(params.row)}>
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -236,10 +240,7 @@ const Usuarios = () => {
                   size="small"
                   variant="outlined"
                   color="primary"
-                  onClick={() => {
-                    setUsuarioEditar(usuario)
-                    setEditOpen(true)
-                  }}
+                  onClick={() => prepararUsuarioParaEditar(usuario)}
                   startIcon={<EditIcon />}
                   sx={{ borderRadius: "8px" }}
                 >
@@ -334,6 +335,7 @@ const Usuarios = () => {
                 rowsPerPageOptions={[5, 10, 20]}
                 autoHeight
                 disableColumnMenu={isMobile}
+                getRowId={(row) => row.id} // Aseguramos que DataGrid use el campo id
                 sx={{
                   backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
                   borderRadius: "10px",

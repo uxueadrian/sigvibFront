@@ -17,7 +17,9 @@ import {
   keyframes,
   CircularProgress,
 } from "@mui/material"
-import { Visibility, VisibilityOff, Person, Lock, LockOpen } from "@mui/icons-material"
+import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material"
+// Import the logo
+import logo1 from "./logo1.png"
 
 // Animations
 const fadeIn = keyframes`
@@ -108,30 +110,39 @@ const LoginCard = styled(Card)(({ theme }) => ({
   },
 }))
 
-const IconContainer = styled(Box)(({ theme }) => ({
+// Updated logo container with more elegant styling
+const LogoContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   margin: "0 auto 24px auto",
-  width: 80,
-  height: 80,
+  width: 90,
+  height: 90,
   borderRadius: "50%",
-  backgroundColor: "rgba(157, 78, 221, 0.15)",
-  border: "2px solid rgba(157, 78, 221, 0.3)",
+  backgroundColor: "rgba(157, 78, 221, 0.08)",
+  border: "1px solid rgba(157, 78, 221, 0.2)",
   position: "relative",
-  animation: `${pulse} 2s infinite ease-in-out`,
-  "&::before": {
+  boxShadow: "0 4px 20px rgba(157, 78, 221, 0.2)",
+  "&::after": {
     content: '""',
     position: "absolute",
-    top: -8,
-    left: -8,
-    right: -8,
-    bottom: -8,
+    top: -4,
+    left: -4,
+    right: -4,
+    bottom: -4,
     borderRadius: "50%",
-    border: "1px solid rgba(157, 78, 221, 0.2)",
-    animation: `${pulse} 2s infinite ease-in-out 1s`,
+    background: "linear-gradient(135deg, rgba(157, 78, 221, 0.2) 0%, rgba(180, 120, 255, 0.1) 100%)",
+    zIndex: -1,
   },
 }))
+
+// Updated logo styling
+const Logo = styled("img")({
+  width: "75%",
+  height: "75%",
+  objectFit: "contain",
+  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))",
+})
 
 const LoginTitle = styled(Typography)(({ theme }) => ({
   fontSize: "2rem",
@@ -308,10 +319,10 @@ const Login = () => {
   return (
     <LoginContainer>
       <LoginCard elevation={0}>
-        {/* Replaced image with animated icon */}
-        <IconContainer>
-          <LockOpen sx={{ fontSize: 40, color: "#B478FF" }} />
-        </IconContainer>
+        {/* Logo container with refined styling */}
+        <LogoContainer>
+          <Logo src={logo1} alt="SIGVIB Logo" />
+        </LogoContainer>
 
         <LoginTitle variant="h4">SIGVIB</LoginTitle>
 
@@ -406,7 +417,7 @@ const Login = () => {
             {isLoading ? <CircularProgress size={24} sx={{ color: "#FFFFFF" }} /> : "Iniciar sesión"}
           </LoginButton>
 
-          <ForgotPasswordLink>¿Olvidaste tu contraseña?</ForgotPasswordLink>
+        
         </Box>
 
         <FooterText>SIGVIB</FooterText>

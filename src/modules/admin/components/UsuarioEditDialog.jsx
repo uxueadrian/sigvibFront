@@ -3,7 +3,6 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, M
 import axios from "axios";
 
 const UsuarioEditDialog = ({ open, setOpen, usuarioEditar, setUsuarioEditar, roles, lugares, setUsuarios, usuarios }) => {
-  const [error, setError] = useState("");
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
 
   // Evita errores si usuarioEditar es null
@@ -38,11 +37,23 @@ const UsuarioEditDialog = ({ open, setOpen, usuarioEditar, setUsuarioEditar, rol
       idLugar: parseInt(usuarioEditar.idLugar),
     };
 
-    axios.put(`http://localhost:8080/usuarios/${usuarioEditar.id}`, usuarioFormateado, {
+    axios.put(`http://localhost:8080/usuarios/${usuarioEditar.idusuario || usuarioEditar.id}`, usuarioFormateado, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     })
       .then(response => {
-        setUsuarios(usuarios.map(usuario => usuario.id === usuarioEditar.id ? response.data.result : usuario));
+        // Aseguramos que el usuario actualizado tenga un ID válido
+        const usuarioActualizado = {
+          ...response.data.result,
+          id: response.data.result.idusuario || usuarioEditar.id,
+          lugar: response.data.result.lugar ? response.data.result.lugar.lugar : "Sin asignar",
+          rolNombre: response.data.result.rol ? response.data.result.rol.nombre : "Sin rol",
+        };
+        
+        // Actualizamos el usuario en el estado
+        setUsuarios(usuarios.map(usuario => 
+          usuario.id === usuarioEditar.id ? usuarioActualizado : usuario
+        ));
+        
         setOpen(false);
         setSnackbar({ open: true, message: "Usuario actualizado correctamente.", severity: "success" });
       })
@@ -59,15 +70,15 @@ const UsuarioEditDialog = ({ open, setOpen, usuarioEditar, setUsuarioEditar, rol
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Editar Usuario</DialogTitle>
         <DialogContent>
-          <TextField label="Nombre" name="nombre" value={usuarioEditar.nombre} fullWidth onChange={handleChange} margin="dense" />
-          <TextField label="Usuario" name="usuario" value={usuarioEditar.usuario} fullWidth onChange={handleChange} margin="dense" />
-          <TextField label="Contraseña" name="contrasena" type="password" value={usuarioEditar.contrasena} fullWidth onChange={handleChange} margin="dense" />
-          <TextField select label="Lugar Asignado" name="idLugar" value={usuarioEditar.idLugar} fullWidth onChange={handleChange} margin="dense">
+          <TextField label="Nombre" name="nombre" value={usuarioEditar.nombre || ""} fullWidth onChange={handleChange} margin="dense" />
+          <TextField label="Usuario" name="usuario" value={usuarioEditar.usuario || ""} fullWidth onChange={handleChange} margin="dense" />
+          <TextField label="Contraseña" name="contrasena" type="password" value={usuarioEditar.contrasena || ""} fullWidth onChange={handleChange} margin="dense" />
+          <TextField select label="Lugar Asignado" name="idLugar" value={usuarioEditar.idLugar || ""} fullWidth onChange={handleChange} margin="dense">
             {lugares.length > 0 ? lugares.map(lugar => (
               <MenuItem key={lugar.idlugar} value={lugar.idlugar}>{lugar.lugar}</MenuItem>
             )) : <MenuItem disabled>No hay lugares disponibles</MenuItem>}
           </TextField>
-          <TextField select label="Rol" name="rol" value={usuarioEditar.rol} fullWidth onChange={handleChange} margin="dense">
+          <TextField select label="Rol" name="rol" value={usuarioEditar.rol || ""} fullWidth onChange={handleChange} margin="dense">
             {roles.map(rol => (
               <MenuItem key={rol.id} value={rol.id}>{rol.nombre}</MenuItem>
             ))}

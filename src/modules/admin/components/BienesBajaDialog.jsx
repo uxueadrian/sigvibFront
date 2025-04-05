@@ -21,7 +21,26 @@ import CloseIcon from "@mui/icons-material/Close"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import WarningAmberIcon from "@mui/icons-material/WarningAmber"
 
-const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, setMotivoBaja, selectedBien, darkMode }) => {
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
+
+const BienesBajaDialog = ({
+  openBaja,
+  handleClose,
+  handleDarDeBaja,
+  motivoBaja,
+  setMotivoBaja,
+  selectedBien,
+  darkMode,
+}) => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"))
 
@@ -36,13 +55,13 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
         sx: {
           borderRadius: fullScreen ? 0 : "16px",
           overflow: "hidden",
-          backgroundColor: darkMode ? "#1E1E1E" : "#FFFFFF",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
         },
       }}
     >
       <DialogTitle
         sx={{
-          bgcolor: "#D32F2F",
+          backgroundColor: "#d32f2f",
           color: "white",
           display: "flex",
           justifyContent: "space-between",
@@ -61,17 +80,20 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ padding: "24px", backgroundColor: darkMode ? "#1E1E1E" : "#FFFFFF" }}>
+      <DialogContent
+        sx={{ padding: "24px", backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight }}
+      >
         <Stack spacing={3}>
           {selectedBien && (
-            <Paper 
-              elevation={darkMode ? 3 : 1} 
-              sx={{ 
-                p: 3, 
+            <Paper
+              elevation={1}
+              sx={{
+                p: 3,
                 borderRadius: "12px",
-                backgroundColor: darkMode ? "#1A202C" : "#FFF8F8",
-                border: darkMode ? "none" : "1px solid rgba(211, 47, 47, 0.2)",
-                mb: 2
+                backgroundColor: darkMode ? "rgba(211, 47, 47, 0.1)" : "#FFF8F8",
+                border: darkMode ? "1px solid rgba(211, 47, 47, 0.3)" : "1px solid rgba(211, 47, 47, 0.2)",
+                mb: 2,
+                boxShadow: "0 4px 12px rgba(211, 47, 47, 0.05)",
               }}
             >
               <Stack direction="row" spacing={2} alignItems="center">
@@ -79,32 +101,22 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
                   src={selectedBien.imagen}
                   alt={selectedBien.modelo}
                   variant="rounded"
-                  sx={{ 
-                    width: 60, 
-                    height: 60, 
-                    borderRadius: "8px", 
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: "8px",
                     boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
-                    border: `1px solid ${darkMode ? "#333" : "#e0e0e0"}`
+                    border: "1px solid #e0e0e0",
                   }}
                 />
                 <Box>
-                  <Typography 
-                    variant="subtitle1" 
-                    fontWeight="bold"
-                    color={darkMode ? "#E2E8F0" : "#D32F2F"}
-                  >
+                  <Typography variant="subtitle1" fontWeight="bold" color="#D32F2F">
                     {selectedBien.modelo}
                   </Typography>
-                  <Typography 
-                    variant="body2" 
-                    color={darkMode ? "#A0AEC0" : "text.secondary"}
-                  >
+                  <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "text.secondary"}>
                     Serie: {selectedBien.nSerie}
                   </Typography>
-                  <Typography 
-                    variant="body2" 
-                    color={darkMode ? "#A0AEC0" : "text.secondary"}
-                  >
+                  <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "text.secondary"}>
                     Responsable: {selectedBien.usuarioResponsable}
                   </Typography>
                 </Box>
@@ -131,18 +143,20 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
           </Alert>
 
           <Box>
-            <Typography 
-              variant="subtitle2" 
-              gutterBottom 
-              color={darkMode ? "#E2E8F0" : "text.secondary"} 
+            <Typography
+              variant="subtitle2"
+              gutterBottom
+              color={darkMode ? "rgba(255,255,255,0.7)" : "text.secondary"}
               fontWeight="medium"
             >
               Por favor, indique el motivo de la baja:
             </Typography>
-            <Divider sx={{ 
-              mb: 2,
-              borderColor: darkMode ? "rgba(255,255,255,0.1)" : "rgba(211, 47, 47, 0.2)",
-            }} />
+            <Divider
+              sx={{
+                mb: 2,
+                borderColor: darkMode ? "rgba(211, 47, 47, 0.3)" : "rgba(211, 47, 47, 0.2)",
+              }}
+            />
 
             <TextField
               label="Motivo de Baja"
@@ -158,22 +172,22 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
               error={motivoBaja.trim() === ""}
               helperText={motivoBaja.trim() === "" ? "El motivo es obligatorio" : ""}
               InputProps={{
-                sx: { 
+                sx: {
                   borderRadius: "8px",
-                  backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
-                  color: darkMode ? "#E2E8F0" : "inherit",
+                  backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "#FFFFFF",
+                  color: darkMode ? "white" : "#333333",
                 },
               }}
               InputLabelProps={{
-                sx: { color: darkMode ? "#A0AEC0" : "#D32F2F" },
+                sx: { color: "#D32F2F" },
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
-                    borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(211, 47, 47, 0.23)",
+                    borderColor: "rgba(211, 47, 47, 0.23)",
                   },
                   "&:hover fieldset": {
-                    borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(211, 47, 47, 0.4)",
+                    borderColor: "rgba(211, 47, 47, 0.4)",
                   },
                   "&.Mui-focused fieldset": {
                     borderColor: "#D32F2F",
@@ -189,8 +203,8 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
       <DialogActions
         sx={{
           padding: "16px 24px",
-          backgroundColor: darkMode ? "#1A202C" : "#FEF6F6",
-          borderTop: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(211, 47, 47, 0.1)"}`,
+          backgroundColor: darkMode ? "rgba(211, 47, 47, 0.1)" : "#FEF6F6",
+          borderTop: darkMode ? "1px solid rgba(211, 47, 47, 0.2)" : "1px solid rgba(211, 47, 47, 0.1)",
         }}
       >
         <Button
@@ -234,3 +248,4 @@ const BienesBajaDialog = ({ openBaja, handleClose, handleDarDeBaja, motivoBaja, 
 }
 
 export default BienesBajaDialog
+

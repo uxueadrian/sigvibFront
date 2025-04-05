@@ -11,7 +11,6 @@ import {
   CircularProgress,
   Grid,
   IconButton,
-  Modal,
   Paper,
   Tab,
   Tabs,
@@ -22,9 +21,13 @@ import {
   useTheme,
   Avatar,
   Switch,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material"
 import {
-  Add,
+  Add as AddIcon,
   CloudUpload,
   Close,
   PowerSettingsNew,
@@ -37,12 +40,12 @@ import { AuthContext } from "../../../context/AuthContext"
 
 // Theme colors matching the Usuarios component
 const themeColors = {
-  primary: "#673AB7", // Main purple
-  secondary: "#9575CD", // Lighter purple
-  textLight: "#FFFFFF", // White
-  textDark: "#000000", // Black
-  backgroundLight: "#F3F4F6", // Light background
-  backgroundDark: "#1E1E1E", // Dark background
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
   paperLight: "#FFFFFF",
   paperDark: "#2C2C2C",
 }
@@ -92,7 +95,8 @@ const UploadImage = ({ setFoto, nombre, handleCreate }) => {
         sx={{
           borderRadius: "8px",
           p: 1.5,
-          borderColor: uploading ? "grey.400" : "primary.main",
+          borderColor: uploading ? "grey.400" : themeColors.primary,
+          color: uploading ? "grey.500" : themeColors.primary,
         }}
       >
         {uploading ? "Subiendo..." : "Subir imagen"}
@@ -177,48 +181,68 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad, da
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: isMobile ? "90%" : 400,
-          bgcolor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        sx: {
+          borderRadius: "10px",
+          width: "100%",
+          maxWidth: isMobile ? "90%" : "500px",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
           color: darkMode ? themeColors.textLight : themeColors.textDark,
-          boxShadow: 24,
-          p: 3,
-          borderRadius: 2,
-          maxHeight: "90vh",
-          overflow: "auto",
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          backgroundColor: themeColors.primary,
+          color: "white",
+          fontWeight: "bold",
+          borderTopLeftRadius: "10px",
+          borderTopRightRadius: "10px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <Typography variant="h6" component="h2" sx={{ fontWeight: "bold" }}>
-            Crear {entidad}
-          </Typography>
-          <IconButton onClick={handleClose} size="small" sx={{ color: darkMode ? themeColors.textLight : "inherit" }}>
-            <Close />
-          </IconButton>
-        </Box>
+        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+          Agregar {entidad}
+        </Typography>
+        <IconButton edge="end" color="inherit" onClick={handleClose} aria-label="close" size="small">
+          <Close />
+        </IconButton>
+      </DialogTitle>
 
+      <DialogContent sx={{ p: 3, mt: 1 }}>
         <TextField
-          fullWidth
+          autoFocus
+          margin="dense"
           label="Nombre"
+          fullWidth
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           error={!!error}
           helperText={error}
-          margin="normal"
+          variant="outlined"
           sx={{
+            mb: 2,
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
                 borderColor: darkMode ? "rgba(255, 255, 255, 0.23)" : "rgba(0, 0, 0, 0.23)",
               },
+              "&:hover fieldset": {
+                borderColor: darkMode ? "rgba(255, 255, 255, 0.4)" : themeColors.primary,
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+              },
             },
             "& .MuiInputLabel-root": {
               color: darkMode ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.6)",
+              "&.Mui-focused": {
+                color: darkMode ? themeColors.textLight : themeColors.primary,
+              },
             },
             "& .MuiInputBase-input": {
               color: darkMode ? themeColors.textLight : themeColors.textDark,
@@ -227,38 +251,35 @@ const CrearEntidadModal = ({ open, handleClose, fetchData, endpoint, entidad, da
         />
 
         {entidad === "Modelo" && <UploadImage setFoto={setFoto} nombre={nombre} handleCreate={handleCreate} />}
+      </DialogContent>
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 1 }}>
-          <Button
-            variant="outlined"
-            onClick={handleClose}
-            disabled={loading}
-            sx={{
-              borderRadius: "8px",
-              color: darkMode ? themeColors.textLight : "primary.main",
-              borderColor: darkMode ? themeColors.textLight : "primary.main",
-            }}
-          >
-            Cancelar
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => handleCreate()}
-            disabled={loading}
-            startIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
-            sx={{
-              borderRadius: "8px",
-              bgcolor: themeColors.primary,
-              "&:hover": {
-                bgcolor: darkMode ? themeColors.secondary : "#5E35B1",
-              },
-            }}
-          >
-            {loading ? "Creando..." : "Crear"}
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
+      <DialogActions sx={{ p: 3, pt: 0 }}>
+        <Button
+          onClick={handleClose}
+          variant="outlined"
+          sx={{
+            borderRadius: "8px",
+            borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+            color: darkMode ? themeColors.textLight : themeColors.primary,
+          }}
+        >
+          Cancelar
+        </Button>
+        <Button
+          onClick={() => handleCreate()}
+          variant="contained"
+          disabled={loading}
+          startIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
+          sx={{
+            borderRadius: "8px",
+            backgroundColor: themeColors.primary,
+            "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
+          }}
+        >
+          {loading ? "Creando..." : "Guardar"}
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }
 
@@ -266,7 +287,7 @@ const Categorias = () => {
   const { token } = useContext(AuthContext)
   const [tabValue, setTabValue] = useState(0)
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"))
   const [modalOpen, setModalOpen] = useState(null)
   const [darkMode, setDarkMode] = useState(false)
@@ -376,25 +397,29 @@ const Categorias = () => {
 
   // Columnas para TipoBien
   const columnasTipoBien = [
-    { field: "nombre", headerName: "Tipo de bien", flex: 1, minWidth: 120 },
+    {
+      field: "nombre",
+      headerName: "Tipo de bien",
+      flex: 1,
+      minWidth: 150,
+    },
     {
       field: "status",
       headerName: "Estado",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
         <Chip
           label={params.row.status ? "Activo" : "Inactivo"}
           color={params.row.status ? "success" : "error"}
           size="small"
-          onClick={() => cambiarEstadoTipoBien(params.row.id)}
-          sx={{ cursor: "pointer" }}
         />
       ),
     },
     {
       field: "acciones",
       headerName: "Acciones",
-      width: 120,
+      flex: 0.8,
+      minWidth: 120,
       renderCell: (params) => (
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title={params.row.status ? "Desactivar" : "Activar"}>
@@ -413,25 +438,29 @@ const Categorias = () => {
 
   // Columnas para Marcas
   const columnasMarcas = [
-    { field: "nombre", headerName: "Marca", flex: 1, minWidth: 120 },
+    {
+      field: "nombre",
+      headerName: "Marca",
+      flex: 1,
+      minWidth: 150,
+    },
     {
       field: "status",
       headerName: "Estado",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
         <Chip
           label={params.row.status ? "Activo" : "Inactivo"}
           color={params.row.status ? "success" : "error"}
           size="small"
-          onClick={() => cambiarEstadoMarca(params.row.id)}
-          sx={{ cursor: "pointer" }}
         />
       ),
     },
     {
       field: "acciones",
       headerName: "Acciones",
-      width: 120,
+      flex: 0.8,
+      minWidth: 120,
       renderCell: (params) => (
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title={params.row.status ? "Desactivar" : "Activar"}>
@@ -450,7 +479,12 @@ const Categorias = () => {
 
   // Columnas para Modelos
   const columnasModelos = [
-    { field: "nombreModelo", headerName: "Modelo", flex: 1, minWidth: 120 },
+    {
+      field: "nombreModelo",
+      headerName: "Modelo",
+      flex: 1,
+      minWidth: 150,
+    },
     {
       field: "foto",
       headerName: "Imagen",
@@ -465,21 +499,20 @@ const Categorias = () => {
     {
       field: "status",
       headerName: "Estado",
-      width: 150,
+      width: 100,
       renderCell: (params) => (
         <Chip
           label={params.row.status ? "Activo" : "Inactivo"}
           color={params.row.status ? "success" : "error"}
           size="small"
-          onClick={() => cambiarEstadoModelo(params.row.id)}
-          sx={{ cursor: "pointer" }}
         />
       ),
     },
     {
       field: "acciones",
       headerName: "Acciones",
-      width: 120,
+      flex: 0.8,
+      minWidth: 120,
       renderCell: (params) => (
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title={params.row.status ? "Desactivar" : "Activar"}>
@@ -630,19 +663,15 @@ const Categorias = () => {
               fontWeight: "bold",
               backgroundColor: themeColors.primary,
               "&:hover": { backgroundColor: darkMode ? themeColors.secondary : "#5E35B1" },
-              minWidth: { xs: "100%", sm: "auto" },
             }}
-            startIcon={tabValue === 2 ? <CloudUpload /> : <Add />}
+            startIcon={tabValue === 2 ? <CloudUpload /> : <AddIcon />}
             onClick={() => setModalOpen(tabValue === 0 ? "tipo-bien" : tabValue === 1 ? "marca" : "modelo")}
+            fullWidth={isMobile}
           >
             Agregar {tabValue === 0 ? "Tipo de Bien" : tabValue === 1 ? "Marca" : "Modelo"}
           </Button>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: { xs: "center", sm: "flex-end" } }}>
-            {darkMode ? (
-              <DarkModeIcon sx={{ mr: 1, color: themeColors.textLight }} />
-            ) : (
-              <LightModeIcon sx={{ mr: 1 }} />
-            )}
+            {darkMode ? <DarkModeIcon sx={{ mr: 1 }} /> : <LightModeIcon sx={{ mr: 1 }} />}
             <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
           </Box>
         </Box>
@@ -675,168 +704,153 @@ const Categorias = () => {
         <Box sx={{ mt: 2, mb: 4 }}>
           {tabValue === 0 && (
             <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 2,
-                  color: darkMode ? themeColors.secondary : themeColors.primary,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Tipos de Bien
-              </Typography>
               {loadingTipoBien ? (
-                <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-                  <CircularProgress sx={{ color: darkMode ? themeColors.secondary : themeColors.primary }} />
+                <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+                  <CircularProgress />
                 </Box>
-              ) : isMobile ? (
-                renderMobileCards(tipoBien, "tipoBien")
               ) : (
-                <DataGrid
-                  rows={tipoBien}
-                  columns={columnasTipoBien}
-                  pageSize={10}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  autoHeight
-                  disableColumnMenu={isMobile}
-                  sx={{
-                    backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
-                    borderRadius: "10px",
-                    boxShadow: 3,
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
-                      color: themeColors.textLight,
-                      fontWeight: "bold",
-                      fontSize: { xs: "14px", md: "16px" },
-                      borderTopLeftRadius: "10px",
-                      borderTopRightRadius: "10px",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      color: darkMode ? themeColors.textLight : themeColors.textDark,
-                      fontSize: { xs: "13px", md: "14px" },
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
-                      color: themeColors.textLight,
-                      fontWeight: "bold",
-                      borderBottomLeftRadius: "10px",
-                      borderBottomRightRadius: "10px",
-                    },
-                  }}
-                />
+                <>
+                  {/* Mobile view with cards */}
+                  {isMobile && renderMobileCards(tipoBien, "tipoBien")}
+
+                  {/* Tablet and desktop view with DataGrid */}
+                  {!isMobile && (
+                    <DataGrid
+                      rows={tipoBien}
+                      columns={columnasTipoBien}
+                      pageSize={5}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      autoHeight
+                      disableColumnMenu={isMobile}
+                      sx={{
+                        backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
+                        borderRadius: "10px",
+                        boxShadow: 3,
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                          color: themeColors.textLight,
+                          fontWeight: "bold",
+                          fontSize: { xs: "14px", md: "16px" },
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        },
+                        "& .MuiDataGrid-cell": {
+                          color: darkMode ? themeColors.textLight : themeColors.textDark,
+                          fontSize: { xs: "13px", md: "14px" },
+                        },
+                        "& .MuiDataGrid-footerContainer": {
+                          backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                          color: themeColors.textLight,
+                          fontWeight: "bold",
+                          borderBottomLeftRadius: "10px",
+                          borderBottomRightRadius: "10px",
+                        },
+                      }}
+                    />
+                  )}
+                </>
               )}
             </Box>
           )}
 
           {tabValue === 1 && (
             <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 2,
-                  color: darkMode ? themeColors.secondary : themeColors.primary,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Marcas
-              </Typography>
               {loadingMarcas ? (
-                <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-                  <CircularProgress sx={{ color: darkMode ? themeColors.secondary : themeColors.primary }} />
+                <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+                  <CircularProgress />
                 </Box>
-              ) : isMobile ? (
-                renderMobileCards(marcas, "marcas")
               ) : (
-                <DataGrid
-                  rows={marcas}
-                  columns={columnasMarcas}
-                  pageSize={10}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  autoHeight
-                  disableColumnMenu={isMobile}
-                  sx={{
-                    backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
-                    borderRadius: "10px",
-                    boxShadow: 3,
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
-                      color: themeColors.textLight,
-                      fontWeight: "bold",
-                      fontSize: { xs: "14px", md: "16px" },
-                      borderTopLeftRadius: "10px",
-                      borderTopRightRadius: "10px",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      color: darkMode ? themeColors.textLight : themeColors.textDark,
-                      fontSize: { xs: "13px", md: "14px" },
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
-                      color: themeColors.textLight,
-                      fontWeight: "bold",
-                      borderBottomLeftRadius: "10px",
-                      borderBottomRightRadius: "10px",
-                    },
-                  }}
-                />
+                <>
+                  {/* Mobile view with cards */}
+                  {isMobile && renderMobileCards(marcas, "marcas")}
+
+                  {/* Tablet and desktop view with DataGrid */}
+                  {!isMobile && (
+                    <DataGrid
+                      rows={marcas}
+                      columns={columnasMarcas}
+                      pageSize={5}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      autoHeight
+                      disableColumnMenu={isMobile}
+                      sx={{
+                        backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
+                        borderRadius: "10px",
+                        boxShadow: 3,
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                          color: themeColors.textLight,
+                          fontWeight: "bold",
+                          fontSize: { xs: "14px", md: "16px" },
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        },
+                        "& .MuiDataGrid-cell": {
+                          color: darkMode ? themeColors.textLight : themeColors.textDark,
+                          fontSize: { xs: "13px", md: "14px" },
+                        },
+                        "& .MuiDataGrid-footerContainer": {
+                          backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                          color: themeColors.textLight,
+                          fontWeight: "bold",
+                          borderBottomLeftRadius: "10px",
+                          borderBottomRightRadius: "10px",
+                        },
+                      }}
+                    />
+                  )}
+                </>
               )}
             </Box>
           )}
 
           {tabValue === 2 && (
             <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 2,
-                  color: darkMode ? themeColors.secondary : themeColors.primary,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Modelos
-              </Typography>
               {loadingModelos ? (
-                <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-                  <CircularProgress sx={{ color: darkMode ? themeColors.secondary : themeColors.primary }} />
+                <Box sx={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+                  <CircularProgress />
                 </Box>
-              ) : isMobile ? (
-                renderMobileCards(modelos, "modelos")
               ) : (
-                <DataGrid
-                  rows={modelos}
-                  columns={columnasModelos}
-                  pageSize={10}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  autoHeight
-                  disableColumnMenu={isMobile}
-                  sx={{
-                    backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
-                    borderRadius: "10px",
-                    boxShadow: 3,
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
-                      color: themeColors.textLight,
-                      fontWeight: "bold",
-                      fontSize: { xs: "14px", md: "16px" },
-                      borderTopLeftRadius: "10px",
-                      borderTopRightRadius: "10px",
-                    },
-                    "& .MuiDataGrid-cell": {
-                      color: darkMode ? themeColors.textLight : themeColors.textDark,
-                      fontSize: { xs: "13px", md: "14px" },
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                      backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
-                      color: themeColors.textLight,
-                      fontWeight: "bold",
-                      borderBottomLeftRadius: "10px",
-                      borderBottomRightRadius: "10px",
-                    },
-                  }}
-                />
+                <>
+                  {/* Mobile view with cards */}
+                  {isMobile && renderMobileCards(modelos, "modelos")}
+
+                  {/* Tablet and desktop view with DataGrid */}
+                  {!isMobile && (
+                    <DataGrid
+                      rows={modelos}
+                      columns={columnasModelos}
+                      pageSize={5}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      autoHeight
+                      disableColumnMenu={isMobile}
+                      sx={{
+                        backgroundColor: darkMode ? themeColors.backgroundDark : themeColors.paperLight,
+                        borderRadius: "10px",
+                        boxShadow: 3,
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                          color: themeColors.textLight,
+                          fontWeight: "bold",
+                          fontSize: { xs: "14px", md: "16px" },
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        },
+                        "& .MuiDataGrid-cell": {
+                          color: darkMode ? themeColors.textLight : themeColors.textDark,
+                          fontSize: { xs: "13px", md: "14px" },
+                        },
+                        "& .MuiDataGrid-footerContainer": {
+                          backgroundColor: darkMode ? themeColors.primary : themeColors.primary,
+                          color: themeColors.textLight,
+                          fontWeight: "bold",
+                          borderBottomLeftRadius: "10px",
+                          borderBottomRightRadius: "10px",
+                        },
+                      }}
+                    />
+                  )}
+                </>
               )}
             </Box>
           )}

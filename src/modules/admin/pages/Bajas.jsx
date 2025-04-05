@@ -15,39 +15,39 @@ import {
   CardContent,
   Breadcrumbs,
   Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
+  Avatar,
+  IconButton,
+  Tooltip,
 } from "@mui/material"
-import BienesTable from "../components/BienesTable"
-import BienesForm from "../components/BienesForm"
-import BienesBajaDialog from "../components/BienesBajaDialog"
-import AddIcon from "@mui/icons-material/Add"
 import DarkModeIcon from "@mui/icons-material/DarkMode"
 import LightModeIcon from "@mui/icons-material/LightMode"
 import InventoryIcon from "@mui/icons-material/Inventory"
 import HomeIcon from "@mui/icons-material/Home"
 import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import InfoIcon from "@mui/icons-material/Info"
+import DeleteIcon from "@mui/icons-material/Delete"
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
+import PersonIcon from "@mui/icons-material/Person"
+import LocationOnIcon from "@mui/icons-material/LocationOn"
 
-const Bienes = () => {
+const BienesBaja = () => {
   const [bienes, setBienes] = useState([])
   const [loading, setLoading] = useState(true)
-  const [open, setOpen] = useState(false)
-  const [openBaja, setOpenBaja] = useState(false)
-  const [selectedBien, setSelectedBien] = useState(null)
-  const [motivoBaja, setMotivoBaja] = useState("")
-  const [lugares, setLugares] = useState([])
-  const [modelos, setModelos] = useState([])
-  const [marcas, setMarcas] = useState([])
-  const [tiposBien, setTiposBien] = useState([])
   const [darkMode, setDarkMode] = useState(false)
-  const [usuarios, setUsuarios] = useState([])
-  const [nuevoBien, setNuevoBien] = useState({
-    codigoBarras: "",
-    nSerie: "",
-    idTipo: "",
-    idLugar: "",
-    idModelo: "",
-    idMarca: "",
-    idUsuario: "",
-  })
+  const [openDetailModal, setOpenDetailModal] = useState(false)
+  const [selectedBien, setSelectedBien] = useState(null)
 
   // Theme and responsive breakpoints
   const theme = useTheme()
@@ -58,116 +58,45 @@ const Bienes = () => {
     axios
       .get("http://localhost:8080/bienes")
       .then((response) => {
-        const bienesData = response.data.result
-          .filter((bien) => bien.status)
+        // Filtrar solo los bienes que tienen bajas (array no vacío)
+        const bienesConBaja = response.data.result
+          .filter((bien) => bien.bajas && bien.bajas.length > 0)
           .map((bien) => ({
             ...bien,
             id: bien.idBien,
             tipoBien: bien.tipoBien ? bien.tipoBien.nombre : "Sin asignar",
             modelo: bien.modelo ? bien.modelo.nombreModelo : "Sin asignar",
-            marca: bien.marca.nombre,
+            marca: bien.marca ? bien.marca.nombre : "Sin asignar",
             lugar: bien.lugar ? bien.lugar.lugar : "Sin asignar",
-            imagen: bien.modelo.foto,
+            imagen: bien.modelo ? bien.modelo.foto : "/placeholder.jpg",
             codigoBarras: bien.codigoBarras,
+            nSerie: bien.nSerie || "No disponible",
             usuarioResponsable: bien.usuario ? bien.usuario.nombre : "Sin asignar",
+            motivoBaja: bien.bajas[0].motivo,
+            fechaBaja: new Date(bien.bajas[0].fecha).toLocaleDateString(),
           }))
-        setBienes(bienesData)
+        setBienes(bienesConBaja)
       })
       .catch((error) => console.error("Error al obtener bienes:", error))
       .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:8080/lugares")
-      .then((response) => setLugares(response.data.result))
-      .catch((error) => console.error("Error al obtener lugares:", error))
-
-    axios
-      .get("http://localhost:8080/usuarios")
-      .then((response) => {
-        const usuariosTransformados = response.data.result.map((usuario) => ({
-          ...usuario,
-          idUsuario: usuario.idusuario,
-        }))
-        setUsuarios(usuariosTransformados)
-      })
-      .catch((error) => console.error("Error al obtener usuarios:", error))
-
-    axios
-      .get("http://localhost:8080/tipo-bien")
-      .then((response) => setTiposBien(response.data.result))
-      .catch((error) => console.error("Error al obtener tipo bien:", error))
-
-    axios
-      .get("http://localhost:8080/modelo")
-      .then((response) => setModelos(response.data.result))
-      .catch((error) => console.error("Error al obtener modelos:", error))
-
-    axios
-      .get("http://localhost:8080/marca")
-      .then((response) => setMarcas(response.data.result))
-      .catch((error) => console.error("Error al obtener marcas:", error))
-  }, [])
-
-  const handleChange = (e) => {
-    setNuevoBien({ ...nuevoBien, [e.target.name]: e.target.value })
+  const handleOpenDetailModal = (bien) => {
+    setSelectedBien(bien)
+    setOpenDetailModal(true)
   }
 
-  const handleSubmit = () => {
-    const bienFormateado = {
-      nSerie: nuevoBien.nSerie,
-      idTipoBien: Number.parseInt(nuevoBien.idTipo),
-      idUsuario: Number.parseInt(nuevoBien.idUsuario),
-      status: true,
-      idModelo: Number.parseInt(nuevoBien.idModelo),
-      idMarca: Number.parseInt(nuevoBien.idMarca),
-      idLugar: Number.parseInt(nuevoBien.idLugar),
-      fecha: new Date().toISOString().split("T")[0] + "T00:00:00Z",
-    }
-
-    axios
-      .post("http://localhost:8080/bienes", bienFormateado, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((response) => {
-        setBienes([...bienes, { ...response.data.result, id: response.data.result.idBien }])
-        setOpen(false)
-        // Reset form
-        setNuevoBien({
-          codigoBarras: "",
-          nSerie: "",
-          idTipo: "",
-          idLugar: "",
-          idModelo: "",
-          idMarca: "",
-          idUsuario: "",
-        })
-      })
-      .catch((error) => console.error("Error al crear bien:", error.response?.data || error.message))
+  const handleCloseDetailModal = () => {
+    setOpenDetailModal(false)
   }
 
-  const handleDarDeBaja = () => {
-    if (!selectedBien || !motivoBaja.trim()) return
-    const bajaData = { idBien: selectedBien.id, motivo: motivoBaja, fecha: new Date().toISOString() }
-    axios
-      .post("http://localhost:8080/bajas", bajaData)
-      .then(() => {
-        setBienes(bienes.filter((bien) => bien.id !== selectedBien.id))
-        setOpenBaja(false)
-        setSelectedBien(null)
-        setMotivoBaja("")
-      })
-      .catch((error) => console.error("Error al dar de baja:", error.response?.data || error.message))
-  }
-
-  // Stats for dashboard cards
-  const totalBienes = bienes.length
-  const bienesStats = {
-    totalBienes,
-    tiposBien: [...new Set(bienes.map((bien) => bien.tipoBien))].length,
-    lugares: [...new Set(bienes.map((bien) => bien.lugar))].length,
-    responsables: [...new Set(bienes.map((bien) => bien.usuarioResponsable))].length,
+  const formatDate = (dateString) => {
+    if (!dateString) return "Fecha no disponible"
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
   }
 
   return (
@@ -210,7 +139,7 @@ const Bienes = () => {
             </Link>
             <Typography color={darkMode ? "#E2E8F0" : "text.primary"} sx={{ display: "flex", alignItems: "center" }}>
               <InventoryIcon sx={{ mr: 0.5 }} fontSize="small" />
-              Gestión de Bienes
+              Bienes de Baja
             </Typography>
           </Breadcrumbs>
 
@@ -231,7 +160,7 @@ const Bienes = () => {
                 fontWeight: "bold",
               }}
             >
-              Inventario de Bienes
+              Bienes con Baja
             </Typography>
 
             <Box
@@ -247,151 +176,326 @@ const Bienes = () => {
           </Box>
         </Box>
 
-        {/* Stats Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card
-              sx={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
-                border: darkMode ? "1px solid #4A5568" : "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" color={darkMode ? "#E2E8F0" : "#4A5568"} gutterBottom>
-                  Total Bienes
-                </Typography>
-                <Typography variant="h3" color={darkMode ? "#9C27B0" : "#6A1B9A"} sx={{ fontWeight: "bold" }}>
-                  {bienesStats.totalBienes}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card
-              sx={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
-                border: darkMode ? "1px solid #4A5568" : "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" color={darkMode ? "#E2E8F0" : "#4A5568"} gutterBottom>
-                  Tipos de Bien
-                </Typography>
-                <Typography variant="h3" color={darkMode ? "#9C27B0" : "#6A1B9A"} sx={{ fontWeight: "bold" }}>
-                  {bienesStats.tiposBien}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card
-              sx={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
-                border: darkMode ? "1px solid #4A5568" : "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" color={darkMode ? "#E2E8F0" : "#4A5568"} gutterBottom>
-                  Lugares
-                </Typography>
-                <Typography variant="h3" color={darkMode ? "#9C27B0" : "#6A1B9A"} sx={{ fontWeight: "bold" }}>
-                  {bienesStats.lugares}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card
-              sx={{
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
-                border: darkMode ? "1px solid #4A5568" : "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" color={darkMode ? "#E2E8F0" : "#4A5568"} gutterBottom>
-                  Responsables
-                </Typography>
-                <Typography variant="h3" color={darkMode ? "#9C27B0" : "#6A1B9A"} sx={{ fontWeight: "bold" }}>
-                  {bienesStats.responsables}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-
-        {/* Action Button */}
-        <Box
+        {/* Tabla de Bienes con Baja */}
+        <TableContainer
+          component={Paper}
           sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            mb: 3,
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
+            border: darkMode ? "1px solid #4A5568" : "none",
+            mb: 4,
           }}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<AddIcon />}
-            onClick={() => setOpen(true)}
-            sx={{
-              borderRadius: "8px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              backgroundColor: "#6A1B9A",
-              boxShadow: "0 4px 12px rgba(106, 27, 154, 0.2)",
-              "&:hover": {
-                backgroundColor: "#5C1690",
-                boxShadow: "0 6px 16px rgba(106, 27, 154, 0.3)",
-              },
-            }}
-          >
-            Agregar Bien
-          </Button>
-        </Box>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: darkMode ? "#4A5568" : "#F7FAFC" }}>
+               
+                <TableCell sx={{ color: darkMode ? "#E2E8F0" : "#4A5568", fontWeight: "bold" }}>
+                  Número de Serie
+                </TableCell>
+                <TableCell sx={{ color: darkMode ? "#E2E8F0" : "#4A5568", fontWeight: "bold" }}>Marca/Modelo</TableCell>
+                <TableCell sx={{ color: darkMode ? "#E2E8F0" : "#4A5568", fontWeight: "bold" }}>
+                  Motivo de Baja
+                </TableCell>
+                {!isMobile && (
+                  <TableCell sx={{ color: darkMode ? "#E2E8F0" : "#4A5568", fontWeight: "bold" }}>
+                    Fecha de Baja
+                  </TableCell>
+                )}
+                <TableCell sx={{ color: darkMode ? "#E2E8F0" : "#4A5568", fontWeight: "bold" }}>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={isMobile ? 5 : 6} align="center">
+                    <CircularProgress color="secondary" />
+                  </TableCell>
+                </TableRow>
+              ) : bienes.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={isMobile ? 5 : 6} align="center">
+                    <Typography color={darkMode ? "#E2E8F0" : "#4A5568"}>No hay bienes con baja registrados</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                bienes.map((bien) => (
+                  <TableRow
+                    key={bien.id}
+                    sx={{
+                      "&:hover": { backgroundColor: darkMode ? "#2C3E50" : "#F7FAFC" },
+                      color: darkMode ? "#E2E8F0" : "inherit",
+                    }}
+                  >
+                    <TableCell sx={{ color: darkMode ? "#E2E8F0" : "inherit" }}>{bien.codigoBarras || "N/A"}</TableCell>
+                    <TableCell sx={{ color: darkMode ? "#E2E8F0" : "inherit" }}>{bien.nSerie}</TableCell>
+                    <TableCell sx={{ color: darkMode ? "#E2E8F0" : "inherit" }}>
+                      <Typography variant="body2" component="div">
+                        {bien.marca}
+                      </Typography>
+                      <Typography variant="caption" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                        {bien.modelo}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ color: darkMode ? "#E2E8F0" : "inherit" }}>
+                      <Chip
+                        label={bien.motivoBaja || "Sin especificar"}
+                        color="error"
+                        variant="outlined"
+                        size="small"
+                      />
+                    </TableCell>
+                    {!isMobile && (
+                      <TableCell sx={{ color: darkMode ? "#E2E8F0" : "inherit" }}>{bien.fechaBaja}</TableCell>
+                    )}
+                    <TableCell>
+                      <Tooltip title="Ver detalles">
+                        <IconButton onClick={() => handleOpenDetailModal(bien)} color="secondary" size="small">
+                          <InfoIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-        <BienesTable
-          bienes={bienes}
-          loading={loading}
-          darkMode={darkMode}
-          setSelectedBien={setSelectedBien}
-          setOpenBaja={setOpenBaja}
-          isMobile={isMobile}
-          isTablet={isTablet}
-        />
-
-        <BienesForm
-          open={open}
-          handleClose={() => setOpen(false)}
-          handleSubmit={handleSubmit}
-          handleChange={handleChange}
-          nuevoBien={nuevoBien}
-          tiposBien={tiposBien}
-          modelos={modelos}
-          marcas={marcas}
-          lugares={lugares}
-          usuarios={usuarios}
-          isMobile={isMobile}
-        />
-
-        <BienesBajaDialog
-          openBaja={openBaja}
-          handleClose={() => setOpenBaja(false)}
-          handleDarDeBaja={handleDarDeBaja}
-          motivoBaja={motivoBaja}
-          setMotivoBaja={setMotivoBaja}
+        {/* Modal de Detalles del Bien */}
+        <Dialog
+          open={openDetailModal}
+          onClose={handleCloseDetailModal}
+          fullWidth
+          maxWidth="md"
           fullScreen={isMobile}
-        />
+          PaperProps={{
+            sx: {
+              backgroundColor: darkMode ? "#1A202C" : "#FFFFFF",
+              color: darkMode ? "#E2E8F0" : "inherit",
+              borderRadius: "12px",
+            },
+          }}
+        >
+          {selectedBien && (
+            <>
+              <DialogTitle
+                sx={{
+                  borderBottom: 1,
+                  borderColor: darkMode ? "#4A5568" : "divider",
+                  color: darkMode ? "#E2E8F0" : "#2D3748",
+                  fontWeight: "bold",
+                }}
+              >
+                Detalles del Bien
+              </DialogTitle>
+              <DialogContent sx={{ pt: 3 }}>
+                <Grid container spacing={3}>
+                  <Grid
+                    item
+                    xs={12}
+                    md={4}
+                    sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
+                  >
+                    <Card
+                      sx={{
+                        width: "100%",
+                        backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
+                        border: darkMode ? "1px solid #4A5568" : "none",
+                      }}
+                    >
+                      <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <Avatar
+                          src={selectedBien.imagen}
+                          alt={selectedBien.modelo}
+                          variant="rounded"
+                          sx={{ width: 150, height: 150, mb: 2 }}
+                        />
+                        <Typography variant="h6" sx={{ color: darkMode ? "#E2E8F0" : "#2D3748", fontWeight: "bold" }}>
+                          {selectedBien.marca} {selectedBien.modelo}
+                        </Typography>
+                        <Chip icon={<DeleteIcon />} label="Dado de Baja" color="error" sx={{ mt: 1 }} />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <Card
+                      sx={{
+                        backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
+                        border: darkMode ? "1px solid #4A5568" : "none",
+                        mb: 2,
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: darkMode ? "#E2E8F0" : "#2D3748",
+                            fontWeight: "bold",
+                            mb: 2,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <InfoIcon sx={{ mr: 1 }} /> Información General
+                        </Typography>
+
+                        <Grid container spacing={2}>
+                          
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                              Número de Serie
+                            </Typography>
+                            <Typography variant="body1" sx={{ color: darkMode ? "#E2E8F0" : "inherit", mb: 1 }}>
+                              {selectedBien.nSerie || "No disponible"}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                              Tipo de Bien
+                            </Typography>
+                            <Typography variant="body1" sx={{ color: darkMode ? "#E2E8F0" : "inherit", mb: 1 }}>
+                              {selectedBien.tipoBien}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                              Fecha de Registro
+                            </Typography>
+                            <Typography variant="body1" sx={{ color: darkMode ? "#E2E8F0" : "inherit", mb: 1 }}>
+                              {formatDate(selectedBien.fecha)}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </CardContent>
+                    </Card>
+
+                    <Card
+                      sx={{
+                        backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
+                        border: darkMode ? "1px solid #4A5568" : "none",
+                      }}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: darkMode ? "#E2E8F0" : "#2D3748",
+                            fontWeight: "bold",
+                            mb: 2,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <DeleteIcon sx={{ mr: 1 }} /> Información de Baja
+                        </Typography>
+
+                        <Grid container spacing={2}>
+                          <Grid item xs={12}>
+                            <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                              Motivo de Baja
+                            </Typography>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                color: darkMode ? "#E2E8F0" : "inherit",
+                                mb: 1,
+                                p: 1,
+                                backgroundColor: darkMode ? "#1A202C" : "#F7FAFC",
+                                borderRadius: "4px",
+                                border: "1px solid",
+                                borderColor: darkMode ? "#4A5568" : "#E2E8F0",
+                              }}
+                            >
+                              {selectedBien.motivoBaja || "Sin especificar"}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                              Fecha de Baja
+                            </Typography>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                color: darkMode ? "#E2E8F0" : "inherit",
+                                mb: 1,
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <CalendarTodayIcon sx={{ mr: 1, fontSize: "small" }} />
+                              {selectedBien.fechaBaja}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                              Responsable
+                            </Typography>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                color: darkMode ? "#E2E8F0" : "inherit",
+                                mb: 1,
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <PersonIcon sx={{ mr: 1, fontSize: "small" }} />
+                              {selectedBien.usuarioResponsable}
+                            </Typography>
+                          </Grid>
+                          {selectedBien.lugar && selectedBien.lugar !== "Sin asignar" && (
+                            <Grid item xs={12} sm={6}>
+                              <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                                Ubicación
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                sx={{
+                                  color: darkMode ? "#E2E8F0" : "inherit",
+                                  mb: 1,
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <LocationOnIcon sx={{ mr: 1, fontSize: "small" }} />
+                                {selectedBien.lugar}
+                              </Typography>
+                            </Grid>
+                          )}
+                        </Grid>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions sx={{ borderTop: 1, borderColor: darkMode ? "#4A5568" : "divider", p: 2 }}>
+                <Button
+                  onClick={handleCloseDetailModal}
+                  variant="contained"
+                  color="secondary"
+                  sx={{
+                    borderRadius: "8px",
+                    fontWeight: "bold",
+                    backgroundColor: "#6A1B9A",
+                    boxShadow: "0 4px 12px rgba(106, 27, 154, 0.2)",
+                    "&:hover": {
+                      backgroundColor: "#5C1690",
+                      boxShadow: "0 6px 16px rgba(106, 27, 154, 0.3)",
+                    },
+                  }}
+                >
+                  Cerrar
+                </Button>
+              </DialogActions>
+            </>
+          )}
+        </Dialog>
       </Paper>
     </Box>
   )
 }
 
-export default Bienes
+export default BienesBaja
 

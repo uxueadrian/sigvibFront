@@ -22,6 +22,8 @@ import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE } from "../constants/layout"
 import NotificationsIcon from "@mui/icons-material/Notifications"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+// Import the logo
+import logo1 from "./logo1.png"
 
 // Animations
 const fadeIn = keyframes`
@@ -105,6 +107,48 @@ const NavbarTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
     fontSize: "1.75rem",
   },
+}))
+
+// Updated logo container with more elegant styling for navbar
+const TitleContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+    gap: theme.spacing(0.5),
+  },
+}))
+
+const LogoContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: 36,
+  height: 36,
+  borderRadius: "50%",
+  backgroundColor: "rgba(157, 78, 221, 0.08)",
+  border: "1px solid rgba(157, 78, 221, 0.2)",
+  boxShadow: "0 2px 8px rgba(157, 78, 221, 0.15)",
+  [theme.breakpoints.down("sm")]: {
+    width: 30,
+    height: 30,
+    marginBottom: theme.spacing(0.5),
+  },
+}))
+
+// Updated logo styling
+const Logo = styled("img")({
+  width: "75%",
+  height: "75%",
+  objectFit: "contain",
+  filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))",
+})
+
+const TextContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
 }))
 
 const UserInfo = styled(Box)(({ theme }) => ({
@@ -195,7 +239,7 @@ const Navbar = () => {
   const getPageTitle = () => {
     const path = location.pathname
 
-    if (path.includes("/admin/dashboard")) return "Dashboard"
+    if (path.includes("/admin/dashboard")) return "Resumen"
     if (path.includes("/admin/usuarios")) return "Gestión de Usuarios"
     if (path.includes("/admin/lugares")) return "Gestión de Lugares"
     if (path.includes("/admin/areas")) return "Gestión de Áreas"
@@ -219,18 +263,21 @@ const Navbar = () => {
         {/* Space for sidebar toggle button */}
         <Box sx={{ width: { xs: "48px", md: "48px" } }} />
 
-        {/* Title */}
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <NavbarTitle variant="h6">SIGVIB</NavbarTitle>
-          {!isMobile && <ShimmerText variant="caption">Sistema de Gestión y Visualización de Bienes</ShimmerText>}
-        </Box>
+        {/* Title with logo - redesigned layout */}
+        <TitleContainer>
+          <LogoContainer>
+            <Logo src={logo1} alt="SIGVIB Logo" />
+          </LogoContainer>
+
+          <TextContainer>
+            <NavbarTitle variant="h6">SIGVIB</NavbarTitle>
+            {!isMobile && <ShimmerText variant="caption">Sistema de Gestión y Visualización de Bienes</ShimmerText>}
+          </TextContainer>
+        </TitleContainer>
 
         {/* Right side controls */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <NotificationButton size="medium" aria-label="notifications">
-            <NotificationsIcon />
-            <GlowingDot />
-          </NotificationButton>
+        
 
           <UserInfo onClick={handleMenuOpen}>
             <UserAvatar>
@@ -240,7 +287,7 @@ const Navbar = () => {
               <>
                 <Box sx={{ textAlign: "left" }}>
                   <Typography variant="body2" sx={{ color: "white", fontWeight: 500 }}>
-                    {user?.name || "Usuario"}
+                    {user?.username || "Usuario"}
                   </Typography>
                   <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>
                     {user?.role === "ROLE_ADMINISTRADOR"
@@ -273,19 +320,13 @@ const Navbar = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem onClick={handleMenuClose} sx={{ "&:hover": { backgroundColor: alpha("#9D4EDD", 0.1) } }}>
-              Mi Perfil
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose} sx={{ "&:hover": { backgroundColor: alpha("#9D4EDD", 0.1) } }}>
-              Configuración
-            </MenuItem>
-            <MenuItem 
+            <MenuItem
               onClick={() => {
-                handleMenuClose();
-                localStorage.removeItem("token");
-                localStorage.removeItem("role");
-                window.location.href = "/login";
-              }} 
+                handleMenuClose()
+                localStorage.removeItem("token")
+                localStorage.removeItem("role")
+                window.location.href = "/login"
+              }}
               sx={{ "&:hover": { backgroundColor: alpha("#9D4EDD", 0.1) } }}
             >
               Cerrar Sesión
@@ -298,3 +339,4 @@ const Navbar = () => {
 }
 
 export default Navbar
+

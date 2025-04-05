@@ -22,6 +22,17 @@ import SaveIcon from "@mui/icons-material/Save"
 import DevicesIcon from "@mui/icons-material/Devices"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
 
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
+
 const BienesForm = ({
   open,
   handleClose,
@@ -44,7 +55,7 @@ const BienesForm = ({
       nuevoBien.idTipo &&
       nuevoBien.idModelo &&
       nuevoBien.idMarca &&
-      nuevoBien.idLugar &&
+      // Removed idLugar from validation requirements
       nuevoBien.idUsuario
     )
   }
@@ -60,14 +71,13 @@ const BienesForm = ({
         sx: {
           borderRadius: fullScreen ? 0 : "16px",
           overflow: "hidden",
-          backgroundColor: darkMode ? "#1E1E1E" : "#FFFFFF",
-          backgroundImage: "none",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
         },
       }}
     >
       <DialogTitle
         sx={{
-          bgcolor: "#6A1B9A",
+          backgroundColor: themeColors.primary,
           color: "white",
           display: "flex",
           justifyContent: "space-between",
@@ -86,27 +96,28 @@ const BienesForm = ({
       <DialogContent
         sx={{
           padding: "28px",
-          backgroundColor: darkMode ? "#1E1E1E" : "#FFFFFF",
+          backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
         }}
       >
         <Grid container spacing={4}>
           {/* Left Column - Basic Information */}
           <Grid item xs={12} md={6}>
             <Paper
-              elevation={darkMode ? 3 : 1}
+              elevation={1}
               sx={{
                 p: 3,
                 height: "100%",
                 borderRadius: "12px",
-                backgroundColor: darkMode ? "#1A202C" : "#FFFFFF",
-                border: darkMode ? "none" : "1px solid #EDF2F7",
+                backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "#FFFFFF",
+                border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #F0E6F8",
+                boxShadow: "0 4px 12px rgba(106, 27, 154, 0.05)",
               }}
             >
               <Stack spacing={3}>
                 <Box>
                   <Typography
                     variant="h6"
-                    color={darkMode ? "#E2E8F0" : "#6A1B9A"}
+                    color={darkMode ? themeColors.textLight : themeColors.primary}
                     gutterBottom
                     sx={{
                       fontWeight: "600",
@@ -138,13 +149,13 @@ const BienesForm = ({
                   InputProps={{
                     sx: {
                       borderRadius: "8px",
-                      backgroundColor: darkMode ? "#2D3748" : "#FFFFFF",
-                      color: darkMode ? "#E2E8F0" : "inherit",
+                      backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "#FFFFFF",
+                      color: darkMode ? "white" : "#333333",
                     },
                   }}
                   InputLabelProps={{
                     sx: {
-                      color: darkMode ? "#A0AEC0" : "#6A1B9A",
+                      color: darkMode ? themeColors.textLight : themeColors.primary,
                       fontWeight: "500",
                     },
                   }}
@@ -157,7 +168,7 @@ const BienesForm = ({
                         borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(106, 27, 154, 0.4)",
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: "#6A1B9A",
+                        borderColor: darkMode ? themeColors.textLight : themeColors.primary,
                         borderWidth: "2px",
                       },
                     },
@@ -177,20 +188,24 @@ const BienesForm = ({
                   InputProps={{
                     sx: {
                       borderRadius: "8px",
-                      backgroundColor: darkMode ? "#2D3748" : "transparent",
-                      color: darkMode ? "#E2E8F0" : "inherit",
+                      backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "transparent",
+                      color: darkMode ? "white" : "#333333",
                     },
                   }}
                   InputLabelProps={{
-                    sx: { color: darkMode ? "#A0AEC0" : "inherit" },
+                    sx: { color: darkMode ? themeColors.textLight : themeColors.primary },
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(106, 27, 154, 0.23)",
                       },
                       "&:hover fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(106, 27, 154, 0.4)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+                        borderWidth: "2px",
                       },
                     },
                   }}
@@ -218,20 +233,24 @@ const BienesForm = ({
                   InputProps={{
                     sx: {
                       borderRadius: "8px",
-                      backgroundColor: darkMode ? "#2D3748" : "transparent",
-                      color: darkMode ? "#E2E8F0" : "inherit",
+                      backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "transparent",
+                      color: darkMode ? "white" : "#333333",
                     },
                   }}
                   InputLabelProps={{
-                    sx: { color: darkMode ? "#A0AEC0" : "inherit" },
+                    sx: { color: darkMode ? themeColors.textLight : themeColors.primary },
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(106, 27, 154, 0.23)",
                       },
                       "&:hover fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(106, 27, 154, 0.4)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+                        borderWidth: "2px",
                       },
                     },
                   }}
@@ -259,20 +278,24 @@ const BienesForm = ({
                   InputProps={{
                     sx: {
                       borderRadius: "8px",
-                      backgroundColor: darkMode ? "#2D3748" : "transparent",
-                      color: darkMode ? "#E2E8F0" : "inherit",
+                      backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "transparent",
+                      color: darkMode ? "white" : "#333333",
                     },
                   }}
                   InputLabelProps={{
-                    sx: { color: darkMode ? "#A0AEC0" : "inherit" },
+                    sx: { color: darkMode ? themeColors.textLight : themeColors.primary },
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(106, 27, 154, 0.23)",
                       },
                       "&:hover fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(106, 27, 154, 0.4)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+                        borderWidth: "2px",
                       },
                     },
                   }}
@@ -293,20 +316,21 @@ const BienesForm = ({
           {/* Right Column - Location and Responsibility */}
           <Grid item xs={12} md={6}>
             <Paper
-              elevation={darkMode ? 3 : 1}
+              elevation={1}
               sx={{
                 p: 3,
                 height: "100%",
                 borderRadius: "12px",
-                backgroundColor: darkMode ? "#1A202C" : "#FFFFFF",
-                border: darkMode ? "none" : "1px solid #EDF2F7",
+                backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "#FFFFFF",
+                border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #F0E6F8",
+                boxShadow: "0 4px 12px rgba(106, 27, 154, 0.05)",
               }}
             >
               <Stack spacing={3}>
                 <Box>
                   <Typography
                     variant="h6"
-                    color={darkMode ? "#E2E8F0" : "#6A1B9A"}
+                    color={darkMode ? themeColors.textLight : themeColors.primary}
                     gutterBottom
                     sx={{
                       fontWeight: "600",
@@ -328,37 +352,41 @@ const BienesForm = ({
 
                 <TextField
                   select
-                  label="Lugar Asignado"
+                  label="Lugar Asignado (Opcional)"
                   name="idLugar"
-                  value={nuevoBien.idLugar}
+                  value={nuevoBien.idLugar || ""}
                   fullWidth
                   onChange={handleChange}
                   margin="normal"
                   variant="outlined"
-                  required
+                  // Removed required prop
                   InputProps={{
                     sx: {
                       borderRadius: "8px",
-                      backgroundColor: darkMode ? "#2D3748" : "transparent",
-                      color: darkMode ? "#E2E8F0" : "inherit",
+                      backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "transparent",
+                      color: darkMode ? "white" : "#333333",
                     },
                   }}
                   InputLabelProps={{
-                    sx: { color: darkMode ? "#A0AEC0" : "inherit" },
+                    sx: { color: darkMode ? themeColors.textLight : themeColors.primary },
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(106, 27, 154, 0.23)",
                       },
                       "&:hover fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(106, 27, 154, 0.4)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+                        borderWidth: "2px",
                       },
                     },
                   }}
                 >
-                  <MenuItem value="" disabled>
-                    <em>Seleccione un lugar</em>
+                  <MenuItem value="">
+                    <em>Sin lugar asignado</em>
                   </MenuItem>
                   {lugares.length === 0 ? (
                     <MenuItem disabled>Cargando Lugares...</MenuItem>
@@ -384,20 +412,24 @@ const BienesForm = ({
                   InputProps={{
                     sx: {
                       borderRadius: "8px",
-                      backgroundColor: darkMode ? "#2D3748" : "transparent",
-                      color: darkMode ? "#E2E8F0" : "inherit",
+                      backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "transparent",
+                      color: darkMode ? "white" : "#333333",
                     },
                   }}
                   InputLabelProps={{
-                    sx: { color: darkMode ? "#A0AEC0" : "inherit" },
+                    sx: { color: darkMode ? themeColors.textLight : themeColors.primary },
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(106, 27, 154, 0.23)",
                       },
                       "&:hover fieldset": {
-                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.23)",
+                        borderColor: darkMode ? "rgba(255,255,255,0.3)" : "rgba(106, 27, 154, 0.4)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: darkMode ? themeColors.textLight : themeColors.primary,
+                        borderWidth: "2px",
                       },
                     },
                   }}
@@ -417,10 +449,11 @@ const BienesForm = ({
                 <Box sx={{ mt: 2 }}>
                   <Typography
                     variant="body2"
-                    color={darkMode ? "#A0AEC0" : "text.secondary"}
+                    color={darkMode ? "rgba(255,255,255,0.6)" : "#7B6F8A"}
                     sx={{ fontStyle: "italic", mt: 4 }}
                   >
-                    Todos los campos son obligatorios para registrar un nuevo bien en el inventario.
+                    Todos los campos son obligatorios para registrar un nuevo bien en el inventario, excepto el lugar
+                    asignado que es opcional.
                   </Typography>
                 </Box>
               </Stack>
@@ -432,8 +465,8 @@ const BienesForm = ({
       <DialogActions
         sx={{
           padding: "16px 24px",
-          backgroundColor: darkMode ? "#1A202C" : "#F5F0F9",
-          borderTop: `1px solid ${darkMode ? "rgba(255,255,255,0.1)" : "rgba(106, 27, 154, 0.1)"}`,
+          backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "#F8F4FB",
+          borderTop: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(106, 27, 154, 0.1)",
         }}
       >
         <Button
@@ -457,9 +490,9 @@ const BienesForm = ({
           sx={{
             borderRadius: "8px",
             fontWeight: "bold",
-            bgcolor: "#6A1B9A",
+            bgcolor: themeColors.primary,
             "&:hover": {
-              bgcolor: "#5C1690",
+              bgcolor: "#5E35B1",
             },
             px: 3,
           }}

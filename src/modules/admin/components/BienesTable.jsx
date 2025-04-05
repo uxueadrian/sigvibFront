@@ -11,11 +11,22 @@ import {
   CardContent,
   CardActions,
   Grid,
+  IconButton,
 } from "@mui/material"
-import { DataGrid, GridToolbar } from "@mui/x-data-grid"
-import { esES } from "@mui/x-data-grid/locales"
-import DeleteIcon from "@mui/icons-material/Delete"
+import { DataGrid } from "@mui/x-data-grid"
 import VisibilityIcon from "@mui/icons-material/Visibility"
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew"
+
+const themeColors = {
+  primary: "#673AB7", // Morado principal
+  secondary: "#673AB7", // Morado más claro
+  textLight: "#9575CD", // Blanco
+  textDark: "#000000", // Negro
+  backgroundLight: "#F3F4F6", // Fondo claro
+  backgroundDark: "#1E1E1E", // Fondo oscuro
+  paperLight: "#FFFFFF",
+  paperDark: "#2C2C2C",
+}
 
 const BienesTable = ({
   bienes,
@@ -33,7 +44,7 @@ const BienesTable = ({
       <Box sx={{ width: "100%" }}>
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-            <CircularProgress sx={{ color: darkMode ? "#AED581" : "#2E7D32" }} />
+            <CircularProgress sx={{ color: themeColors.primary }} />
           </Box>
         ) : (
           <Grid container spacing={2}>
@@ -43,8 +54,8 @@ const BienesTable = ({
                   sx={{
                     p: 3,
                     textAlign: "center",
-                    backgroundColor: darkMode ? "#2D3748" : "#F8F9FA",
-                    color: darkMode ? "#E2E8F0" : "#495057",
+                    backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "#F8F9FA",
+                    color: darkMode ? "rgba(255,255,255,0.7)" : "#495057",
                     borderRadius: "12px",
                   }}
                 >
@@ -57,15 +68,15 @@ const BienesTable = ({
                   <Card
                     sx={{
                       borderRadius: "12px",
-                      backgroundColor: darkMode ? "#1E293B" : "#FFFFFF",
-                      boxShadow: darkMode ? "0 4px 12px rgba(0,0,0,0.3)" : "0 4px 12px rgba(0,0,0,0.1)",
+                      backgroundColor: darkMode ? themeColors.paperDark : themeColors.paperLight,
+                      boxShadow: "0 4px 12px rgba(106, 27, 154, 0.08)",
                       overflow: "hidden",
                       transition: "transform 0.2s ease, box-shadow 0.2s ease",
                       "&:hover": {
                         transform: "translateY(-4px)",
-                        boxShadow: darkMode ? "0 8px 16px rgba(0,0,0,0.4)" : "0 8px 16px rgba(0,0,0,0.15)",
+                        boxShadow: "0 8px 16px rgba(106, 27, 154, 0.15)",
                       },
-                      border: darkMode ? "none" : "1px solid #EDF2F7",
+                      border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #F0E6F8",
                     }}
                   >
                     <Box
@@ -74,7 +85,7 @@ const BienesTable = ({
                         justifyContent: "center",
                         alignItems: "center",
                         p: 2,
-                        backgroundColor: darkMode ? "#2D3748" : "#F8F9FA",
+                        backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "#F5F0F9",
                       }}
                     >
                       <Avatar
@@ -85,18 +96,22 @@ const BienesTable = ({
                           width: "100px",
                           height: "100px",
                           borderRadius: "8px",
-                          boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
-                          border: `1px solid ${darkMode ? "#333" : "#e0e0e0"}`,
+                          boxShadow: "0px 2px 8px rgba(106, 27, 154, 0.15)",
+                          border: "1px solid #e0e0e0",
                         }}
                       />
                     </Box>
 
                     <CardContent sx={{ p: 2.5 }}>
                       <Box>
-                        <Typography variant="subtitle1" fontWeight="bold" color={darkMode ? "#E2E8F0" : "text.primary"}>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight="bold"
+                          color={darkMode ? themeColors.textLight : themeColors.primary}
+                        >
                           {bien.modelo}
                         </Typography>
-                        <Typography variant="body2" color={darkMode ? "#A0AEC0" : "text.secondary"}>
+                        <Typography variant="body2" color={darkMode ? "rgba(255,255,255,0.7)" : "#7B6F8A"}>
                           Serie: {bien.nSerie}
                         </Typography>
                       </Box>
@@ -107,13 +122,13 @@ const BienesTable = ({
                             width: 24,
                             height: 24,
                             fontSize: "0.75rem",
-                            bgcolor: darkMode ? "#6A1B9A" : "#9C27B0",
-                            border: "2px solid #FFFFFF",
+                            bgcolor: themeColors.primary,
+                            border: `2px solid ${darkMode ? themeColors.paperDark : "#FFFFFF"}`,
                           }}
                         >
                           {(bien.usuarioResponsable && bien.usuarioResponsable.charAt(0).toUpperCase()) || "?"}
                         </Avatar>
-                        <Typography variant="body2" color={darkMode ? "#E2E8F0" : "text.primary"}>
+                        <Typography variant="body2" color={darkMode ? "white" : "#333333"}>
                           {bien.usuarioResponsable || "Sin asignar"}
                         </Typography>
                       </Box>
@@ -128,6 +143,12 @@ const BienesTable = ({
                         sx={{
                           borderRadius: "8px",
                           fontWeight: "bold",
+                          borderColor: themeColors.primary,
+                          color: themeColors.primary,
+                          "&:hover": {
+                            borderColor: "#5E35B1",
+                            backgroundColor: "rgba(156, 39, 176, 0.04)",
+                          },
                         }}
                         onClick={() => onViewDetails(bien)}
                       >
@@ -135,18 +156,12 @@ const BienesTable = ({
                       </Button>
                       <Button
                         variant="contained"
-                        color="primary"
-                        startIcon={<DeleteIcon />}
+                        color="error"
+                        startIcon={<PowerSettingsNewIcon />}
                         size="small"
                         sx={{
                           borderRadius: "8px",
                           fontWeight: "bold",
-                          boxShadow: "0 2px 5px rgba(106, 27, 154, 0.2)",
-                          bgcolor: "#6A1B9A",
-                          "&:hover": {
-                            bgcolor: "#5C1690",
-                            boxShadow: "0 4px 8px rgba(106, 27, 154, 0.3)",
-                          },
                         }}
                         onClick={() => {
                           setSelectedBien(bien)
@@ -166,29 +181,27 @@ const BienesTable = ({
     )
   }
 
-  // Desktop Table View - Simplified columns
+  // Desktop Table View
   const columns = [
     {
       field: "nSerie",
       headerName: "Número de Serie",
       flex: 1,
       minWidth: 150,
-      renderCell: (params) => (
-        <Typography variant="body2" fontWeight="medium" color={darkMode ? "#E2E8F0" : "inherit"}>
-          {params.value}
-        </Typography>
-      ),
     },
     {
       field: "modelo",
       headerName: "Modelo",
       flex: 1,
       minWidth: 150,
-      renderCell: (params) => (
-        <Typography variant="body2" color={darkMode ? "#E2E8F0" : "inherit"}>
-          {params.value}
-        </Typography>
-      ),
+    },
+   
+    {
+      field: "tipoBien",
+      headerName: "Tipo",
+      flex: 1,
+      minWidth: 120,
+      hide: isMobile,
     },
     {
       field: "usuarioResponsable",
@@ -202,63 +215,41 @@ const BienesTable = ({
               width: 28,
               height: 28,
               fontSize: "0.875rem",
-              bgcolor: darkMode ? "#6A1B9A" : "#9C27B0",
-              border: "2px solid #FFFFFF",
+              bgcolor: themeColors.primary,
+              border: `2px solid ${darkMode ? themeColors.paperDark : "#FFFFFF"}`,
             }}
           >
             {(params.value && params.value.charAt(0).toUpperCase()) || "?"}
           </Avatar>
-          <Typography variant="body2" color={darkMode ? "#E2E8F0" : "inherit"}>
+          <Typography variant="body2" color={darkMode ? "white" : "#333333"}>
             {params.value || "Sin asignar"}
           </Typography>
         </Box>
       ),
     },
     {
-      field: "actions",
+      field: "acciones",
       headerName: "Acciones",
       flex: 1,
-      minWidth: 200,
+      minWidth: 150,
       renderCell: (params) => (
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title="Ver Detalles">
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<VisibilityIcon />}
-              size="small"
-              sx={{
-                borderRadius: "8px",
-                fontWeight: "bold",
-              }}
-              onClick={() => onViewDetails(params.row)}
-            >
-              Detalles
-            </Button>
+            <IconButton color="primary" size="small" onClick={() => onViewDetails(params.row)}>
+              <VisibilityIcon />
+            </IconButton>
           </Tooltip>
           <Tooltip title="Dar de Baja">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<DeleteIcon />}
+            <IconButton
+              color="error"
               size="small"
-              sx={{
-                borderRadius: "8px",
-                fontWeight: "bold",
-                boxShadow: "0 2px 5px rgba(106, 27, 154, 0.2)",
-                bgcolor: "#6A1B9A",
-                "&:hover": {
-                  bgcolor: "#5C1690",
-                  boxShadow: "0 4px 8px rgba(106, 27, 154, 0.3)",
-                },
-              }}
               onClick={() => {
                 setSelectedBien(params.row)
                 setOpenBaja(true)
               }}
             >
-              Baja
-            </Button>
+              <PowerSettingsNewIcon />
+            </IconButton>
           </Tooltip>
         </Box>
       ),
@@ -267,20 +258,20 @@ const BienesTable = ({
 
   return (
     <Paper
-      elevation={darkMode ? 2 : 0}
+      elevation={1}
       sx={{
         height: 600,
         width: "100%",
         maxWidth: "100%",
-        backgroundColor: darkMode ? "#1A202C" : "#FFF",
+        backgroundColor: darkMode ? themeColors.paperDark : "#FFF",
         borderRadius: "12px",
         overflow: "hidden",
-        border: darkMode ? "none" : "1px solid #EDF2F7",
+        border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #F0E6F8",
       }}
     >
       {loading ? (
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-          <CircularProgress sx={{ color: darkMode ? "#AED581" : "#2E7D32" }} />
+          <CircularProgress sx={{ color: themeColors.primary }} />
         </Box>
       ) : (
         <DataGrid
@@ -289,69 +280,42 @@ const BienesTable = ({
           pageSize={8}
           rowsPerPageOptions={[8, 16, 24]}
           disableSelectionOnClick
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
-            toolbar: {
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 },
-            },
-          }}
-          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           sx={{
             border: "none",
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: darkMode ? "#2D3748" : "#6A1B9A",
-              color: "#FFF",
+              backgroundColor: darkMode ? themeColors.primary : "#F5F0F9",
+              color: darkMode ? "white" : themeColors.primary,
               fontSize: "0.9rem",
               fontWeight: "bold",
               padding: "8px 0",
             },
             "& .MuiDataGrid-row": {
-              backgroundColor: darkMode ? "#1E293B" : "#FFF",
-              borderBottom: `1px solid ${darkMode ? "#2D3748" : "#EDF2F7"}`,
+              backgroundColor: darkMode ? themeColors.paperDark : "#FFF",
+              borderBottom: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #F0E6F8",
               "&:hover": {
-                backgroundColor: darkMode ? "#2D3748" : "#F5F0F9",
+                backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "#F8F4FB",
                 transition: "background-color 0.2s ease",
               },
               "&:nth-of-type(even)": {
-                backgroundColor: darkMode ? "#1A202C" : "#FAFAFA",
+                backgroundColor: darkMode ? "rgba(255,255,255,0.02)" : "#FAFAFA",
               },
             },
             "& .MuiDataGrid-cell": {
               padding: "16px 8px",
-              color: darkMode ? "#E2E8F0" : "inherit",
+              color: darkMode ? "white" : "inherit",
             },
             "& .MuiDataGrid-footerContainer": {
-              backgroundColor: darkMode ? "#2D3748" : "#6A1B9A",
-              color: "#FFF",
+              backgroundColor: darkMode ? themeColors.primary : "#F5F0F9",
+              color: darkMode ? "white" : themeColors.primary,
             },
             "& .MuiTablePagination-root": {
-              color: "#FFF",
+              color: darkMode ? "white" : themeColors.primary,
             },
             "& .MuiTablePagination-selectIcon": {
-              color: "#FFF",
+              color: darkMode ? "white" : themeColors.primary,
             },
             "& .MuiTablePagination-actions button": {
-              color: "#FFF",
-            },
-            "& .MuiDataGrid-toolbarContainer": {
-              backgroundColor: darkMode ? "#1E293B" : "#F5F0F9",
-              padding: "8px 16px",
-              borderBottom: `1px solid ${darkMode ? "#2D3748" : "#EDF2F7"}`,
-            },
-            "& .MuiButton-root": {
-              color: darkMode ? "#E2E8F0" : "#6A1B9A",
-            },
-            "& .MuiInputBase-root": {
-              color: darkMode ? "#E2E8F0" : "inherit",
-              backgroundColor: darkMode ? "#2D3748" : "#FFF",
-              borderRadius: "8px",
-              padding: "4px 8px",
-              "& .MuiInputBase-input": {
-                padding: "4px 8px",
-              },
+              color: darkMode ? "white" : themeColors.primary,
             },
           }}
         />
