@@ -2,6 +2,7 @@
 
 import { createContext, useState, useEffect, useContext } from "react"
 
+
 // Export the context directly so it can be imported by name
 export const AuthContext = createContext()
 
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   // Update the login function to store the name
   const login = async (username, password) => {
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

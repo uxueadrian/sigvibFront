@@ -19,7 +19,6 @@ import {
   keyframes,
 } from "@mui/material"
 import { APP_BAR_HEIGHT, APP_BAR_HEIGHT_MOBILE } from "../constants/layout"
-import NotificationsIcon from "@mui/icons-material/Notifications"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 // Import the logo

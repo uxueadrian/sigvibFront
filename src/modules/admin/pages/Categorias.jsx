@@ -308,7 +308,7 @@ const Categorias = () => {
   const fetchTipoBien = async () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      const response = await axios.get("http://localhost:8080/tipo-bien", { headers })
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/tipo-bien`, { headers })
       const tipoBienData = response.data.result.map((tipo) => ({
         ...tipo,
         id: tipo.idTipo,
@@ -325,7 +325,7 @@ const Categorias = () => {
   const fetchMarcas = async () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      const response = await axios.get("http://localhost:8080/marca", { headers })
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/marca`, { headers })
       const marcasData = response.data.result.map((marca) => ({
         ...marca,
         id: marca.idmarca,
@@ -342,7 +342,7 @@ const Categorias = () => {
   const fetchModelos = async () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      const response = await axios.get("http://localhost:8080/modelo", { headers })
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/modelo`, { headers })
       const modelosData = response.data.result.map((modelo) => ({
         ...modelo,
         id: modelo.idModelo,
@@ -359,7 +359,7 @@ const Categorias = () => {
   const cambiarEstadoTipoBien = async (idTipo) => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      await axios.put(`http://localhost:8080/tipo-bien/cambiar-status/${idTipo}`, {}, { headers })
+      await axios.put(`${import.meta.env.VITE_API_URL}/tipo-bien/cambiar-status/${idTipo}`, {}, { headers })
       fetchTipoBien()
     } catch (error) {
       console.error("Error al cambiar el estado del tipo de bien:", error)
@@ -370,7 +370,7 @@ const Categorias = () => {
   const cambiarEstadoMarca = async (idMarca) => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      await axios.patch(`http://localhost:8080/marca/cambiar-status/${idMarca}`, {}, { headers })
+      await axios.patch(`${import.meta.env.VITE_API_URL}/marca/cambiar-status/${idMarca}`, {}, { headers })
       fetchMarcas()
     } catch (error) {
       console.error("Error al cambiar el estado de la marca:", error.response?.data || error.message)
@@ -381,7 +381,7 @@ const Categorias = () => {
   const cambiarEstadoModelo = async (idModelo) => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
-      await axios.patch(`http://localhost:8080/modelo/cambiar-status/${idModelo}`, {}, { headers })
+      await axios.patch(`${import.meta.env.VITE_API_URL}/modelo/cambiar-status/${idModelo}`, {}, { headers })
       fetchModelos()
     } catch (error) {
       console.error("Error al cambiar el estado del modelo:", error)

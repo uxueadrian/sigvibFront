@@ -63,7 +63,7 @@ const Areas = () => {
   const fetchAreas = () => {
     setLoading(true)
     axios
-      .get("http://localhost:8080/api/areas-comunes/con-lugar")
+      .get(`${import.meta.env.VITE_API_URL}/api/areas-comunes/con-lugar`)
       .then((response) => {
         const areasData = response.data.result.map((area) => ({
           ...area,
@@ -78,7 +78,7 @@ const Areas = () => {
 
   const fetchLugares = () => {
     axios
-      .get("http://localhost:8080/usuarios/lugares-sin-usuarios")
+      .get(`${import.meta.env.VITE_API_URL}/usuarios/lugares-sin-usuarios`)
       .then((response) => {
         setLugares(response.data.result)
       })
@@ -120,8 +120,8 @@ const Areas = () => {
     }
 
     const request = isEditing
-      ? axios.put(`http://localhost:8080/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
-      : axios.post("http://localhost:8080/api/areas-comunes", nuevaArea)
+      ? axios.put(`${import.meta.env.VITE_API_URL}/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
+      : axios.post(`${import.meta.env.VITE_API_URL}/api/areas-comunes`, nuevaArea)
 
     request
       .then(() => {

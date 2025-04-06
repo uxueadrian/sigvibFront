@@ -55,7 +55,7 @@ const Lugares = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/lugares")
+      .get(`${import.meta.env.VITE_API_URL}/lugares`)
       .then((response) => {
         const lugares = response.data.result.map((lugar) => ({ ...lugar, id: lugar.idlugar }))
         setLugares(lugares)
@@ -66,7 +66,7 @@ const Lugares = () => {
 
   const handleCambiarStatus = (idLugar) => {
     axios
-      .patch(`http://localhost:8080/lugares/${idLugar}/status`)
+      .patch(`${import.meta.env.VITE_API_URL}/lugares/${idLugar}/status`)
       .then(() => {
         setLugares(lugares.map((lugar) => (lugar.id === idLugar ? { ...lugar, status: !lugar.status } : lugar)))
       })
@@ -76,7 +76,7 @@ const Lugares = () => {
   const handleAgregarLugar = () => {
     if (!nuevoLugar.trim()) return
     axios
-      .post("http://localhost:8080/lugares", { lugar: nuevoLugar, status: true })
+      .post(`${import.meta.env.VITE_API_URL}/lugares`, { lugar: nuevoLugar, status: true })
       .then((response) => {
         setLugares([...lugares, { id: response.data.result.idlugar, lugar: nuevoLugar, status: true }])
         setModalOpen(false)
@@ -93,7 +93,7 @@ const Lugares = () => {
   const handleActualizarLugar = () => {
     const { id, lugar, status } = lugarEditar
     axios
-      .put(`http://localhost:8080/lugares/${id}`, { lugar, status })
+      .put(`${import.meta.env.VITE_API_URL}/lugares/${id}`, { lugar, status })
       .then(() => {
         setLugares(lugares.map((l) => (l.id === id ? { id, lugar, status } : l)))
         setModalEditarOpen(false)

@@ -95,11 +95,11 @@ const Dashboard = () => {
     try {
       // Fetch all data in parallel
       const [bienesRes, tiposRes, marcasRes, modelosRes, lugaresRes] = await Promise.all([
-        axios.get("http://localhost:8080/bienes"),
-        axios.get("http://localhost:8080/tipo-bien"),
-        axios.get("http://localhost:8080/marca"),
-        axios.get("http://localhost:8080/modelo"),
-        axios.get("http://localhost:8080/lugares"),
+        axios.get(`${import.meta.env.VITE_API_URL}/bienes`),
+        axios.get(`${import.meta.env.VITE_API_URL}/tipo-bien`),
+        axios.get(`${import.meta.env.VITE_API_URL}/marca`),
+        axios.get(`${import.meta.env.VITE_API_URL}/modelo`),
+        axios.get(`${import.meta.env.VITE_API_URL}/lugares`),
       ])
 
       const bienes = bienesRes.data.result
