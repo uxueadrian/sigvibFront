@@ -63,7 +63,7 @@ const Areas = () => {
   const fetchAreas = () => {
     setLoading(true)
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/areas-comunes/con-lugar`)
+      .get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/api/areas-comunes/con-lugar")
       .then((response) => {
         const areasData = response.data.result.map((area) => ({
           ...area,
@@ -78,7 +78,7 @@ const Areas = () => {
 
   const fetchLugares = () => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/usuarios/lugares-sin-usuarios`)
+      .get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/usuarios/lugares-sin-usuarios")
       .then((response) => {
         setLugares(response.data.result)
       })
@@ -120,8 +120,8 @@ const Areas = () => {
     }
 
     const request = isEditing
-      ? axios.put(`${import.meta.env.VITE_API_URL}/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
-      : axios.post(`${import.meta.env.VITE_API_URL}/api/areas-comunes`, nuevaArea)
+      ? axios.put(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
+      : axios.post("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/api/areas-comunes", nuevaArea)
 
     request
       .then(() => {

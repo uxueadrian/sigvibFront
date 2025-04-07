@@ -56,7 +56,7 @@ const BienesBaja = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/bienes`)
+      .get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes")
       .then((response) => {
         // Filtrar solo los bienes que tienen bajas (array no vacío)
         const bienesConBaja = response.data.result

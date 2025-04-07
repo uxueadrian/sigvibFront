@@ -641,7 +641,7 @@ const SolicitarBienBecario = () => {
   const fetchBienesLibres = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/bienes`)
+      const response = await axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes")
       const bienesLibres = response.data.result.filter((bien) => bien.idBien && !bien.lugar && bien.status !== false)
       setBienes(bienesLibres)
       setError(null)
@@ -669,7 +669,7 @@ const SolicitarBienBecario = () => {
       setBienes((prevBienes) => prevBienes.filter((bien) => bien.idBien !== idBien))
 
       await axios.patch(
-        `${import.meta.env.VITE_API_URL}/bienes/${idBien}/asignar-lugar/${user.idLugar}`,
+        `http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes/${idBien}/asignar-lugar/${user.idLugar}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )

@@ -55,7 +55,7 @@ const Lugares = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/lugares`)
+      .get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares")
       .then((response) => {
         const lugares = response.data.result.map((lugar) => ({ ...lugar, id: lugar.idlugar }))
         setLugares(lugares)
@@ -66,7 +66,7 @@ const Lugares = () => {
 
   const handleCambiarStatus = (idLugar) => {
     axios
-      .patch(`${import.meta.env.VITE_API_URL}/lugares/${idLugar}/status`)
+      .patch(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares/${idLugar}/status`)
       .then(() => {
         setLugares(lugares.map((lugar) => (lugar.id === idLugar ? { ...lugar, status: !lugar.status } : lugar)))
       })
@@ -76,7 +76,7 @@ const Lugares = () => {
   const handleAgregarLugar = () => {
     if (!nuevoLugar.trim()) return
     axios
-      .post(`${import.meta.env.VITE_API_URL}/lugares`, { lugar: nuevoLugar, status: true })
+      .post(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares`, { lugar: nuevoLugar, status: true })
       .then((response) => {
         setLugares([...lugares, { id: response.data.result.idlugar, lugar: nuevoLugar, status: true }])
         setModalOpen(false)
@@ -93,7 +93,7 @@ const Lugares = () => {
   const handleActualizarLugar = () => {
     const { id, lugar, status } = lugarEditar
     axios
-      .put(`${import.meta.env.VITE_API_URL}/lugares/${id}`, { lugar, status })
+      .put(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares/${id}`, { lugar, status })
       .then(() => {
         setLugares(lugares.map((l) => (l.id === id ? { id, lugar, status } : l)))
         setModalEditarOpen(false)

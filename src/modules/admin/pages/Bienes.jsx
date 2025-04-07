@@ -79,7 +79,7 @@ const Bienes = () => {
 
   const fetchBienes = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/bienes`)
+      const response = await axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes")
       const bienesData = response.data.result
         .filter((bien) => bien.status)
         .map((bien) => ({
@@ -104,11 +104,11 @@ const Bienes = () => {
   const fetchCatalogData = async () => {
     try {
       const [lugaresRes, usuariosRes, tiposBienRes, modelosRes, marcasRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_API_URL}/lugares`),
-        axios.get(`${import.meta.env.VITE_API_URL}/usuarios`),
-        axios.get(`${import.meta.env.VITE_API_URL}/tipo-bien`),
-        axios.get(`${import.meta.env.VITE_API_URL}/modelo`),
-        axios.get(`${import.meta.env.VITE_API_URL}/marca`),
+        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares"),
+        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/usuarios"),
+        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/tipo-bien"),
+        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/modelo"),
+        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/marca"),
       ])
 
       setLugares(lugaresRes.data.result)
@@ -144,7 +144,7 @@ const Bienes = () => {
         fecha: new Date().toISOString().split("T")[0] + "T00:00:00Z",
       }
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/bienes`, bienFormateado, {
+      const response = await axios.post("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes", bienFormateado, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
 
@@ -195,7 +195,7 @@ const Bienes = () => {
         fecha: new Date().toISOString(),
       }
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/bajas`, bajaData)
+      await axios.post("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bajas", bajaData)
       setBienes(bienes.filter((bien) => bien.id !== selectedBien.id))
       setOpenBaja(false)
       setSelectedBien(null)
