@@ -67,7 +67,7 @@ const Usuarios = () => {
 
   useEffect(() => {
     axios
-      .get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/usuarios")
+      .get(`${import.meta.env.VITE_API_URL}/usuarios`)
       .then((response) => {
         // Aseguramos que cada usuario tenga un ID único
         const usuarios = response.data.result.map((usuario) => ({
@@ -84,7 +84,7 @@ const Usuarios = () => {
 
   useEffect(() => {
     axios
-      .get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/usuarios/lugares-sin-usuarios")
+      .get(`${import.meta.env.VITE_API_URL}/usuarios/lugares-sin-usuarios`)
       .then((response) => setLugares(response.data.result))
       .catch((error) => console.error("Error al obtener lugares:", error))
   }, [])
@@ -92,7 +92,7 @@ const Usuarios = () => {
   const cambiarStatusUsuario = (idUsuario) => {
     axios
       .patch(
-        `http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/usuarios/${idUsuario}/status`,
+        `${import.meta.env.VITE_API_URL}/usuarios/${idUsuario}/status`,
         {},
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

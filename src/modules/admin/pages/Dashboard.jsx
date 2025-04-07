@@ -95,11 +95,11 @@ const Dashboard = () => {
     try {
       // Fetch all data in parallel
       const [bienesRes, tiposRes, marcasRes, modelosRes, lugaresRes] = await Promise.all([
-        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes"),
-        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/tipo-bien"),
-        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/marca"),
-        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/modelo"),
-        axios.get("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares"),
+        axios.get(`${import.meta.env.VITE_API_URL}/bienes`),
+        axios.get(`${import.meta.env.VITE_API_URL}/tipo-bien`),
+        axios.get(`${import.meta.env.VITE_API_URL}/marca`),
+        axios.get(`${import.meta.env.VITE_API_URL}/modelo`),
+        axios.get(`${import.meta.env.VITE_API_URL}/lugares`),
       ])
 
       const bienes = bienesRes.data.result

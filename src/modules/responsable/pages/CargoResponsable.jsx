@@ -572,7 +572,7 @@ const CargoResponsable = () => {
 
       try {
         setLoading(true)
-        const response = await axios.get(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes/responsable/${user.idUsuario}`)
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/bienes/responsable/${user.idUsuario}`)
 
         if (response.data && response.data.result) {
           setBienes(response.data.result)

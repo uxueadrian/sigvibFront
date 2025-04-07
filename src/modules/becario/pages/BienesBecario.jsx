@@ -1165,7 +1165,7 @@ const BienesBecario = () => {
   const fetchBienes = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares/${idLugar}/bienes`)
+      const response = await axios.get(`https://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/lugares/${idLugar}/bienes`)
       if (response.status === 200 && response.data.type === "SUCCESS") {
         setBienes(response.data.result)
         setError(null)
@@ -1185,7 +1185,7 @@ const BienesBecario = () => {
       setIsDeleting(true)
 
       // Realizar la solicitud al servidor
-      const response = await axios.patch(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/bienes/${idBien}/eliminar-lugar`)
+      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/bienes/${idBien}/eliminar-lugar`)
 
       console.log("Respuesta del servidor:", response.data)
 

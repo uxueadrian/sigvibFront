@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   // Update the login function to store the name
   const login = async (username, password) => {
     try {
-      const response = await fetch("https://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/auth/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

@@ -120,8 +120,8 @@ const Areas = () => {
     }
 
     const request = isEditing
-      ? axios.put(`http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
-      : axios.post("http://bienes-env.eba-hv5kxbpm.us-east-1.elasticbeanstalk.com/api/areas-comunes", nuevaArea)
+      ? axios.put(`${import.meta.env.VITE_API_URL}/api/areas-comunes/areas-comunes/${selectedAreaId}`, nuevaArea)
+      : axios.post(`${import.meta.env.VITE_API_URL}/api/areas-comunes`, nuevaArea)
 
     request
       .then(() => {
