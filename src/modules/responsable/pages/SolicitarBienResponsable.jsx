@@ -641,7 +641,7 @@ const SolicitarBienBecario = () => {
   const fetchBienesLibres = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:8080/bienes")
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/bienes`)
       const bienesLibres = response.data.result.filter((bien) => bien.idBien && !bien.lugar && bien.status !== false)
       setBienes(bienesLibres)
       setError(null)
@@ -669,7 +669,7 @@ const SolicitarBienBecario = () => {
       setBienes((prevBienes) => prevBienes.filter((bien) => bien.idBien !== idBien))
 
       await axios.patch(
-        `http://localhost:8080/bienes/${idBien}/asignar-lugar/${user.idLugar}`,
+        `${import.meta.env.VITE_API_URL}/bienes/${idBien}/asignar-lugar/${user.idLugar}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )

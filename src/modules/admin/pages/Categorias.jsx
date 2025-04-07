@@ -861,7 +861,7 @@ const Categorias = () => {
             open
             handleClose={() => setModalOpen(null)}
             fetchData={fetchAllData}
-            endpoint="http://localhost:8080/tipo-bien"
+            endpoint={`${import.meta.env.VITE_API_URL}/tipo-bien`}
             entidad="Tipo de Bien"
             darkMode={darkMode}
           />
@@ -871,7 +871,7 @@ const Categorias = () => {
             open
             handleClose={() => setModalOpen(null)}
             fetchData={fetchAllData}
-            endpoint="http://localhost:8080/marca"
+            endpoint={`${import.meta.env.VITE_API_URL}/marca`}
             entidad="Marca"
             darkMode={darkMode}
           />
@@ -881,7 +881,7 @@ const Categorias = () => {
             open
             handleClose={() => setModalOpen(null)}
             fetchData={fetchAllData}
-            endpoint="http://localhost:8080/modelo"
+            endpoint={`${import.meta.env.VITE_API_URL}/modelo`}
             entidad="Modelo"
             darkMode={darkMode}
           />

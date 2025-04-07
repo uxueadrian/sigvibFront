@@ -19,7 +19,7 @@ const EditarBienDialog = ({ open, onClose, bien, tiposBien, modelos, marcas, lug
   const handleSave = () => {
     setIsLoading(true);
     axios
-      .put(`http://localhost:8080/bienes/${bien.id}`, editedBien)
+      .put(`${import.meta.env.VITE_API_URL}/bienes/${bien.id}`, editedBien)
       .then((response) => {
         onEditSuccess(response.data.result); // Actualizar lista de bienes en el componente padre
         setNotification({ open: true, message: "Bien actualizado con éxito", severity: "success" });
